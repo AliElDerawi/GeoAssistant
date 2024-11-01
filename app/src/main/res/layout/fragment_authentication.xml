@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <variable
+            name="authenticationViewModel"
+            type="com.udacity.project4.authentication.AuthenticationViewModel" />
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:gravity="center">
+
+        <!--  I used constraintLayout, but LinearLayout could be use here, since there's no nested viewgroup      -->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/margin_left_right">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/logo_cardView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/margin_left_right"
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="30dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:strokeColor="@color/colorWhite"
+                app:strokeWidth="0dp">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/text_logo_description"
+                    app:srcCompat="@drawable/ic_location_logo" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <TextView
+                android:id="@+id/title_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_btnView"
+                android:contentDescription="@string/text_sign_in_now"
+                android:gravity="center"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
+                android:text="@string/text_sign_in_now"
+                android:theme="@style/TitleStyle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/logo_cardView" />
+
+            <TextView
+                android:id="@+id/subTitle_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_btnView"
+                android:contentDescription="@string/text_one_step_right_service"
+                android:gravity="center"
+                android:lineSpacingMultiplier="0.7"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
+                android:text="@string/text_one_step_right_service"
+                android:textColor="@color/colorBlack63"
+                android:theme="@style/BodyStyle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_textView" />
+
+
+            <Button
+                android:id="@+id/login_button"
+                style="@style/buttonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dim_button_height"
+                android:layout_marginStart="@dimen/margin_btnView"
+                android:layout_marginTop="@dimen/margin_left_right"
+                android:layout_marginEnd="@dimen/margin_btnView"
+                android:backgroundTint="@color/colorAccent"
+                android:elevation="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:onClick="@{() -> authenticationViewModel.login()}"
+                android:text="@string/text_login"
+                app:cornerRadius="@dimen/dim_button_corner"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:strokeWidth="0dp" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+
+</layout>
+
+

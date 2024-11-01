@@ -1,0 +1,180 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'kotlin-parcelize'
+}
+
+android {
+    namespace 'com.udacity.project4'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.udacity.project4"
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
+    }
+
+//    dataBinding {
+//        enabled = true
+//        enabledForTests = true
+//    }
+    buildFeatures {
+        dataBinding true
+        buildConfig true
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // App dependencies
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation 'androidx.core:core-ktx:1.10.1'
+
+
+    // Architecture Components & Navigation dependencies
+    implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleKtxVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$archLifecycleKtxVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
+
+    // Room dependencies
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+        // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$roomVersion"
+
+    // Koin
+    implementation "io.insert-koin:koin-android:$koinVersion"
+    implementation("io.insert-koin:koin-core:$koinVersion")
+
+    implementation("io.insert-koin:koin-android-compat:$koinVersion")
+    // Jetpack WorkManager
+    implementation("io.insert-koin:koin-androidx-workmanager:$koinVersion")
+    // Navigation Graph
+    implementation("io.insert-koin:koin-androidx-navigation:$koinVersion")
+
+
+
+
+
+    // Dependencies for local unit tests
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    testImplementation "com.google.truth:truth:$truthVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+
+    testImplementation("io.insert-koin:koin-test:$koinVersion")
+    // Koin for JUnit 4
+    testImplementation("io.insert-koin:koin-test-junit4:$koinVersion")
+    // Koin for JUnit 5
+    testImplementation("io.insert-koin:koin-test-junit5:$koinVersion")
+    testImplementation("io.insert-koin:koin-android-test:$koinVersion")
+
+
+    androidTestImplementation("io.insert-koin:koin-test:$koinVersion")
+    // Koin for JUnit 4
+    androidTestImplementation("io.insert-koin:koin-test-junit4:$koinVersion")
+    // Koin for JUnit 5
+    androidTestImplementation("io.insert-koin:koin-test-junit5:$koinVersion")
+    androidTestImplementation("io.insert-koin:koin-android-test:$koinVersion")
+
+
+
+    // AndroidX Test - JVM testing
+    testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
+    testImplementation "androidx.test:rules:$androidXTestRulesVersion"
+
+    // AndroidX Test - Instrumented testing
+    androidTestImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    androidTestImplementation "androidx.test:rules:$androidXTestRulesVersion"
+    androidTestImplementation "androidx.room:room-testing:$roomVersion"
+    androidTestImplementation "androidx.arch.core:core-testing:$archTestingVersion"
+    androidTestImplementation "org.robolectric:annotations:$robolectricVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+        // Testing code for more advanced views such as the DatePicker and RecyclerView.
+        // It also contains accessibility checks and a class called CountingIdlingResource.
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espressoVersion"
+    androidTestImplementation "junit:junit:$junitVersion"
+        // Testing code should not be included in the main code.
+        // Once https://issuetracker.google.com/128612536 is fixed this can be fixed.
+    debugImplementation "androidx.fragment:fragment-testing:$fragmentTestingVersion"
+    implementation "androidx.test:core:$androidXTestCoreVersion"
+    androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
+    androidTestImplementation "io.insert-koin:koin-android-test:3.4.0"
+    androidTestImplementation("io.insert-koin:koin-test-junit4:$koinVersion")
+    // Koin for JUnit 5
+    androidTestImplementation("io.insert-koin:koin-test-junit5:$koinVersion")
+
+
+
+    // Maps & Geofencing
+    implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"
+    implementation "com.google.android.gms:play-services-maps:$playServicesMapsVersion"
+
+    // Firebase
+    implementation "com.firebaseui:firebase-ui-auth:$firebaseUiAuthVersion"
+    implementation "com.google.firebase:firebase-auth-ktx:$firebaseAuthKtxVersion"
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+
+    implementation "com.jakewharton.timber:timber:5.0.1"
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+
+    implementation "com.github.bumptech.glide:glide:$glide_version"
+    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+
+}
+
+apply plugin: 'com.google.gms.google-services'

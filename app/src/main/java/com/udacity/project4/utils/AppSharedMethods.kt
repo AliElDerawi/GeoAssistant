@@ -223,6 +223,7 @@ object AppSharedMethods {
 inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<String, Any>): Intent {
     val intent = Intent(this, T::class.java)
     intent.putExtras(bundleOf(*params))
+    intent.setAction(Intent.ACTION_VIEW)
     return intent
 }
 

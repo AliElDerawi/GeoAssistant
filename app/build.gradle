@@ -79,7 +79,7 @@ dependencies {
 
     // Room dependencies
     implementation libs.androidx.room.runtime
-    kapt libs.room.compiler
+    ksp libs.room.compiler
     // Kotlin Extensions and Coroutines support for Room
     implementation libs.androidx.room.ktx
 
@@ -106,7 +106,7 @@ dependencies {
     implementation libs.multidex
 
     implementation libs.glide
-    kapt libs.glide.compiler
+    ksp libs.glide.compiler
 
     // Dependencies for local unit tests
     testImplementation libs.junit

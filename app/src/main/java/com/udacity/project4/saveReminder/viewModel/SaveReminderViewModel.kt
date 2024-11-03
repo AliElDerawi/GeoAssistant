@@ -1,16 +1,15 @@
-package com.udacity.project4.locationreminders.savereminder
+package com.udacity.project4.saveReminder.viewModel
 
 import android.app.Application
-import android.app.NotificationManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.NotificationUtils
 import com.udacity.project4.utils.SingleLiveEvent

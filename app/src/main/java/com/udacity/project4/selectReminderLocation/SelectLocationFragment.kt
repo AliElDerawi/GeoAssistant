@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.savereminder.selectreminderlocation
+package com.udacity.project4.selectReminderLocation
 
 import android.Manifest
 import android.app.Activity
@@ -25,17 +25,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
-import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.getLocationNameReceiver
 import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
-import com.udacity.project4.utils.AppSharedMethods.isForegroundAndBackgroundPermissionGranted
 import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver

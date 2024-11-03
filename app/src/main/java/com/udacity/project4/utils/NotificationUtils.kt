@@ -7,14 +7,13 @@ import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
-import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.ReminderDescriptionFragment
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.main.MainActivity
+import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
+import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.main.view.MainActivity
 
 
 object NotificationUtils {

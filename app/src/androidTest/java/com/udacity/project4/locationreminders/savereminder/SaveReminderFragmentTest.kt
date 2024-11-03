@@ -9,36 +9,30 @@ import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.filters.MediumTest
 import androidx.test.rule.ActivityTestRule
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.internal.ContextUtils.getActivity
 import com.udacity.project4.FakeTestRepository
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationViewModel
-import com.udacity.project4.getOrAwaitValue
-import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragment
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragmentDirections
-import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.project4.main.MainActivity
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.data.local.LocalDB
+import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.main.view.MainActivity
+import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.saveReminder.view.SaveReminderFragment
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -53,11 +47,7 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.matches
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
-import org.robolectric.annotation.Config
 
 @TargetApi(29)
 @RunWith(AndroidJUnit4::class)

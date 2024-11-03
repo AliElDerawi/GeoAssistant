@@ -5,9 +5,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.local.RemindersDatabase
+import com.udacity.project4.data.model.ReminderDataItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest

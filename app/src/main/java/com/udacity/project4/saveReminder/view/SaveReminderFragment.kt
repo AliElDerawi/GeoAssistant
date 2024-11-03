@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.savereminder
+package com.udacity.project4.saveReminder.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -26,14 +26,14 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSaveReminderBinding
-import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.data.geofence.GeofenceBroadcastReceiver
+import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
-import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 

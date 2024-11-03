@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.geofence
+package com.udacity.project4.data.geofence
 
 import android.content.Context
 import android.content.Intent
@@ -6,10 +6,10 @@ import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.NotificationUtils.errorMessage
 import com.udacity.project4.utils.NotificationUtils.sendNotificationAboutEnteredGeofence

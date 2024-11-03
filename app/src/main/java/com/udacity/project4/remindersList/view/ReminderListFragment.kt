@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.reminderslist
+package com.udacity.project4.remindersList.view
 
 import android.Manifest
 import android.content.Context
@@ -13,13 +13,13 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
-import com.udacity.project4.locationreminders.ReminderDescriptionFragment
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.remindersList.adapter.RemindersListAdapter
+import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedData
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.showForegroundLocationRequestPermission
-import com.udacity.project4.utils.createIntent
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup

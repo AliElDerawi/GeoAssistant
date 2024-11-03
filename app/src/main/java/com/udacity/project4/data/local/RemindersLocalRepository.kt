@@ -1,8 +1,8 @@
-package com.udacity.project4.locationreminders.data.local
+package com.udacity.project4.data.local
 
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.Result
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

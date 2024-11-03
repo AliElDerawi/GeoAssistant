@@ -17,13 +17,8 @@ package com.udacity.project4
 
 import android.app.Activity
 import android.app.Application
-import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -37,17 +32,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.authentication.AuthenticationViewModel
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.reminderslist.ReminderListFragment
-import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.main.MainActivity
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.local.LocalDB
+import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.main.view.MainActivity
+import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
-import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -61,7 +54,6 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
-import org.mockito.Mockito
 
 /**
  * Tests for the [DrawerLayout] layout component in [TasksActivity] which manages

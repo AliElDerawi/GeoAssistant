@@ -1,9 +1,9 @@
 package com.udacity.project4.locationreminders.data
 
 import androidx.lifecycle.MutableLiveData
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.Result
 import kotlinx.coroutines.runBlocking
 
 class FakeTestRepository : ReminderDataSource {

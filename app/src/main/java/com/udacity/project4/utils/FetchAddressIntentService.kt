@@ -1,7 +1,6 @@
 package com.udacity.project4.utils
 
 import android.app.IntentService
-import android.content.Context
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
@@ -10,7 +9,6 @@ import android.os.ResultReceiver
 import android.text.TextUtils
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
-import com.udacity.project4.MyApp
 import com.udacity.project4.R
 import java.io.IOException
 import java.lang.IllegalArgumentException

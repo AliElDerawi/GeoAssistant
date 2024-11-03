@@ -1,15 +1,13 @@
-package com.udacity.project4.main
+package com.udacity.project4.main.viewModel
 
 import android.app.Application
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.utils.OnActivityResultModel
 
 class MainViewModel(app: Application) : BaseViewModel(app) {
-
 
     private var _hideToolbar = MutableLiveData<Boolean>()
     val hideToolbar: LiveData<Boolean>
@@ -19,7 +17,6 @@ class MainViewModel(app: Application) : BaseViewModel(app) {
     val toolbarTitle: LiveData<String>
         get() = _toolbarTitle
 
-
     private var _showUpButton = MutableLiveData<Boolean>()
     val showUpButton: LiveData<Boolean>
         get() = _showUpButton
@@ -28,11 +25,9 @@ class MainViewModel(app: Application) : BaseViewModel(app) {
     val passOnActivityResult: LiveData<OnActivityResultModel?>
         get() = _passOnActivityResult
 
-
     fun setHideToolbar(hideToolbar: Boolean) {
         _hideToolbar.value = hideToolbar
     }
-
 
     fun setToolbarTitle(title: String) {
         _toolbarTitle.value = title
@@ -49,7 +44,5 @@ class MainViewModel(app: Application) : BaseViewModel(app) {
     fun completePassOnActivityResult() {
         _passOnActivityResult.value = null
     }
-
-
 
 }

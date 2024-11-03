@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".MyApp"
+        android:name=".data.MyApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -38,7 +38,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".main.MainActivity"
+            android:name=".main.view.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>
@@ -48,12 +48,12 @@
         </activity>
 
         <receiver
-            android:name=".locationreminders.geofence.GeofenceBroadcastReceiver"
+            android:name=".data.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
 
         <service
-            android:name=".locationreminders.geofence.GeofenceTransitionsJobIntentService"
+            android:name=".data.geofence.GeofenceTransitionsJobIntentService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 

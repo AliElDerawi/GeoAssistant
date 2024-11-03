@@ -1,13 +1,14 @@
-package com.udacity.project4.locationreminders.reminderslist
+package com.udacity.project4.remindersList.viewModel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.project4.base.BaseViewModel
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 

@@ -7,7 +7,7 @@
         <!-- Data item that holds the reminder details -->
         <variable
             name="reminderDataItem"
-            type="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem" />
+            type="com.udacity.project4.data.model.ReminderDataItem" />
     </data>
 
 

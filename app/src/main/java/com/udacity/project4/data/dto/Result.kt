@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.data.dto
+package com.udacity.project4.data.dto
 
 /**
  * A sealed class that encapsulates successful outcome with a value of type [T]

@@ -1,14 +1,14 @@
-package com.udacity.project4
+package com.udacity.project4.data
 
 import androidx.multidex.MultiDexApplication
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.authentication.AuthenticationViewModel
-import com.udacity.project4.locationreminders.data.ReminderDataSource
-import com.udacity.project4.locationreminders.data.local.LocalDB
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.main.MainViewModel
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.local.LocalDB
+import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.main.viewModel.MainViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin

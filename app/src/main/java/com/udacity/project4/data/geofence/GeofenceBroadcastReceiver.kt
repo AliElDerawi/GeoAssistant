@@ -1,20 +1,8 @@
-package com.udacity.project4.locationreminders.geofence
+package com.udacity.project4.data.geofence
 
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import androidx.core.content.ContextCompat
-import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofencingEvent
-import com.udacity.project4.R
-import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.main.MainViewModel
-import com.udacity.project4.utils.Constants
-import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
 /**

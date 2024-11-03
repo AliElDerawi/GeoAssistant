@@ -11,22 +11,20 @@ import com.udacity.project4.utils.OnActivityResultModel
 class MainViewModel(app: Application) : BaseViewModel(app) {
 
 
-    private val _hideToolbar = MutableLiveData<Boolean>()
-
+    private var _hideToolbar = MutableLiveData<Boolean>()
     val hideToolbar: LiveData<Boolean>
         get() = _hideToolbar
 
-    private val _toolbarTitle = MutableLiveData<String>()
-
+    private var _toolbarTitle = MutableLiveData<String>()
     val toolbarTitle: LiveData<String>
         get() = _toolbarTitle
 
 
-    private val _showUpButton = MutableLiveData<Boolean>()
+    private var _showUpButton = MutableLiveData<Boolean>()
     val showUpButton: LiveData<Boolean>
         get() = _showUpButton
 
-    private val _passOnActivityResult = MutableLiveData<OnActivityResultModel?>()
+    private var _passOnActivityResult = MutableLiveData<OnActivityResultModel?>()
     val passOnActivityResult: LiveData<OnActivityResultModel?>
         get() = _passOnActivityResult
 

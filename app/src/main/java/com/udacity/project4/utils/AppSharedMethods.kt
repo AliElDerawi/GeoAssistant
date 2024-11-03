@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.MyApp
+import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -218,6 +219,10 @@ object AppSharedMethods {
             return false
         }
     }
+}
+
+fun isLogin(): Boolean {
+    return getSharedPreference().getBoolean(AppSharedData.PREF_IS_LOGIN, false)
 }
 
 inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<String, Any>): Intent {

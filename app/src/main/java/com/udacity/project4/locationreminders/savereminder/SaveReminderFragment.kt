@@ -32,6 +32,8 @@ import com.udacity.project4.main.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.udacity.project4.utils.setTitle
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -40,9 +42,7 @@ class SaveReminderFragment : BaseFragment() {
     // Get the view model this time as a single to be shared with the another fragment
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var mBinding: FragmentSaveReminderBinding
-
     private val mSharedViewModel: MainViewModel by inject()
-
     private lateinit var geofencingClient: GeofencingClient
     private lateinit var mActivity: Activity
 
@@ -76,7 +76,8 @@ class SaveReminderFragment : BaseFragment() {
         mBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         mSharedViewModel.setHideToolbar(false)
         setDisplayHomeAsUpEnabled(true)
-        mBinding.lifecycleOwner = this
+        setTitle(mActivity.getString(R.string.text_add_reminder))
+        mBinding.lifecycleOwner = viewLifecycleOwner
         mBinding.viewModel = _viewModel
         return mBinding.root
     }
@@ -85,7 +86,6 @@ class SaveReminderFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViewModelObservers()
-
 
 //        mBinding.saveReminder.setOnClickListener {
 //
@@ -143,38 +143,38 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
 
-        _viewModel.completeSaveReminder.observe(viewLifecycleOwner) {
-            if (it) {
-                continueSaveReminder(_viewModel.createGeofence.value!!)
-            }
-        }
-
-        _viewModel.saveReminder.observe(viewLifecycleOwner) {
-            Timber.d("saveReminder:called:saveReminder: " + it)
-            if (it) {
-                if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mActivity)) {
-                    Timber.d("Foreground and Background Permission granted")
-                    if (AppSharedMethods.isLocationEnabled(mActivity)) {
-                        handleNotificationPermission()
-                    } else {
-                        checkDeviceLocationSettings()
-                    }
-                } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
-                    Timber.d("Foreground Permission needed request again only once")
-                    requestForegroundPermission()
-                } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
-                    Timber.d("Background Permission needed request again only once")
-                    requestBackgroundPermission()
+        with(_viewModel) {
+            completeSaveReminder.observe(viewLifecycleOwner) {
+                if (it) {
+                    continueSaveReminder(_viewModel.createGeofence.value!!)
                 }
-                _viewModel.setSaveReminder(false)
             }
-        }
 
-        _viewModel.selectLocation.observe(viewLifecycleOwner) {
-            if (it) {
-                _viewModel.onNavigateToSelectLocation()
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
+            saveReminder.observe(viewLifecycleOwner) {
+                Timber.d("saveReminder:called:saveReminder: " + it)
+                if (it) {
+                    if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mActivity)) {
+                        Timber.d("Foreground and Background Permission granted")
+                        if (AppSharedMethods.isLocationEnabled(mActivity)) {
+                            handleNotificationPermission()
+                        } else {
+                            checkDeviceLocationSettings()
+                        }
+                    } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
+                        Timber.d("Foreground Permission needed request again only once")
+                        requestForegroundPermission()
+                    } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
+                        Timber.d("Background Permission needed request again only once")
+                        requestBackgroundPermission()
+                    }
+                }
+            }
+
+            selectLocation.observe(viewLifecycleOwner) {
+                if (it) {
+                    _viewModel.navigationCommand.value =
+                        NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
+                }
             }
         }
 

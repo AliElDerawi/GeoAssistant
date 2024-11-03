@@ -31,9 +31,7 @@ class ReminderListFragment : BaseFragment() {
     // Use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
     private lateinit var mBinding: FragmentRemindersBinding
-
     private lateinit var mActivity: FragmentActivity
-
     private val mSharedViewModel: MainViewModel by inject()
 
 
@@ -55,7 +53,6 @@ class ReminderListFragment : BaseFragment() {
         mBinding.lifecycleOwner = this
         mBinding.viewModel = _viewModel
         mSharedViewModel.setHideToolbar(false)
-
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(false)
         setTitle(mActivity.getString(R.string.app_name))
@@ -67,9 +64,6 @@ class ReminderListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        mBinding.addReminderFAB.setOnClickListener {
-            navigateToAddReminder()
-        }
     }
 
     override fun onResume() {
@@ -89,7 +83,7 @@ class ReminderListFragment : BaseFragment() {
 
     private fun navigateToAddReminder() {
         // Use the navigationCommand live data to navigate between the fragments
-        _viewModel.navigationCommand.value =
+        mSharedViewModel.navigationCommand.value =
             NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
 
     }

@@ -13,18 +13,20 @@ import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.NotificationUtils
+import com.udacity.project4.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class SaveReminderViewModel(
     val app: Application,
     val remindersLocalRepository: ReminderDataSource
 ) :
     BaseViewModel(app) {
-    private val _reminderTitle = MutableLiveData<String?>()
+    private var _reminderTitle = MutableLiveData<String?>()
     val reminderTitle: LiveData<String?>
         get() = _reminderTitle
 
-    private val _reminderDescription = MutableLiveData<String?>()
+    private var _reminderDescription = MutableLiveData<String?>()
     val reminderDescription: LiveData<String?>
         get() = _reminderDescription
 
@@ -52,7 +54,7 @@ class SaveReminderViewModel(
     val saveLocation: LiveData<Boolean>
         get() = _saveLocation
 
-    private var _saveReminder = MutableLiveData<Boolean>()
+    private var _saveReminder = SingleLiveEvent<Boolean>()
     val saveReminder: LiveData<Boolean>
         get() = _saveReminder
 
@@ -64,7 +66,7 @@ class SaveReminderViewModel(
     val createGeofence: LiveData<ReminderDataItem?>
         get() = _createGeofence
 
-    private var _selectLocation = MutableLiveData<Boolean>()
+    private var _selectLocation = SingleLiveEvent<Boolean>()
     val selectLocation: LiveData<Boolean>
         get() = _selectLocation
 
@@ -78,6 +80,11 @@ class SaveReminderViewModel(
         _selectedPOI.value = null
         _latitude.value = null
         _longitude.value = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Timber.d("onCleared called")
     }
 
     /**

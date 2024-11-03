@@ -40,6 +40,7 @@ import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.udacity.project4.utils.setTitle
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.UUID
@@ -49,18 +50,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     // Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding
-
-
     private val mSharedViewModel: MainViewModel by inject()
-
     private lateinit var mActivity: Activity
-
     private lateinit var mGoogleMap: GoogleMap
-
     private val mFusedLocationProviderClient: FusedLocationProviderClient by inject()
-
     private var mSelectedLocation: LatLng? = null
-
     private var mResultReceiver: MyResultIntentReceiver? = null
 
     override fun onAttach(context: Context) {
@@ -78,9 +72,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         mBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         mSharedViewModel.setHideToolbar(false)
         mBinding.viewModel = _viewModel
-        mBinding.lifecycleOwner = this
+        mBinding.lifecycleOwner = viewLifecycleOwner
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
+        setTitle(getString(R.string.text_select_location))
 
         // TODO: add the map setup implementation
         // TODO: zoom to the user location after taking his permission

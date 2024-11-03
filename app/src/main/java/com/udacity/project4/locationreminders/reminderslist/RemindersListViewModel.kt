@@ -20,7 +20,7 @@ class RemindersListViewModel(
     val remindersList : LiveData<List<ReminderDataItem>>
         get() = _remindersList
 
-    private val _addReminderLiveData = SingleLiveEvent<Boolean>()
+    private var _addReminderLiveData = SingleLiveEvent<Boolean>()
     val addReminderLiveData: LiveData<Boolean>
         get() = _addReminderLiveData
 

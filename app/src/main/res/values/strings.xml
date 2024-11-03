@@ -88,6 +88,8 @@
     <string name="text_msg_please_enter_description">Please enter description</string>
     <string name="text_add_new_reminder_button">Add new reminder button</string>
     <string name="text_geofence_detail">Geofence Detail</string>
+    <string name="text_add_reminder">Add Reminder</string>
+    <string name="text_select_location">Select Location</string>
 
 
 </resources>

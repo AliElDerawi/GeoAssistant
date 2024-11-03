@@ -14,6 +14,7 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.locationreminders.ReminderDescriptionActivity
+import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.main.MainViewModel
 import com.udacity.project4.utils.AppSharedData
 import com.udacity.project4.utils.AppSharedMethods
@@ -33,7 +34,7 @@ class ReminderListFragment : BaseFragment() {
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
     private val mSharedViewModel: MainViewModel by inject()
-
+    private val mSaveReminderViewModel: SaveReminderViewModel by inject()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,6 +54,7 @@ class ReminderListFragment : BaseFragment() {
         mBinding.lifecycleOwner = this
         mBinding.viewModel = _viewModel
         mSharedViewModel.setHideToolbar(false)
+        mSaveReminderViewModel.onClear()
         setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(false)
         setTitle(mActivity.getString(R.string.app_name))

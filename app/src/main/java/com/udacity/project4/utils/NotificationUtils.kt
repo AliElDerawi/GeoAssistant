@@ -12,53 +12,14 @@ import androidx.core.content.getSystemService
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.ReminderDescriptionActivity
+import com.udacity.project4.locationreminders.ReminderDescriptionFragment
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.udacity.project4.main.MainActivity
 
 
 object NotificationUtils {
 
     private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
-
-    fun sendNotification(context: Context, reminderDataItem: ReminderDataItem) {
-
-        val notificationManager = context.notificationManager
-
-        val intent =
-            context.createIntent<ReminderDescriptionActivity>(ReminderDescriptionActivity.EXTRA_ReminderDataItem to reminderDataItem)
-
-
-        //create a pending intent that opens ReminderDescriptionActivity when the user clicks on the notification
-        val stackBuilder = TaskStackBuilder.create(context)
-            .addParentStack(ReminderDescriptionActivity::class.java)
-            .addNextIntent(intent)
-
-        var notificationPendingIntent: PendingIntent? = null
-
-        val isSupportsAndroidM = AppSharedMethods.isSupportsAndroidM {
-            notificationPendingIntent =
-                stackBuilder
-                    .getPendingIntent(getUniqueId(), PendingIntent.FLAG_MUTABLE)
-        }
-
-        if (!isSupportsAndroidM) {
-            notificationPendingIntent =
-                stackBuilder
-                    .getPendingIntent(getUniqueId(), PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-
-
-//    build the notification object with the data to be shown
-        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(reminderDataItem.title)
-            .setContentText(reminderDataItem.location)
-            .setContentIntent(notificationPendingIntent)
-            .setAutoCancel(true)
-            .build()
-
-        notificationManager!!.notify(getUniqueId(), notification)
-    }
 
     fun createChannel(context: Context) {
         AppSharedMethods.isSupportsOreo {
@@ -112,31 +73,12 @@ object NotificationUtils {
         context: Context,
         reminderDataItem: ReminderDataItem
     ) {
-
         val notificationManager = context.notificationManager
-
-
         val intent =
-            context.createIntent<ReminderDescriptionActivity>(ReminderDescriptionActivity.EXTRA_ReminderDataItem to reminderDataItem)
-
-        //create a pending intent that opens ReminderDescriptionActivity when the user clicks on the notification
-        val stackBuilder = TaskStackBuilder.create(context)
-            .addParentStack(ReminderDescriptionActivity::class.java)
-            .addNextIntent(intent)
-        var notificationPendingIntent: PendingIntent? = null
-
-        val isSupportsAndroidM = AppSharedMethods.isSupportsAndroidM {
-            notificationPendingIntent =
-                stackBuilder
-                    .getPendingIntent(getUniqueId(), PendingIntent.FLAG_MUTABLE)
-        }
-
-        if (!isSupportsAndroidM)
-            stackBuilder
-                .getPendingIntent(getUniqueId(), PendingIntent.FLAG_UPDATE_CURRENT)
-
-
-//    build the notification object with the data to be shown
+            context.createIntent<MainActivity>(ReminderDescriptionFragment.EXTRA_ReminderDataItem to reminderDataItem)
+        val notificationPendingIntent =  PendingIntent.getActivity(
+            context, 0, intent, PendingIntent.FLAG_MUTABLE
+        )
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(
@@ -151,7 +93,7 @@ object NotificationUtils {
             .setAutoCancel(true)
             .build()
 
-        notificationManager!!.notify(getUniqueId(), notification)
+        notificationManager?.notify(getUniqueId(), notification)
     }
 }
 

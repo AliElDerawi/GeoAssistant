@@ -36,17 +36,13 @@ object AppSharedMethods {
     private var mToast: Toast? = null
 
     fun Activity.showToast(message: String, duration: Int = Toast.LENGTH_LONG) {
-        if (mToast != null) {
-            mToast!!.cancel()
-        }
+        mToast?.cancel()
         mToast = Toast.makeText(MyApp.getInstance()!!.applicationContext, message, duration)
         mToast!!.show()
     }
 
     fun showToast(message: Int, duration: Int = Toast.LENGTH_LONG) {
-        if (mToast != null) {
-            mToast!!.cancel()
-        }
+        mToast?.cancel()
         mToast = Toast.makeText(
             MyApp.getInstance()!!.applicationContext,
             MyApp.getInstance()!!.applicationContext.getString(message),
@@ -219,6 +215,10 @@ object AppSharedMethods {
             return false
         }
     }
+
+    fun isSupportsAndroid33(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    }
 }
 
 fun isLogin(): Boolean {
@@ -229,6 +229,7 @@ inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<Strin
     val intent = Intent(this, T::class.java)
     intent.putExtras(bundleOf(*params))
     intent.setAction(Intent.ACTION_VIEW)
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     return intent
 }
 

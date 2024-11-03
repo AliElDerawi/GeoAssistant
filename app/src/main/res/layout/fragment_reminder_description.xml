@@ -16,66 +16,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/main_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="null">
-
-
-                <TextView
-                    android:id="@+id/textView_toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?actionBarSize"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/text_geofence_detail"
-                    android:gravity="center_vertical"
-                    android:text="@string/text_geofence_detail"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_sub_title"
-                    android:theme="@style/boldFont" />
-
-
-            </androidx.appcompat.widget.Toolbar>
-
-
-        </com.google.android.material.appbar.AppBarLayout>
-
 
         <!-- TODO: Add the design of the reminder details -->
-
 
         <TextView
             android:id="@+id/title_textView"
             style="@style/BodyStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/reminder_title"
-            android:layout_marginTop="@dimen/margin_btnView"
             android:layout_marginStart="@dimen/margin_btnView"
+            android:layout_marginTop="@dimen/margin_btnView"
+            android:text="@string/reminder_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/title_value_textView"
             style="@style/BodyStyle"
-            android:layout_marginEnd="@dimen/margin_btnView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_btnView"
+            android:layout_marginEnd="@dimen/margin_btnView"
             android:textAlignment="viewStart"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,7 @@
 package com.udacity.project4.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
@@ -16,6 +17,8 @@ import androidx.navigation.ui.NavigationUI
 import com.udacity.project4.R
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.ActivityMainBinding
+import com.udacity.project4.locationreminders.ReminderDescriptionFragment
+import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.AppSharedData
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.Constants
@@ -33,6 +36,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            if (it.hasExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)) {
+                val bundle = Bundle().apply {
+                    putParcelable(
+                        ReminderDescriptionFragment.EXTRA_ReminderDataItem,
+                        if (AppSharedMethods.isSupportsAndroid33()) {
+                            intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem, ReminderDataItem::class.java)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)
+                        }
+                    )
+                }
+                navController.navigate(R.id.reminderDescriptionFragment, bundle)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

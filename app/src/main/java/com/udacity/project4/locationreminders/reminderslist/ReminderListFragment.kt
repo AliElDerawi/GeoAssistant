@@ -13,7 +13,7 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
-import com.udacity.project4.locationreminders.ReminderDescriptionActivity
+import com.udacity.project4.locationreminders.ReminderDescriptionFragment
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.main.MainViewModel
 import com.udacity.project4.utils.AppSharedData
@@ -92,7 +92,12 @@ class ReminderListFragment : BaseFragment() {
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
-            mActivity.startActivity(mActivity.createIntent<ReminderDescriptionActivity>(ReminderDescriptionActivity.EXTRA_ReminderDataItem to it))
+            mSharedViewModel.navigationCommand.value =
+                NavigationCommand.To(
+                    ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
+                        it
+                    )
+                )
         }
         // Setup the recycler view using the extension function
         mBinding.reminderssRecyclerView.setup(adapter)

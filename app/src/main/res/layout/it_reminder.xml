@@ -47,12 +47,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:text="@{item.location}"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_size_small"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/description"
                 tools:text="Location Detail" />
         </androidx.constraintlayout.widget.ConstraintLayout>

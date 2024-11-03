@@ -34,6 +34,9 @@
     <dimen name="dim_button_height_new">50dp</dimen>
     <dimen name="dim_15_dp">15dp</dimen>
     <dimen name="dim_14_dp">14dp</dimen>
+    <dimen name="dim_10_dp">10dp</dimen>
+    <dimen name="dim_7_dp">7dp</dimen>
+    <dimen name="dim_negative_6_dp">-6dp</dimen>
 
 
 </resources>

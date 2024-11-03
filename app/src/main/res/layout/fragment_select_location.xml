@@ -27,140 +27,128 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
-        <LinearLayout
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/fab_select_location"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageView
-                android:id="@+id/fab_select_location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_small"
-                android:onClick="@{() -> viewModel.navigateToLastMarkedLocation()}"
-                android:contentDescription="@string/text_select_current_location"
-                android:padding="@dimen/margin_small"
-                app:srcCompat="@drawable/ic_select_location" />
+            android:layout_margin="@dimen/margin_small"
+            android:contentDescription="@string/text_select_current_location"
+            android:onClick="@{() -> viewModel.navigateToLastMarkedLocation()}"
+            android:padding="@dimen/margin_small"
+            app:layout_constraintBottom_toTopOf="@+id/cardView_location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/ic_select_location" />
 
 
-            <LinearLayout
-                android:id="@+id/linearLayout_current_location"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_btnView"
+            android:layout_marginEnd="@dimen/margin_btnView"
+            android:layout_marginBottom="@dimen/margin_small"
+            app:cardBackgroundColor="@color/colorWhite"
+            app:cardCornerRadius="@dimen/dim_15_dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/button_save">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="27dp"
-                android:visibility="visible">
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/dim_10_dp"
+                android:paddingTop="@dimen/dim_10_dp"
+                android:paddingEnd="@dimen/dim_10_dp"
+                android:paddingBottom="@dimen/dim_7_dp">
 
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_btnView"
-                    android:layout_marginEnd="@dimen/margin_btnView"
-                    app:cardBackgroundColor="@color/colorWhite"
-                    app:cardCornerRadius="@dimen/dim_15_dp"
-                    app:cardElevation="0dp">
+                    android:id="@+id/cardView_location_icon"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@string/text_current_location_icon"
+                    app:cardBackgroundColor="@color/colorGrayF2"
+                    app:cardCornerRadius="@dimen/margin_small"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingStart="10dp"
-                        android:paddingTop="10dp"
-                        android:paddingEnd="10dp"
-                        android:paddingBottom="7dp">
-
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/icon_cardView"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            app:cardBackgroundColor="@color/colorGrayF2"
-                            app:cardCornerRadius="@dimen/margin_small"
-                            app:cardElevation="0dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_gravity="center"
-                                android:contentDescription="@string/text_current_location_icon"
-                                app:srcCompat="@drawable/ic_location"
-                                app:tint="@color/colorAccent" />
-
-
-                        </androidx.cardview.widget.CardView>
-
-
-                        <TextView
-                            android:id="@+id/textView_location_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="10dp"
-                            android:lineSpacingMultiplier="0.7"
-                            android:textColor="@color/colorDark1C"
-                            android:textSize="@dimen/text_normal"
-                            android:theme="@style/regularFont"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/icon_cardView"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="@string/app_name" />
-
-
-                        <ProgressBar
-                            android:id="@+id/progressBar_loading"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:indeterminate="true"
-                            android:indeterminateDrawable="@drawable/custom_animated_progressbar"
-                            android:indeterminateTint="@color/colorAccent"
-                            android:visibility="invisible"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/dim_7_dp"
+                        android:contentDescription="@string/text_current_location_icon"
+                        app:srcCompat="@drawable/ic_location" />
 
 
                 </androidx.cardview.widget.CardView>
 
 
-                <Button
-                    android:id="@+id/button_save"
-                    style="@style/buttonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dim_button_height_new"
-                    android:layout_marginStart="@dimen/margin_btnView"
-                    android:layout_marginTop="@dimen/margin_btnView"
-                    android:layout_marginEnd="@dimen/margin_btnView"
-                    android:backgroundTint="@color/colorAccent"
-                    android:contentDescription="@string/text_save_and_continue"
-                    android:gravity="center"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
-                    android:onClick="@{() -> viewModel.saveLocation()}"
-                    android:text="@string/text_save_and_continue"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorWhite"
+                <TextView
+                    android:id="@+id/textView_location_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dim_10_dp"
+                    android:layout_marginTop="@dimen/dim_negative_6_dp"
+                    android:lineSpacingMultiplier="0.7"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/colorDark1C"
                     android:textSize="@dimen/text_normal"
-                    app:cornerRadius="@dimen/dim_14_dp"
-                    app:strokeColor="@color/colorAccent"
-                    app:strokeWidth="0dp" />
+                    android:theme="@style/regularFont"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/cardView_location_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Long Location Name..........................................................." />
 
 
-            </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progressBar_loading"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:indeterminate="true"
+                    android:indeterminateDrawable="@drawable/custom_animated_progressbar"
+                    android:indeterminateTint="@color/colorAccent"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+
+        <Button
+            android:id="@+id/button_save"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dim_button_height_new"
+            android:layout_marginStart="@dimen/margin_btnView"
+            android:layout_marginTop="@dimen/margin_btnView"
+            android:layout_marginEnd="@dimen/margin_btnView"
+            android:layout_marginBottom="@dimen/margin_top_view"
+            android:backgroundTint="@color/colorAccent"
+            android:gravity="center"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:onClick="@{() -> viewModel.saveLocation()}"
+            android:text="@string/text_save_and_continue"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/text_normal"
+            app:cornerRadius="@dimen/dim_14_dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:strokeColor="@color/colorAccent"
+            app:strokeWidth="0dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

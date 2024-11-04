@@ -28,6 +28,8 @@
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:onTextChanged="@{(text, start, before, count) -> viewModel.onTitleTextChanged(text,start,before,count)}"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -42,6 +44,8 @@
                 android:inputType="textMultiLine"
                 android:lines="10"
                 android:onTextChanged="@{(text, start, before, count) -> viewModel.onDescriptionTextChanged(text,start,before,count)}"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminderTitle" />
@@ -53,12 +57,17 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:contentDescription="@string/reminder_location"
+                android:drawablePadding="@dimen/margin_small"
                 android:focusable="true"
+                android:paddingBottom="@dimen/margin_small"
+                android:paddingTop="@dimen/margin_small"
                 android:gravity="center_vertical"
                 android:onClick="@{() -> viewModel.selectLocationClick()}"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
                 android:text="@string/reminder_location"
                 android:textColor="@color/colorBlack"
-                app:drawableStartCompat="@drawable/ic_location"
+                app:drawableStartCompat="@drawable/ic_location_v02"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reminderDescription" />
 
@@ -66,13 +75,16 @@
                 android:id="@+id/selectedLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/margin_normal"
-                android:layout_marginRight="@dimen/margin_normal"
+                android:paddingEnd="@dimen/margin_btnView"
+                android:paddingStart="@dimen/margin_btnView"
+                app:layout_constraintHorizontal_bias="0.0"
+                android:textAlignment="viewStart"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectLocation"
                 app:locationTitle="@{viewModel.reminderSelectedLocationStr}"
-                tools:text="Location" />
+                tools:text="@string/app_name" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/saveReminder"

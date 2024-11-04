@@ -78,7 +78,6 @@ class ReminderListFragment : BaseFragment() {
         _viewModel.addReminderLiveData.observe(viewLifecycleOwner) {
             if (it) {
                 navigateToAddReminder()
-                _viewModel.setAddReminder(false)
             }
         }
     }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.udacity.project4.data.dto.ReminderDTO
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Data Access Object for the reminders table.
@@ -16,7 +17,7 @@ interface RemindersDao {
      * @return all reminders.
      */
     @Query("SELECT * FROM reminders")
-    suspend fun getReminders(): List<ReminderDTO>
+    fun getReminders(): Flow<List<ReminderDTO>>
 
     /**
      * @param reminderId the id of the reminder

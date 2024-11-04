@@ -10,6 +10,9 @@ import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.SingleLiveEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
@@ -17,8 +20,8 @@ class RemindersListViewModel(
     private val dataSource: ReminderDataSource
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
-    private var _remindersList = MutableLiveData<List<ReminderDataItem>>()
-    val remindersList : LiveData<List<ReminderDataItem>>
+    private var _remindersList = MutableStateFlow<List<ReminderDataItem>>(listOf())
+    val remindersList : StateFlow<List<ReminderDataItem>>
         get() = _remindersList
 
     private var _addReminderLiveData = SingleLiveEvent<Boolean>()
@@ -37,25 +40,25 @@ class RemindersListViewModel(
             showLoading.postValue(false)
             when (result) {
                 is Result.Success<*> -> {
-                    val dataList = ArrayList<ReminderDataItem>()
-                    dataList.addAll((result.data as List<ReminderDTO>).map { reminder ->
-                        //map the reminder data from the DB to the be ready to be displayed on the UI
-                        ReminderDataItem(
-                            reminder.title,
-                            reminder.description,
-                            reminder.location,
-                            reminder.latitude,
-                            reminder.longitude,
-                            reminder.id
-                        )
-                    })
-                    _remindersList.value = (dataList)
+                    result as Result.Success<Flow<List<ReminderDTO>>>
+                    result.data.collect { reminderDTOList ->
+                        val dataList = reminderDTOList.map { reminder ->
+                            // Map each ReminderDTO to ReminderDataItem
+                            ReminderDataItem(
+                                reminder.title,
+                                reminder.description,
+                                reminder.location,
+                                reminder.latitude,
+                                reminder.longitude,
+                                reminder.id
+                            )
+                        }
+                        _remindersList.value = (dataList)
+                    }
                 }
-
                 is Result.Error ->
                     showSnackBar.postValue(result.message)
             }
-
             //check if no data has to be shown
             invalidateShowNoData()
         }
@@ -65,14 +68,10 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersList.value == null || remindersList.value!!.isEmpty()
+        showNoData.value =  remindersList.value.isEmpty()
     }
 
     fun addReminder() {
-        setAddReminder(true)
-    }
-
-    fun setAddReminder(addReminder: Boolean) {
-        _addReminderLiveData.value = addReminder
+        _addReminderLiveData.value = true
     }
 }

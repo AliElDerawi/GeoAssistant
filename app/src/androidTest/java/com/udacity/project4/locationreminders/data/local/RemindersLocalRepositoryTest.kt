@@ -12,6 +12,7 @@ import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -115,7 +116,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
         result as Result.Success
 
         // THEN - The loaded data contains the expected values
-        assertThat(result.data, `is`(emptyList()))
+        assertThat(result.data, `is`(flowOf(emptyList())))
 
     }
 

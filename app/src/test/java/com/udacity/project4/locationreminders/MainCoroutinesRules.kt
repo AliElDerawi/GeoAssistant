@@ -17,7 +17,6 @@ class MainCoroutinesRules (val dispatcher: TestCoroutineDispatcher = TestCorouti
         super.starting(description)
         Dispatchers.setMain(dispatcher)
     }
-
     override fun finished(description: Description?) {
         super.finished(description)
         cleanupTestCoroutines()

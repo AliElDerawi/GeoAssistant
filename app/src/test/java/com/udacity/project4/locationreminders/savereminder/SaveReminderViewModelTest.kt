@@ -18,54 +18,38 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.test.AutoCloseKoinTest
-import kotlin.test.Test
+import org.robolectric.annotation.Config
 
-//@Config(sdk = [29])
+@Config(sdk = [34])
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
-
     //TODO: provide testing to the SaveReminderView and its live data objects
-
     private lateinit var saveReminderViewModel: SaveReminderViewModel
-
     private lateinit var reminderLocalRepository: FakeDataSource
-
-
     private lateinit var appContext: Application
-
-
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
-
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutinesRules()
 
-
     @Before
     fun setupViewModel() {
-
         //Get our real repository
         reminderLocalRepository = FakeDataSource()
-
         //clear the data to start fresh
-
         saveReminderViewModel =
             SaveReminderViewModel(ApplicationProvider.getApplicationContext(), reminderLocalRepository)
-
     }
 
     @Test
     fun saveNewReminder_checkReminderValue() = mainCoroutineRule.runBlockingTest  {
-
-//        mainCoroutineRule.pauseDispatcher()
-
         val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0)
-
         saveReminderViewModel.saveReminder(
             ReminderDataItem(
                 reminder.title,
@@ -75,15 +59,9 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
                 reminder.longitude
             )
         )
-
         val value = saveReminderViewModel.createGeofence.getOrAwaitValue()
-
         assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
-
         assertThat(value!!.title, `is`(reminder.title))
-
-
     }
-
 
 }

@@ -12,7 +12,7 @@ firebaseUiAuthVersion = "8.0.2"
 fragmentTestingVersion = "1.8.5"
 kotlinVersion = '2.0.21'
 glideVersion = '4.15.1'
-koinVersion = '3.4.0'
+koinVersion = '4.0.0'
 coreVersion = '1.15.0'
 appCompatVersion = '1.7.0'
 constraintLayoutVersion = '2.2.0'
@@ -23,7 +23,7 @@ navigationVersion = '2.8.3'
 playServicesAuthVersion = "20.7.0"
 playServicesLocationVersion = "21.3.0"
 playServicesMapsVersion = "19.0.0"
-robolectricVersion = "4.12.1"
+robolectricVersion = "4.13"
 roomVersion = "2.6.1"
 safeArgsVersion = '2.8.3'
 recyclerViewVersion = '1.3.2'
@@ -40,7 +40,7 @@ dataStoreVersion = '1.1.1'
 splashScreenVersion = '1.0.1'
 ksp = '2.0.21-1.0.25'
 googleServicesVersion = "4.4.2"
-truthVersion = "1.1.3"
+truthVersion = "1.6.0"
 gradlePluginSecretVersion = '2.0.1'
 
 [libraries]
@@ -99,7 +99,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoVersion" }
 dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStoreVersion" }
 splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreenVersion" }
-truth = { module = "com.google.truth:truth", version.ref = "truthVersion" }
+truth = { module = "androidx.test.ext:truth", version.ref = "truthVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 
 [plugins]

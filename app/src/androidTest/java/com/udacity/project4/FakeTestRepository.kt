@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
 class FakeTestRepository : ReminderDataSource {
@@ -12,7 +14,7 @@ class FakeTestRepository : ReminderDataSource {
 
     private var shouldReturnError = false
 
-    private val observableTasks = MutableLiveData<Result<List<ReminderDTO>>>()
+    private val observableTasks = MutableLiveData<Result<Flow<List<ReminderDTO>>>>()
 
 
     fun setReturnError(value: Boolean) {
@@ -20,12 +22,12 @@ class FakeTestRepository : ReminderDataSource {
     }
 
 
-    override suspend fun getReminders(): Result<List<ReminderDTO>> {
+    override fun getReminders(): Result<Flow<List<ReminderDTO>>> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
 
-        return Result.Success(reminders.values.toList())
+        return Result.Success(flowOf(reminders.values.toList()))
 
     }
 

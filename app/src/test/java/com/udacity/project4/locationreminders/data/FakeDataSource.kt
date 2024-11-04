@@ -3,6 +3,8 @@ package com.udacity.project4.locationreminders.data
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
 //Use FakeDataSource that acts as a test double to the LocalDataSource
@@ -17,14 +19,12 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         shouldReturnError = value
     }
 
-
-    override suspend fun getReminders(): Result<List<ReminderDTO>> {
+    override  fun getReminders(): Result<Flow<List<ReminderDTO>>> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
-        return Result.Success(ArrayList(reminders))
+        return Result.Success(flowOf(ArrayList(reminders)))
     }
-
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
         reminders.add(reminder)
@@ -52,6 +52,5 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         }
         runBlocking { getReminders() }
     }
-
 
 }

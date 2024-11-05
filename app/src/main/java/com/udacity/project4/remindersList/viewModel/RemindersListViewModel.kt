@@ -21,12 +21,16 @@ class RemindersListViewModel(
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     private var _remindersList = MutableStateFlow<List<ReminderDataItem>>(listOf())
-    val remindersList : StateFlow<List<ReminderDataItem>>
+    val remindersList: StateFlow<List<ReminderDataItem>>
         get() = _remindersList
 
     private var _addReminderLiveData = SingleLiveEvent<Boolean>()
     val addReminderLiveData: LiveData<Boolean>
         get() = _addReminderLiveData
+
+    init {
+        loadReminders()
+    }
 
     /**
      * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,
@@ -63,12 +67,11 @@ class RemindersListViewModel(
             invalidateShowNoData()
         }
     }
-
     /**
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value =  remindersList.value.isEmpty()
+        showNoData.value = remindersList.value.isEmpty()
     }
 
     fun addReminder() {

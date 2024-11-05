@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
@@ -66,12 +67,14 @@ class ReminderListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        initListener()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Load the reminders list on the ui
-        _viewModel.loadReminders()
+    @VisibleForTesting
+    fun initListener() {
+        mBinding.addReminderFAB.setOnClickListener {
+            navigateToAddReminder()
+        }
     }
 
     private fun initViewModelObservers() {
@@ -84,9 +87,9 @@ class ReminderListFragment : BaseFragment() {
 
     private fun navigateToAddReminder() {
         // Use the navigationCommand live data to navigate between the fragments
-        mSharedViewModel.navigationCommand.value =
-            NavigationCommand.To(ReminderListFragmentDirections.toSaveReminder())
-
+        mSharedViewModel.navigationCommand.value = NavigationCommand.To(
+            ReminderListFragmentDirections.toSaveReminder()
+        )
     }
 
     private fun setupRecyclerView() {

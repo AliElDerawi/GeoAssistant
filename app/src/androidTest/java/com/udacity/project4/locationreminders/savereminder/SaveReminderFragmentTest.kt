@@ -48,7 +48,9 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 import org.mockito.Mockito.mock
+import org.robolectric.annotation.Config
 
+@Config(sdk = [34])
 @TargetApi(29)
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -61,18 +63,13 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
 //    TODO: add testing for the error messages.
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
-
     private lateinit var saveReminderViewModel: SaveReminderViewModel
-
     private lateinit var reminderFakeRepository: FakeTestRepository
-
     private lateinit var appContext: Application
-
 
     @get:Rule
     val activityRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java)
-
 
     @Before
     fun registerIdlingResource() {
@@ -89,67 +86,38 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-
     @Before
     fun setupViewModel() {
-
         //Get our real repository
     }
-
 
     @Before
     fun init() {
         stopKoin()//stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
         val myModule = module {
-            viewModel {
-                RemindersListViewModel(
-                    appContext,
-                    get() as FakeTestRepository
-                )
-            }
-
-            viewModel {
-                AuthenticationViewModel(get())
-            }
-
-
-            single {
-                SaveReminderViewModel(
-                    appContext,
-                    get() as FakeTestRepository
-                )
-            }
-
-            single {
-                MainViewModel(get())
-            }
+            viewModel { RemindersListViewModel(appContext, get() as FakeTestRepository) }
+            viewModel { AuthenticationViewModel(get()) }
+            single { SaveReminderViewModel(appContext, get() as FakeTestRepository) }
+            single { MainViewModel(get()) }
             single { RemindersLocalRepository(get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
-
         }
         //declare a new koin module
         startKoin {
             modules(listOf(myModule))
             androidContext(appContext)
-
-
         }
         //Get our real repository
         reminderFakeRepository = get()
-
-        //clear the data to start fresh
-
         //clear the data to start fresh
         saveReminderViewModel = get()
     }
 
     @Test
     fun saveReminder_checkAddLocationValidationToast() = runTest {
-
-
         // GIVEN - On the home screen
         val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
         dataBindingIdlingResource.monitorFragment(scenario)
@@ -157,9 +125,6 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
-
-        val activity = getActivity(appContext)
-
         saveReminderViewModel.validateAndSaveReminder(
             ReminderDataItem(
                 "",
@@ -169,17 +134,6 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
                 1.0
             )
         )
-
-
-//        onView(withText(appContext.getString(R.string.err_enter_title))).inRoot(
-//            withDecorView(
-//                not(
-//                    activity.window?.decorView
-//                )
-//            )
-//        )
-//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
         onView(withText(R.string.err_enter_title)).inRoot(
             withDecorView(
                 not(
@@ -187,12 +141,6 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
                 )
             )
         ).check(ViewAssertions.matches(isDisplayed()))
-
-        // WHEN - Click on the first list item
-
         scenario.close()
-
     }
-
-
 }

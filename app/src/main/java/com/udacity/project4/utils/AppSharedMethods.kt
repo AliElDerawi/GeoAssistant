@@ -75,6 +75,10 @@ object AppSharedMethods {
             .getSharedPreferences(AppSharedData.MY_PREF, Context.MODE_PRIVATE)
     }
 
+    fun setLoginStatus(isLogin: Boolean) {
+        getSharedPreference().edit().putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin).apply()
+    }
+
     fun <T> MutableLiveData<T>.notifyObserver() {
         this.value = this.value
     }

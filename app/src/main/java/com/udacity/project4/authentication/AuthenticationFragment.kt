@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import com.firebase.ui.auth.AuthUI
@@ -19,8 +18,7 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentAuthenticationBinding
 import com.udacity.project4.main.viewModel.MainViewModel
-import com.udacity.project4.utils.AppSharedData
-import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
+import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -110,10 +108,7 @@ class AuthenticationFragment : BaseFragment() {
             Timber.d("onSignInResult: " + user!!.email)
             _viewModel.setCompleteLogin(false)
 
-            getSharedPreference().edit {
-                putBoolean(AppSharedData.PREF_IS_LOGIN, true)
-            }
-
+            setLoginStatus(true)
 
             val directions =
                 AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()

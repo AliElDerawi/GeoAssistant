@@ -8,12 +8,14 @@ import androidx.test.filters.SmallTest;
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.getOrAwaitValue
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi;
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -22,7 +24,9 @@ import org.junit.After
 import org.junit.Test
 import org.koin.core.context.stopKoin
 import org.koin.test.AutoCloseKoinTest
+import org.robolectric.annotation.Config
 
+@Config(sdk = [34])
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 //Unit test the DAO
@@ -31,7 +35,6 @@ class RemindersDaoTest : AutoCloseKoinTest() {
 
     //    TODO: Add testing implementation to the RemindersDao.kt
     private lateinit var database: RemindersDatabase
-
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -39,21 +42,17 @@ class RemindersDaoTest : AutoCloseKoinTest() {
     @Before
     fun init() {
         stopKoin()//stop the original app koin
-
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(), RemindersDatabase::class.java
         ).build()
-
     }
 
     @After
     fun closeDb() = database.close()
 
-
     @Test
     fun insertReminderAndGetById() = runTest {
         // GIVEN - insert a reminder
-
         val reminderDataItem = ReminderDataItem("title2", "description2", "location2", 1.0, 1.0)
         database.reminderDao().saveReminder(
             ReminderDTO(
@@ -65,10 +64,8 @@ class RemindersDaoTest : AutoCloseKoinTest() {
                 reminderDataItem.id
             )
         )
-
         // WHEN - Get the reminder by id from the database
         val loaded = database.reminderDao().getReminderById(reminderDataItem.id)
-
         // THEN - The loaded data contains the expected values
         assertThat<ReminderDTO>(loaded as ReminderDTO, notNullValue())
         assertThat(loaded.id, `is`(reminderDataItem.id))
@@ -78,18 +75,15 @@ class RemindersDaoTest : AutoCloseKoinTest() {
 
     @Test
     fun getAllReminders() = runTest {
-
         // WHEN - Get all reminders from the new database
         val loaded = database.reminderDao().getReminders()
-
         // THEN - The loaded data contains the expected values
-        assertThat<List<ReminderDTO>>(loaded, `is`(listOf()))
+        assertThat<List<ReminderDTO>>(loaded.getOrAwaitValue(), `is`(listOf()))
     }
 
     @Test
     fun insertReminderAndClearDatabase() = runTest {
         // GIVEN - insert a reminder
-
         val reminderDataItem = ReminderDataItem("title2", "description2", "location2", 1.0, 1.0)
         database.reminderDao().saveReminder(
             ReminderDTO(
@@ -101,16 +95,11 @@ class RemindersDaoTest : AutoCloseKoinTest() {
                 reminderDataItem.id
             )
         )
-
         // WHEN - Delete all reminders from the database
         database.reminderDao().deleteAllReminders()
-
         val loaded = database.reminderDao().getReminders()
-
         // THEN - The loaded data contains the expected values
-        assertThat<List<ReminderDTO>>(loaded, `is`(listOf()))
-
+        assertThat<List<ReminderDTO>>(loaded.getOrAwaitValue(), `is`(listOf()))
     }
-
 
 }

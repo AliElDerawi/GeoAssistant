@@ -1,5 +1,7 @@
 package com.udacity.project4.data.local
 
+import com.udacity.project4.R
+import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
@@ -54,21 +56,19 @@ class RemindersLocalRepository(
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<ReminderDTO> =
-        withContext(ioDispatcher) {
-            wrapEspressoIdlingResource {
-                try {
-                    val reminder = remindersDao.getReminderById(id)
-                    if (reminder != null) {
-                        return@withContext Result.Success(reminder)
-                    } else {
-                        return@withContext Result.Error("Reminder not found!")
-                    }
-                } catch (e: Exception) {
-                    return@withContext Result.Error(e.localizedMessage)
+    override fun getReminder(id: String): Result<Flow<ReminderDTO?>> {
+        wrapEspressoIdlingResource {
+            return try {
+                val reminder = remindersDao.getReminderById(id)
+                reminder?.let {
+                    return@let Result.Success(it)
                 }
+                Result.Error(MyApp.getInstance().getString(R.string.text_error_reminder_not_found))
+            } catch (ex: Exception) {
+                Result.Error(ex.localizedMessage)
             }
         }
+    }
 
     /**
      * Deletes all the reminders in the db

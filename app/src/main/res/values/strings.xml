@@ -90,6 +90,7 @@
     <string name="text_geofence_detail">Geofence Detail</string>
     <string name="text_add_reminder">Add Reminder</string>
     <string name="text_select_location">Select Location</string>
+    <string name="text_error_reminder_not_found">Reminder not found!</string>
 
 
 </resources>

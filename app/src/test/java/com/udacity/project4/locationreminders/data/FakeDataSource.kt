@@ -19,7 +19,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         shouldReturnError = value
     }
 
-    override  fun getReminders(): Result<Flow<List<ReminderDTO>>> {
+    override fun getReminders(): Result<Flow<List<ReminderDTO>>> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
@@ -30,13 +30,13 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         reminders.add(reminder)
     }
 
-    override suspend fun getReminder(id: String): Result<ReminderDTO> {
+    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO>> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
         val reminder = reminders.find { it.id == id }
         return if (reminder != null) {
-            Result.Success(reminder)
+            Result.Success(flowOf(reminder))
         } else {
             Result.Error("Reminder not found!")
         }

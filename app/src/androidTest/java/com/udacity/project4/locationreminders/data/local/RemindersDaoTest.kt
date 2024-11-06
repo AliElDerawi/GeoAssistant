@@ -65,7 +65,7 @@ class RemindersDaoTest : AutoCloseKoinTest() {
             )
         )
         // WHEN - Get the reminder by id from the database
-        val loaded = database.reminderDao().getReminderById(reminderDataItem.id)
+        val loaded = database.reminderDao().getReminderById(reminderDataItem.id).getOrAwaitValue()
         // THEN - The loaded data contains the expected values
         assertThat<ReminderDTO>(loaded as ReminderDTO, notNullValue())
         assertThat(loaded.id, `is`(reminderDataItem.id))

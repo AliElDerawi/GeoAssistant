@@ -71,7 +71,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         mSharedViewModel.setHideToolbar(false)
         mBinding.viewModel = _viewModel
         mBinding.lifecycleOwner = viewLifecycleOwner
-        setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(true)
         setTitle(getString(R.string.text_select_location))
 

@@ -7,8 +7,11 @@ import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
@@ -56,7 +59,6 @@ class ReminderListFragment : BaseFragment() {
         mBinding.viewModel = _viewModel
         mSharedViewModel.setHideToolbar(false)
         mSaveReminderViewModel.onClear()
-        setHasOptionsMenu(true)
         setDisplayHomeAsUpEnabled(false)
         setTitle(mActivity.getString(R.string.app_name))
         initViewModelObservers()
@@ -66,6 +68,7 @@ class ReminderListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initMenu()
         setupRecyclerView()
         initListener()
     }
@@ -105,31 +108,38 @@ class ReminderListFragment : BaseFragment() {
         mBinding.reminderssRecyclerView.setup(adapter)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.logout -> {
-                AuthUI.getInstance()
-                    .signOut(mActivity)
-                    .addOnCompleteListener {
+    private fun initMenu() {
 
-                        AppSharedMethods.getSharedPreference().edit {
-                            putBoolean(AppSharedData.PREF_IS_LOGIN, false)
-                        }
-                        _viewModel.navigationCommand.value =
-                            NavigationCommand.To(ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment())
-                    }
-                return true
+        val menuHost: MenuHost = mActivity
+
+        // Add menu items without using the Fragment Menu APIs
+        // Note how we can tie the MenuProvider to the viewLifecycleOwner
+        // and an optional Lifecycle.State (here, RESUMED) to indicate when
+        // the menu should be visible
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu)
             }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        // Display logout as menu item
-        inflater.inflate(R.menu.main_menu, menu)
-    }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // TODO Comment : We can use NavigationUI.onNavDestinationSelected() to handle the navigation
+                if (menuItem.itemId == R.id.logout) {
+                    AuthUI.getInstance()
+                        .signOut(mActivity)
+                        .addOnCompleteListener {
+                            AppSharedMethods.getSharedPreference().edit {
+                                putBoolean(AppSharedData.PREF_IS_LOGIN, false)
+                            }
+                            _viewModel.navigationCommand.value = NavigationCommand.To(
+                                ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
+                            )
+                        }
+                }
+                return true
 
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {

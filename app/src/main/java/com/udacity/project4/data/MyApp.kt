@@ -20,14 +20,14 @@ class MyApp : MultiDexApplication() {
         @Volatile
         private var mAppInstance: MyApp? = null
 
-        fun getInstance(): MyApp? {
+        fun getInstance(): MyApp {
             if (mAppInstance == null) {
                 synchronized(MyApp::class.java) {
                     if (mAppInstance == null)
                         mAppInstance = MyApp()
                 }
             }
-            return mAppInstance
+            return mAppInstance!!
         }
 
     }
@@ -51,7 +51,6 @@ class MyApp : MultiDexApplication() {
             single { MainViewModel(get()) }
             single<ReminderDataSource> { get<RemindersLocalRepository>() }
             single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
-
         }
 
         startKoin {

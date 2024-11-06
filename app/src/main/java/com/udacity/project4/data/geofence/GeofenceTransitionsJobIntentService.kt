@@ -75,9 +75,12 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 //        Interaction to the repository has to be through a coroutine scope
         CoroutineScope(coroutineContext).launch(SupervisorJob()) {
             //get the reminder with the request id
+            Timber.d("sendNotification:called")
             val resultFlow = remindersLocalRepository.getReminder(fenceId)
             if (resultFlow is Result.Success<Flow<ReminderDTO?>>) {
+                Timber.d("sendNotification:success")
                 resultFlow.data.first()?.let { reminder ->
+                    Timber.d("sendNotification:success:reminder: $reminder")
                     sendNotificationAboutEnteredGeofence(
                         this@GeofenceTransitionsJobIntentService, ReminderDataItem(
                             reminder.title, reminder.description,

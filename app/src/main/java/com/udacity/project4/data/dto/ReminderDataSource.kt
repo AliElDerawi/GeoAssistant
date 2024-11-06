@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface ReminderDataSource {
     fun getReminders(): Result<Flow<List<ReminderDTO>>>
     suspend fun saveReminder(reminder: ReminderDTO)
-    fun getReminder(id: String): Result<Flow<ReminderDTO?>>
+    suspend fun getReminder(id: String): Result<Flow<ReminderDTO?>>
     suspend fun deleteAllReminders()
 }

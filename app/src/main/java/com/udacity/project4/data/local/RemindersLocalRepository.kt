@@ -9,6 +9,7 @@ import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 /**
@@ -28,8 +29,8 @@ class RemindersLocalRepository(
      * @return Result the holds a Success with all the reminders or an Error object with the error message
      */
     override fun getReminders(): Result<Flow<List<ReminderDTO>>> {
-        wrapEspressoIdlingResource {
-            return try {
+        return wrapEspressoIdlingResource {
+            try {
                 val reminders = remindersDao.getReminders()
                 Result.Success(reminders)
             } catch (ex: Exception) {
@@ -37,7 +38,6 @@ class RemindersLocalRepository(
             }
         }
     }
-
 
     /**
      * Insert a reminder in the db.
@@ -50,22 +50,26 @@ class RemindersLocalRepository(
             }
         }
 
-
     /**
      * Get a reminder by its id
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override fun getReminder(id: String): Result<Flow<ReminderDTO?>> {
-        wrapEspressoIdlingResource {
-            return try {
-                val reminder = remindersDao.getReminderById(id)
-                reminder?.let {
-                    return@let Result.Success(it)
+    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO?>> {
+        return wrapEspressoIdlingResource {
+            withContext(ioDispatcher) {
+                try {
+                    val reminder = remindersDao.getReminderById(id)
+                    if (reminder.first() != null) {
+                        Result.Success(reminder)
+                    } else {
+                        Result.Error(
+                            MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
+                        )
+                    }
+                } catch (ex: Exception) {
+                    Result.Error(ex.localizedMessage)
                 }
-                Result.Error(MyApp.getInstance().getString(R.string.text_error_reminder_not_found))
-            } catch (ex: Exception) {
-                Result.Error(ex.localizedMessage)
             }
         }
     }

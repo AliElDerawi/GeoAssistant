@@ -13,25 +13,37 @@ import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.NotificationUtils
 import com.udacity.project4.utils.SingleLiveEvent
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Thread.State
 
 class SaveReminderViewModel(
-    val app: Application,
-    val remindersLocalRepository: ReminderDataSource
-) :
-    BaseViewModel(app) {
-    private var _reminderTitle = MutableLiveData<String?>()
-    val reminderTitle: LiveData<String?>
+    val app: Application, val remindersLocalRepository: ReminderDataSource
+) : BaseViewModel(app) {
+    private var _reminderTitle = MutableStateFlow<String?>("")
+    val reminderTitle: StateFlow<String?>
         get() = _reminderTitle
 
-    private var _reminderDescription = MutableLiveData<String?>()
-    val reminderDescription: LiveData<String?>
+    private var _reminderDescription = MutableStateFlow<String?>("")
+    val reminderDescription: StateFlow<String?>
         get() = _reminderDescription
 
-    private var _reminderSelectedLocationStr = MutableLiveData<String?>()
-    val reminderSelectedLocationStr: LiveData<String?>
+    private var _reminderSelectedLocationStr = MutableStateFlow<String?>("")
+    val reminderSelectedLocationStr: StateFlow<String?>
         get() = _reminderSelectedLocationStr
+
+
+    val isCreateReminderEnabled: StateFlow<Boolean> = combine(
+        _reminderTitle, _reminderDescription, _reminderSelectedLocationStr
+    ) { title, description, location ->
+        !title.isNullOrEmpty() && !description.isNullOrEmpty() && !location.isNullOrEmpty()
+    }.stateIn(viewModelScope, SharingStarted.Lazily, false)
+
 
     private var _selectedPOI = MutableLiveData<PointOfInterest?>()
     val selectedPOI: LiveData<PointOfInterest?>
@@ -89,16 +101,14 @@ class SaveReminderViewModel(
     /**
      * Validate the entered data then saves the reminder data to the DataSource
      */
-    fun validateAndSaveReminder(reminderData: ReminderDataItem) {
-        if (validateEnteredData(reminderData)) {
-            saveReminder(reminderData)
-        }
-    }
 
     fun onSaveReminderClick() {
-
-        _saveReminder.value = true
-
+        when {
+            _reminderTitle.value.isNullOrEmpty() -> showToastInt.value = R.string.err_enter_title
+            _reminderDescription.value.isNullOrEmpty() -> showToastInt.value = R.string.text_msg_please_enter_description
+            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.value = R.string.err_select_location
+            else -> _saveReminder.value = true
+        }
     }
 
     fun setSelectedPOI(pointOfInterest: PointOfInterest) {
@@ -121,7 +131,7 @@ class SaveReminderViewModel(
 
         val reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
 
-        validateAndSaveReminder(reminderDataItem)
+        saveReminder(reminderDataItem)
 
     }
 
@@ -151,23 +161,6 @@ class SaveReminderViewModel(
     /**
      * Validate the entered data and show error to the user if there's any invalid data
      */
-    private fun validateEnteredData(reminderData: ReminderDataItem): Boolean {
-        if (reminderData.title.isNullOrEmpty()) {
-            showToast.postValue(app.getString(R.string.err_enter_title))
-            return false
-        }
-
-        if (reminderData.description.isNullOrEmpty()) {
-            showToast.postValue(app.getString(R.string.text_msg_please_enter_description))
-            return false
-        }
-
-        if (reminderData.location.isNullOrEmpty()) {
-            showToast.postValue(app.getString(R.string.err_select_location))
-            return false
-        }
-        return true
-    }
 
     fun navigateToLastMarkedLocation() {
         _moveMap.value = true
@@ -206,16 +199,8 @@ class SaveReminderViewModel(
         _completeSaveReminder.value = false
     }
 
-    fun setSaveReminder(isSaveReminder: Boolean) {
-        _saveReminder.value = isSaveReminder
-        _completeSaveReminder.value = isSaveReminder
-    }
-
     fun selectLocationClick() {
         _selectLocation.value = true
     }
 
-    fun onNavigateToSelectLocation() {
-        _selectLocation.value = false
-    }
 }

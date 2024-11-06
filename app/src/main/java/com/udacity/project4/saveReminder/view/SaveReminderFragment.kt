@@ -14,6 +14,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
@@ -33,7 +36,9 @@ import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.udacity.project4.utils.setStatusStyle
 import com.udacity.project4.utils.setTitle
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -174,6 +179,14 @@ class SaveReminderFragment : BaseFragment() {
                 if (it) {
                     _viewModel.navigationCommand.value =
                         NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
+                }
+            }
+
+            lifecycleScope.launch {
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    isCreateReminderEnabled.collect { isEnabled ->
+                        mBinding.saveReminder.setStatusStyle(isEnabled)
+                    }
                 }
             }
         }

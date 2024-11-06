@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
@@ -24,6 +25,8 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
 import java.text.DecimalFormat
@@ -236,6 +239,26 @@ inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<Strin
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     return intent
 }
+
+fun Context.getCompatColorStateList(color: Int): ColorStateList {
+    return ColorStateList.valueOf(
+        ResourcesCompat.getColor(
+            resources, color, null
+        )
+    )
+}
+
+fun FloatingActionButton.setStatusStyle(isEnabled: Boolean) {
+    val backgroundColorStateList = if (isEnabled) {
+        context.getCompatColorStateList(R.color.colorAccent)
+    } else {
+        context.getCompatColorStateList(R.color.colorGrayB2)
+    }
+    apply {
+        backgroundTintList = backgroundColorStateList
+    }
+}
+
 
 val Context.notificationManager: NotificationManager?
     get() = getSystemService<NotificationManager>()

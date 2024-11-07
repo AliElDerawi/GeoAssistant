@@ -140,30 +140,4 @@ class ReminderListFragment : BaseFragment() {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-
-            if (it) {
-                navigateToAddReminder()
-                Timber.d("Permission granted")
-            } else {
-
-                if (showForegroundLocationRequestPermission(mActivity)) {
-                    Timber.d("Permission denied:request again")
-                    requestPermission()
-                    _viewModel.showToast.value =
-                        mActivity.getString(R.string.text_enable_background_location_permission_msg)
-                } else {
-                    Timber.d("Permission denied:can't request again")
-                    _viewModel.showToast.value =
-                        mActivity.getString(R.string.text_msg_cant_access_background_location_services)
-                }
-
-            }
-        }
-
-    private fun requestPermission() {
-        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-    }
 }

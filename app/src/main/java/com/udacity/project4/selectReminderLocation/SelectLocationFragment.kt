@@ -9,6 +9,8 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.common.api.ResolvableApiException
@@ -16,6 +18,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -25,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PointOfInterest
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -86,13 +90,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mSharedViewModel.passOnActivityResult.observe(viewLifecycleOwner) {
-            if (it != null) {
-                Timber.d("passOnActivityResult:called")
-                onActivityResultFragment(it.requestCode, it.resultCode, it.data)
-                mSharedViewModel.completePassOnActivityResult()
-            }
-        }
 
         if (AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
 
@@ -215,7 +212,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         }
 
     private fun requestPermission(permission: String) {
-
         requestPermissionLauncher.launch(permission)
     }
 
@@ -367,36 +363,18 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         mGoogleMap.uiSettings.isMyLocationButtonEnabled = false
     }
 
-
-    fun onActivityResultFragment(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        Timber.d("onActivityResult:called")
-
-        if (isLocationEnabled(mActivity)) {
-            initMap()
-        } else {
-            if (requestCode == Constants.REQUEST_TURN_DEVICE_LOCATION_ON) {
-                checkDeviceLocationSettings(false)
-            }
-        }
-
-    }
-
-
-    private fun checkDeviceLocationSettings(resolve: Boolean = true) {
-
-        val locationRequest = LocationRequest.create().apply {
-            priority = LocationRequest.PRIORITY_LOW_POWER
-        }
+    private fun checkDeviceLocationSettings() {
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY, Constants.MAX_LOCATION_UPDATE_INTERVAL
+        ).setMinUpdateIntervalMillis(Constants.MIN_LOCATION_UPDATE_INTERVAL).build()
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val settingsClient = LocationServices.getSettingsClient(requireContext())
         val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
         locationSettingsResponseTask.addOnFailureListener { exception ->
-            if (exception is ResolvableApiException && resolve) {
+            if (exception is ResolvableApiException) {
                 try {
-                    exception.startResolutionForResult(
-                        mActivity, Constants.REQUEST_TURN_DEVICE_LOCATION_ON
-                    )
+                    val intentSenderRequest = IntentSenderRequest.Builder(exception.resolution).build()
+                    resolutionForResultLauncher.launch(intentSenderRequest)
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Timber.d("Error getting location settings resolution: " + sendEx.message)
                 }
@@ -409,8 +387,20 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 initMap()
             }
         }
-
     }
+
+    private val resolutionForResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // Location settings are satisfied; handle accordingly
+                initMap()
+            } else {
+                // Location settings were not satisfied; handle accordingly
+                initMap()
+            }
+        }
 
     private fun updateLocation() {
         if (mSelectedLocation != null) {
@@ -430,7 +420,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
         Timber.d("onReceiveResult:called")
 
-
         if (resultData == null) {
             mBinding.progressBarLoading.setVisibility(View.INVISIBLE)
             mBinding.textViewLocationName.setVisibility(View.VISIBLE)
@@ -446,11 +435,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 mBinding.textViewLocationName.setText(mAddressOutput)
 
                 if (_viewModel.selectedPOI.value != null && _viewModel.selectedPOI.value!!.name.isEmpty()) {
-                    _viewModel.setSelectedPOI(PointOfInterest(
-                        _viewModel.selectedPOI.value!!.latLng,
-                        _viewModel.selectedPOI.value!!.placeId,
-                        mAddressOutput.toString()
-                    ))
+                    _viewModel.setSelectedPOI(
+                        PointOfInterest(
+                            _viewModel.selectedPOI.value!!.latLng,
+                            _viewModel.selectedPOI.value!!.placeId,
+                            mAddressOutput.toString()
+                        )
+                    )
                 }
             }
 
@@ -474,11 +465,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
     override fun onDestroy() {
         super.onDestroy()
-
-        if (mResultReceiver != null) mResultReceiver!!.setReceiver(null)
-
+        mResultReceiver?.setReceiver(null)
     }
-
 
     private fun setMapStyle(map: GoogleMap) {
         try {
@@ -489,7 +477,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                     mActivity, R.raw.map_style
                 )
             )
-
             if (!success) {
                 Timber.e("Style parsing failed.")
             }
@@ -497,6 +484,5 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             Timber.e("Can't find style. Error: ", e)
         }
     }
-
 
 }

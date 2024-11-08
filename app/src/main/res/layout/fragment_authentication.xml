@@ -4,11 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <data>
 
         <variable
-            name="authenticationViewModel"
+            name="viewModel"
             type="com.udacity.project4.authentication.AuthenticationViewModel" />
 
     </data>
@@ -33,8 +32,8 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="@dimen/margin_left_right"
                 app:cardBackgroundColor="@color/colorWhite"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="4dp"
+                app:cardCornerRadius="@dimen/dim_30_dp"
+                app:cardElevation="@dimen/dim_4_dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -59,10 +58,10 @@
                 android:layout_marginTop="@dimen/margin_btnView"
                 android:contentDescription="@string/text_sign_in_now"
                 android:gravity="center"
+                style="@style/TitleStyle"
                 android:paddingStart="@dimen/margin_btnView"
                 android:paddingEnd="@dimen/margin_btnView"
                 android:text="@string/text_sign_in_now"
-                android:theme="@style/TitleStyle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/logo_cardView" />
@@ -79,7 +78,7 @@
                 android:paddingEnd="@dimen/margin_btnView"
                 android:text="@string/text_one_step_right_service"
                 android:textColor="@color/colorBlack63"
-                android:theme="@style/BodyStyle"
+                style="@style/BodyStyle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_textView" />
@@ -95,9 +94,7 @@
                 android:layout_marginEnd="@dimen/margin_btnView"
                 android:backgroundTint="@color/colorAccent"
                 android:elevation="0dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:onClick="@{() -> authenticationViewModel.login()}"
+                android:onClick="@{() -> viewModel.loginClick()}"
                 android:text="@string/text_login"
                 app:cornerRadius="@dimen/dim_button_corner"
                 app:layout_constraintBottom_toBottomOf="parent"

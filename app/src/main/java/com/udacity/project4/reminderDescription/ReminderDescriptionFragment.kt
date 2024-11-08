@@ -19,7 +19,7 @@ import org.koin.android.ext.android.inject
  */
 class ReminderDescriptionFragment : BaseFragment() {
 
-    override val _viewModel: MainViewModel by inject()
+    override val mViewModel: MainViewModel by inject()
     private lateinit var mBinding: FragmentReminderDescriptionBinding
     private lateinit var mActivity: FragmentActivity
 
@@ -35,15 +35,10 @@ class ReminderDescriptionFragment : BaseFragment() {
         // Receive the reminder object after the user clicks on the notification
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Add the implementation of the reminder details
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+        // TODO: Add the implementation of the reminder details
         mBinding = FragmentReminderDescriptionBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             reminderDataItem = arguments?.let {

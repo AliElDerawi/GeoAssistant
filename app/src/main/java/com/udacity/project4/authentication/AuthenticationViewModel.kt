@@ -13,14 +13,7 @@ class AuthenticationViewModel(app: Application) : BaseViewModel(app) {
     val completeLoginLiveData: LiveData<Boolean>
         get() = _completeLoginLiveData
 
-
-    fun setCompleteLogin(completeLogin: Boolean) {
-        _completeLoginLiveData.value = completeLogin
-    }
-
-    fun login() {
-
+    fun loginClick() {
         _completeLoginLiveData.value = true
-
     }
 }

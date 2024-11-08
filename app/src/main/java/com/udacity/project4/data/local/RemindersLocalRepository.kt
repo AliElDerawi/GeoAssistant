@@ -1,16 +1,28 @@
 package com.udacity.project4.data.local
 
+import android.location.Location
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.utils.AppSharedMethods.getLocationNameReceiver
+import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
+import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
+import com.udacity.project4.utils.Constants
+import com.udacity.project4.utils.moveCameraToLocation
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * Concrete implementation of a data source as a db.
@@ -21,7 +33,8 @@ import kotlinx.coroutines.withContext
  */
 class RemindersLocalRepository(
     private val remindersDao: RemindersDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : ReminderDataSource {
 
     /**
@@ -60,13 +73,11 @@ class RemindersLocalRepository(
             withContext(ioDispatcher) {
                 try {
                     val reminder = remindersDao.getReminderById(id)
-                    if (reminder.first() != null) {
+                    reminder.first()?.let {
                         Result.Success(reminder)
-                    } else {
-                        Result.Error(
-                            MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
-                        )
-                    }
+                    } ?: Result.Error(
+                        MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
+                    )
                 } catch (ex: Exception) {
                     Result.Error(ex.localizedMessage)
                 }
@@ -81,6 +92,20 @@ class RemindersLocalRepository(
         wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 remindersDao.deleteAllReminders()
+            }
+        }
+    }
+
+    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
+        return wrapEspressoIdlingResource {
+            try {
+                val location = fusedLocationProviderClient.lastLocation.await()
+                Result.Success(flow { emit(location) })
+            } catch (e: SecurityException) {
+                Timber.e(e)
+                Result.Error(e.localizedMessage)
+            } catch (e: Exception) {
+                Result.Error(e.localizedMessage)
             }
         }
     }

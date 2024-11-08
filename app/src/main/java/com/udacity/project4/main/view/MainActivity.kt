@@ -33,51 +33,46 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent.let {
-            if (it.hasExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)) {
-                val bundle = Bundle().apply {
-                    putParcelable(
-                        ReminderDescriptionFragment.EXTRA_ReminderDataItem,
-                        if (AppSharedMethods.isSupportsAndroid33()) {
-                            intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem, ReminderDataItem::class.java)
-                        } else {
-                            @Suppress("DEPRECATION")
-                            intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)
-                        }
-                    )
-                }
-                navController.navigate(R.id.reminderDescriptionFragment, bundle)
+        if (intent.hasExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)) {
+            val reminderDataItem = if (AppSharedMethods.isSupportsAndroid33()) {
+                intent.getParcelableExtra(
+                    ReminderDescriptionFragment.EXTRA_ReminderDataItem,
+                    ReminderDataItem::class.java
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)
             }
+            val bundle = Bundle().apply {
+                putParcelable(ReminderDescriptionFragment.EXTRA_ReminderDataItem, reminderDataItem)
+            }
+            navController.navigate(R.id.reminderDescriptionFragment, bundle)
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO: Implement the create account and sign in using FirebaseUI,
         //  use sign in using email and sign in using Google
-
         // TODO: If the user was authenticated, send him to RemindersActivity
-
         // TODO: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
-
-
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(mBinding.mainToolbar)
-        mBinding.mainToolbar.setTitle(null)
+        mBinding =
+            DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main)
+                .apply {
+                    setSupportActionBar(mainToolbar)
+                    mainToolbar.setTitle(null)
+                }
         navController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         Timber.plant(Timber.DebugTree())
         if (savedInstanceState == null) {
+            val startDestination =
+                if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
             val navGraph = navController.navInflater.inflate(R.navigation.main_navigation).apply {
-                setStartDestination(
-                    if (isLogin()) {
-                        R.id.reminderListFragment
-                    } else {
-                        R.id.authenticationFragment
-                    }
-                )
+                setStartDestination(startDestination)
             }
             navController.graph = navGraph
         }
@@ -86,40 +81,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViewModelObservers() {
         with(mMainViewModel) {
-
             hideToolbar.observe(this@MainActivity) {
                 mBinding.mainToolbar.visibility = if (it) View.GONE else View.VISIBLE
             }
 
-            toolbarTitle.observe(this@MainActivity) {
-                mBinding.textViewToolbarTitle.text = it
-            }
-
             showUpButton.observe(this@MainActivity) {
-                supportActionBar!!.setDisplayHomeAsUpEnabled(it)
-            }
-
-            navigationCommand.observe(this@MainActivity) { command ->
-                when (command) {
-                    is NavigationCommand.To -> navController.navigate(command.directions)
-                    is NavigationCommand.Back -> navController.popBackStack()
-                    is NavigationCommand.BackTo -> navController.popBackStack(
-                        command.destinationId,
-                        false
-                    )
-                }
+                supportActionBar?.setDisplayHomeAsUpEnabled(it)
             }
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Timber.d("onActivityResult:called")
-        mMainViewModel.passOnActivityResult(requestCode, resultCode, data)
     }
 
 }

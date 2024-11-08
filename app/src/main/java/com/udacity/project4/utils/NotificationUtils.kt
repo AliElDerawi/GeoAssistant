@@ -25,24 +25,18 @@ object NotificationUtils {
             val notificationChannel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 context.getString(R.string.channel_name),
-
                 NotificationManager.IMPORTANCE_HIGH
-            )
-                .apply {
-                    setShowBadge(false)
-                }
-
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.description =
-                context.getString(R.string.notification_channel_description)
-
-            val notificationManager = context.getSystemService<NotificationManager>()
-
-
-
-            notificationManager!!.createNotificationChannel(notificationChannel)
+            ).apply {
+                setShowBadge(false)
+                enableLights(true)
+                lightColor = Color.RED
+                enableVibration(true)
+                description =
+                    context.getString(R.string.notification_channel_description)
+            }
+            context.getSystemService<NotificationManager>()?.apply {
+                createNotificationChannel(notificationChannel)
+            }
         }
     }
 
@@ -54,15 +48,12 @@ object NotificationUtils {
             GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
                 R.string.geofence_not_available
             )
-
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
                 R.string.geofence_too_many_geofences
             )
-
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
                 R.string.geofence_too_many_pending_intents
             )
-
             else -> resources.getString(R.string.unknown_geofence_error)
         }
     }
@@ -75,7 +66,7 @@ object NotificationUtils {
         val notificationManager = context.notificationManager
         val intent =
             context.createIntent<MainActivity>(ReminderDescriptionFragment.EXTRA_ReminderDataItem to reminderDataItem)
-        val notificationPendingIntent =  PendingIntent.getActivity(
+        val notificationPendingIntent = PendingIntent.getActivity(
             context, 0, intent, PendingIntent.FLAG_MUTABLE
         )
         val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)

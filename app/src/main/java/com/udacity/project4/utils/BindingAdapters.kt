@@ -32,18 +32,16 @@ object BindingAdapters {
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
     fun setFadeVisible(view: View, visible: Boolean? = true) {
-        if (view.tag == null) {
+        view.tag?.let {
+            view.animate().cancel()
+            if (visible == true && view.visibility == View.GONE) {
+                view.fadeIn()
+            } else if (visible != true && view.visibility == View.VISIBLE) {
+                view.fadeOut()
+            }
+        } ?: run {
             view.tag = true
             view.visibility = if (visible == true) View.VISIBLE else View.GONE
-        } else {
-            view.animate().cancel()
-            if (visible == true) {
-                if (view.visibility == View.GONE)
-                    view.fadeIn()
-            } else {
-                if (view.visibility == View.VISIBLE)
-                    view.fadeOut()
-            }
         }
     }
 

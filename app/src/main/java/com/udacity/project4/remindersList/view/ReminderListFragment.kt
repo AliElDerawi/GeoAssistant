@@ -1,11 +1,8 @@
 package com.udacity.project4.remindersList.view
 
-import android.Manifest
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -23,18 +20,17 @@ import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedData
 import com.udacity.project4.utils.AppSharedMethods
-import com.udacity.project4.utils.AppSharedMethods.showForegroundLocationRequestPermission
+import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class ReminderListFragment : BaseFragment() {
 
     // Use Koin to retrieve the ViewModel instance
-    override val _viewModel: RemindersListViewModel by viewModel()
+    override val mViewModel: RemindersListViewModel by viewModel()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
     private val mSharedViewModel: MainViewModel by inject()
@@ -51,18 +47,15 @@ class ReminderListFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_reminders, container, false
-        )
-        mBinding.lifecycleOwner = this
-        mBinding.viewModel = _viewModel
+        mBinding = FragmentRemindersBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = mViewModel
+        }
         mSharedViewModel.setHideToolbar(false)
         mSaveReminderViewModel.onClear()
         setDisplayHomeAsUpEnabled(false)
         setTitle(mActivity.getString(R.string.app_name))
         initViewModelObservers()
-        mBinding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
         return mBinding.root
     }
 
@@ -73,15 +66,21 @@ class ReminderListFragment : BaseFragment() {
         initListener()
     }
 
-    @VisibleForTesting
-    fun initListener() {
-        mBinding.addReminderFAB.setOnClickListener {
-            navigateToAddReminder()
+    private fun initListener() {
+        with(mBinding) {
+            addReminderFAB.setOnClickListener {
+                navigateToAddReminder()
+            }
+
+            refreshLayout.setOnRefreshListener {
+                mViewModel.loadReminders()
+                refreshLayout.isRefreshing = false
+            }
         }
     }
 
     private fun initViewModelObservers() {
-        _viewModel.addReminderLiveData.observe(viewLifecycleOwner) {
+        mViewModel.addReminderLiveData.observe(viewLifecycleOwner) {
             if (it) {
                 navigateToAddReminder()
             }
@@ -90,14 +89,14 @@ class ReminderListFragment : BaseFragment() {
 
     private fun navigateToAddReminder() {
         // Use the navigationCommand live data to navigate between the fragments
-        mSharedViewModel.navigationCommand.value = NavigationCommand.To(
+        mViewModel.navigationCommand.value = NavigationCommand.To(
             ReminderListFragmentDirections.toSaveReminder()
         )
     }
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
-            mSharedViewModel.navigationCommand.value =
+            mViewModel.navigationCommand.value =
                 NavigationCommand.To(
                     ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
                         it
@@ -109,9 +108,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun initMenu() {
-
         val menuHost: MenuHost = mActivity
-
         // Add menu items without using the Fragment Menu APIs
         // Note how we can tie the MenuProvider to the viewLifecycleOwner
         // and an optional Lifecycle.State (here, RESUMED) to indicate when
@@ -127,16 +124,13 @@ class ReminderListFragment : BaseFragment() {
                     AuthUI.getInstance()
                         .signOut(mActivity)
                         .addOnCompleteListener {
-                            AppSharedMethods.getSharedPreference().edit {
-                                putBoolean(AppSharedData.PREF_IS_LOGIN, false)
-                            }
-                            _viewModel.navigationCommand.value = NavigationCommand.To(
+                            setLoginStatus(false)
+                            mViewModel.navigationCommand.value = NavigationCommand.To(
                                 ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
                             )
                         }
                 }
                 return true
-
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }

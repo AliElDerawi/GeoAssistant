@@ -2,7 +2,6 @@ package com.udacity.project4.remindersList.viewModel
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
@@ -60,6 +59,7 @@ class RemindersListViewModel(
                         _remindersList.value = (dataList)
                     }
                 }
+
                 is Result.Error ->
                     showSnackBar.postValue(result.message)
             }
@@ -67,6 +67,7 @@ class RemindersListViewModel(
             invalidateShowNoData()
         }
     }
+
     /**
      * Inform the user that there's not any data if the remindersList is empty
      */
@@ -74,7 +75,7 @@ class RemindersListViewModel(
         showNoData.value = remindersList.value.isEmpty()
     }
 
-    fun addReminder() {
+    fun addReminderClick() {
         _addReminderLiveData.value = true
     }
 }

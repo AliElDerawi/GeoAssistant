@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
@@ -24,11 +25,19 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
@@ -38,43 +47,32 @@ object AppSharedMethods {
 
     private var mToast: Toast? = null
 
-    fun Activity.showToast(message: String, duration: Int = Toast.LENGTH_LONG) {
+    fun Activity.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         mToast?.cancel()
-        mToast = Toast.makeText(MyApp.getInstance()!!.applicationContext, message, duration)
+        mToast = Toast.makeText(MyApp.getInstance().applicationContext, message, duration)
         mToast!!.show()
     }
 
-    fun showToast(message: Int, duration: Int = Toast.LENGTH_LONG) {
+    fun Activity.showToast(message: Int, duration: Int = Toast.LENGTH_SHORT) {
         mToast?.cancel()
         mToast = Toast.makeText(
-            MyApp.getInstance()!!.applicationContext,
-            MyApp.getInstance()!!.applicationContext.getString(message),
+            MyApp.getInstance().applicationContext,
+            getString(message),
             duration
         )
         mToast!!.show()
     }
 
-    fun EditText.isEmpty(): Boolean {
-        return this.text.toString().isEmpty()
+    fun Activity.showSnackBar(message: String, duration: Int = Snackbar.LENGTH_LONG) {
+        Snackbar.make(findViewById(android.R.id.content), message, duration).show()
     }
 
-    fun EditText.isValidEmail(): Boolean {
-        return !this.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(this.text.toString()).matches()
-    }
-
-    fun String.isValidEmail(): Boolean {
-        return !this.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(this.toString()).matches()
-    }
-
-    fun Context.setImageInAdapter(
-        drawable: Int, mTargetImageView: ImageView
-    ) {
-        Glide.with(this).load(ResourcesCompat.getDrawable(this.resources, drawable, null))
-            .into(mTargetImageView)
+    fun Activity.showSnackBar(message: Int, duration: Int = Snackbar.LENGTH_LONG) {
+        Snackbar.make(findViewById(android.R.id.content), getString(message), duration).show()
     }
 
     fun getSharedPreference(): SharedPreferences {
-        return MyApp.getInstance()!!
+        return MyApp.getInstance()
             .getSharedPreferences(AppSharedData.MY_PREF, Context.MODE_PRIVATE)
     }
 
@@ -84,19 +82,6 @@ object AppSharedMethods {
 
     fun <T> MutableLiveData<T>.notifyObserver() {
         this.value = this.value
-    }
-
-    fun checkIfUserExist(email: String, password: String): Boolean {
-        if (getSharedPreference().contains(AppSharedData.PREF_USER_EMAIL)) {
-            return getSharedPreference().getString(AppSharedData.PREF_USER_EMAIL, "") == email
-                    && getSharedPreference().getString(
-                AppSharedData.PREF_USER_PASSWORD,
-                ""
-            ) == password
-        } else {
-            return false
-        }
-
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
@@ -110,6 +95,12 @@ object AppSharedMethods {
     }
 
     fun isForegroundPermissionGranted(mActivity: Activity): Boolean {
+        return (ContextCompat.checkSelfPermission(
+            mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
+    }
+
+    fun isForegroundPermissionGranted(mActivity: Application): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED)
@@ -131,32 +122,32 @@ object AppSharedMethods {
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
-    fun showAndRequestFineLocationDialog(mActivity: Activity?) {
+    fun showAndRequestFineLocationDialog(mActivity: Activity) {
         ActivityCompat.requestPermissions(
-            mActivity!!,
+            mActivity,
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
             Constants.REQUEST_LOCATION_PERMISSION
         )
     }
 
-    fun showForegroundLocationRequestPermission(mActivity: Activity?): Boolean {
+    fun showForegroundLocationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
         return ActivityCompat.shouldShowRequestPermissionRationale(
-            mActivity!!, Manifest.permission.ACCESS_FINE_LOCATION
+            mActivity, Manifest.permission.ACCESS_FINE_LOCATION
         )
     }
 
-    fun showBackgroundLocationRequestPermission(mActivity: Activity?): Boolean {
+    fun showBackgroundLocationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
         return ActivityCompat.shouldShowRequestPermissionRationale(
-            mActivity!!, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            mActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION
         )
     }
 
-    fun showPostNotificationRequestPermission(mActivity: Activity?): Boolean {
+    fun showPostNotificationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
         return ActivityCompat.shouldShowRequestPermissionRationale(
-            mActivity!!, Manifest.permission.POST_NOTIFICATIONS
+            mActivity, Manifest.permission.POST_NOTIFICATIONS
         )
     }
 
@@ -179,11 +170,11 @@ object AppSharedMethods {
         }
     }
 
-    fun Context.getLocationNameReceiver(mLatLng: LatLng, mResultReceiver: MyResultIntentReceiver) {
-        val intent = Intent(this, FetchAddressIntentService::class.java)
+    fun getLocationNameReceiver(mLatLng: LatLng, mResultReceiver: MyResultIntentReceiver) {
+        val intent = Intent(MyApp.getInstance().applicationContext, FetchAddressIntentService::class.java)
         intent.putExtra(Constants.RECEIVER, mResultReceiver)
         intent.putExtra(Constants.EXTRA_LOCATION_DATA_EXTRA, mLatLng)
-        startService(intent)
+        MyApp.getInstance().startService(intent)
     }
 
     fun getCurrentLocale(context: Context): Locale {
@@ -259,6 +250,41 @@ fun FloatingActionButton.setStatusStyle(isEnabled: Boolean) {
     }
 }
 
+fun Activity.getSnackBar(message: String , duration : Int = Snackbar.LENGTH_LONG): Snackbar {
+    return Snackbar.make(findViewById(android.R.id.content), message, duration)
+}
+
+fun GoogleMap.animateCameraToLocation(latLng: LatLng, zoom: Float) {
+    animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+}
+
+fun GoogleMap.moveCameraToLocation(latLng: LatLng, zoom: Float) {
+    moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+}
+
+ fun GoogleMap.setCustomMapStyle(mayStyle : Int) {
+    try {
+        // Customize the styling of the base map using a JSON object defined
+        // in a raw resource file.
+        val success = setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                MyApp.getInstance().applicationContext, mayStyle
+            )
+        )
+        if (!success) {
+            Timber.e("Style parsing failed.")
+        }
+    } catch (e: Resources.NotFoundException) {
+        Timber.e("Can't find style. Error: ", e)
+    }
+}
+
+fun GoogleMap.addMarkerWithName(latLng: LatLng, name : String) : Marker? {
+    return addMarker(
+        MarkerOptions().position(latLng).title(name)
+            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+    )
+}
 
 val Context.notificationManager: NotificationManager?
     get() = getSystemService<NotificationManager>()

@@ -28,7 +28,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
 
     companion object {
         private const val JOB_ID = 573
-
         // TODO: call this to start the JobIntentService to handle the geofencing transition events
         fun enqueueWork(context: Context, intent: Intent) {
             enqueueWork(
@@ -53,14 +52,9 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             }
             if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 Timber.v(this.getString(R.string.geofence_entered))
-                val fenceId = when {
-                    geofencingEvent.triggeringGeofences!!.isNotEmpty() ->
-                        geofencingEvent.triggeringGeofences!![0].requestId
-
-                    else -> {
-                        Timber.e("No Geofence Trigger Found! Abort mission!")
-                        return
-                    }
+                val fenceId = geofencingEvent.triggeringGeofences?.firstOrNull()?.requestId ?: run {
+                    Timber.e("No Geofence Trigger Found! Abort mission!")
+                    return
                 }
                 sendNotification(fenceId)
             }
@@ -81,6 +75,7 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
                 Timber.d("sendNotification:success")
                 resultFlow.data.first()?.let { reminder ->
                     Timber.d("sendNotification:success:reminder: $reminder")
+                    //send a notification to the user with the reminder details
                     sendNotificationAboutEnteredGeofence(
                         this@GeofenceTransitionsJobIntentService, ReminderDataItem(
                             reminder.title, reminder.description,
@@ -90,7 +85,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
                         )
                     )
                 }
-                //send a notification to the user with the reminder details
             }
         }
     }

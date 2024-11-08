@@ -4,12 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorTrans">#00FFFFFF</color>
-    <color name="colorEditTextHint">#98A8BF</color>
-
+    <color name="colorEditTextHint">#7E7E7E</color>
     <color name="colorDark1C">#1C1C1E</color>
     <color name="colorGray63">#636366</color>
     <color name="colorDark31">#313131</color>
@@ -19,6 +17,5 @@
     <color name="colorGrayE5">#E5E5EA</color>
     <color name="colorBlack2B">#2B2B2B</color>
     <color name="colorGrayB2">#B2B2B2</color>
-
     <color name="colorDivider">#E5E6EB</color>
 </resources>

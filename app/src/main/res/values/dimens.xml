@@ -37,6 +37,8 @@
     <dimen name="dim_10_dp">10dp</dimen>
     <dimen name="dim_7_dp">7dp</dimen>
     <dimen name="dim_negative_6_dp">-6dp</dimen>
+    <dimen name="dim_4_dp">4dp</dimen>
+    <dimen name="dim_30_dp">30dp</dimen>
 
 
 </resources>

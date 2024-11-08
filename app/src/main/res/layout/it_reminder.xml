@@ -28,8 +28,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_small"
                 android:text="@{item.title}"
+                android:lineSpacingMultiplier="0.8"
                 android:textColor="@color/colorBlack"
-                android:textSize="@dimen/text_size_normal"
+                style="@style/BodyStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title" />
@@ -39,6 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{item.description}"
+                style="@style/BodyStyle"
+                android:lineSpacingMultiplier="0.8"
                 android:textSize="@dimen/text_size_small"
                 app:layout_constraintStart_toStartOf="@id/title"
                 app:layout_constraintTop_toBottomOf="@id/title"
@@ -51,6 +54,8 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_size_small"
+                android:lineSpacingMultiplier="0.8"
+                style="@style/BodyStyle"
                 app:layout_constraintStart_toStartOf="@+id/title"
                 app:layout_constraintTop_toBottomOf="@+id/description"
                 tools:text="Location Detail" />

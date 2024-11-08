@@ -16,7 +16,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <!-- TODO: Add the design of the reminder details -->
 
         <TextView

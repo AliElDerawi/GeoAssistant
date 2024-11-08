@@ -1,5 +1,6 @@
 package com.udacity.project4.locationreminders.data
 
+import android.location.Location
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
@@ -44,6 +45,10 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
 
     override suspend fun deleteAllReminders() {
         reminders.clear()
+    }
+
+    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
+        return Result.Success(flowOf(null))
     }
 
     fun addReminders(vararg tasks: ReminderDTO) {

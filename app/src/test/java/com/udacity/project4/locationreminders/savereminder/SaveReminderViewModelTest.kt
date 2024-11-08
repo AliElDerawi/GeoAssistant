@@ -46,12 +46,13 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     @Before
     fun setupViewModel() {
         //Get our real repository
+        appContext = ApplicationProvider.getApplicationContext()
         reminderLocalRepository = FakeDataSource()
         //clear the data to start fresh
         saveReminderViewModel =
             SaveReminderViewModel(
                 ApplicationProvider.getApplicationContext(), reminderLocalRepository,
-                LocationServices.getGeofencingClient(ApplicationProvider.getApplicationContext()),
+                LocationServices.getGeofencingClient(appContext),
                 MyResultIntentReceiver(Handler())
             )
     }

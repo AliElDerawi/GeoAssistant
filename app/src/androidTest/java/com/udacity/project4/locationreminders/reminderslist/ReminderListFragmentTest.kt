@@ -2,6 +2,7 @@ package com.udacity.project4.locationreminders.reminderslist
 
 import android.app.Application
 import android.os.Bundle
+import android.os.Handler
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
@@ -36,6 +37,7 @@ import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.EspressoIdlingResource
+import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -66,7 +68,7 @@ import org.robolectric.annotation.Config
 @LargeTest
 class ReminderListFragmentTest : AutoCloseKoinTest() {
 
-//    TODO: test the navigation of the fragments.
+    //    TODO: test the navigation of the fragments.
 //    TODO: test the displayed data on the UI.
 //    TODO: add testing for the error messages.
     private lateinit var remindersListViewModel: RemindersListViewModel
@@ -96,12 +98,14 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         val myModule = module {
             viewModel { RemindersListViewModel(appContext, get() as FakeTestRepository) }
             viewModel { AuthenticationViewModel(get()) }
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository) }
+            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get(), get()) }
             single { MainViewModel(get()) }
-            single { RemindersLocalRepository(get()) }
+            single { RemindersLocalRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
+            single { LocationServices.getGeofencingClient(appContext) }
+            single { MyResultIntentReceiver(Handler()) }
 
         }
         //declare a new koin module

@@ -3,6 +3,7 @@ package com.udacity.project4.locationreminders.savereminder
 import android.annotation.TargetApi
 import android.app.Application
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -32,6 +33,8 @@ import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.EspressoIdlingResource
+import com.udacity.project4.utils.MyResultIntentReceiver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.not
@@ -98,12 +101,14 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         val myModule = module {
             viewModel { RemindersListViewModel(appContext, get() as FakeTestRepository) }
             viewModel { AuthenticationViewModel(get()) }
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository) }
+            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get(),get()) }
             single { MainViewModel(get()) }
-            single { RemindersLocalRepository(get()) }
+            single { RemindersLocalRepository(get(),Dispatchers.Unconfined,get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
+            single { LocationServices.getGeofencingClient(appContext) }
+            single { MyResultIntentReceiver(Handler()) }
         }
         //declare a new koin module
         startKoin {
@@ -125,7 +130,7 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
         }
-        saveReminderViewModel.validateAndSaveReminder(
+        saveReminderViewModel.saveReminder(
             ReminderDataItem(
                 "",
                 "description",

@@ -17,6 +17,7 @@ package com.udacity.project4
 
 import android.app.Activity
 import android.app.Application
+import android.os.Handler
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.core.app.ActivityScenario
@@ -43,6 +44,8 @@ import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.EspressoIdlingResource
+import com.udacity.project4.utils.MyResultIntentReceiver
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -83,12 +86,14 @@ class AppNavigationTest : AutoCloseKoinTest() {
             viewModel { RemindersListViewModel(get(), get() as ReminderDataSource) }
             viewModel { AuthenticationViewModel(get()) }
             //Declare singleton definitions to be later injected using by inject()
-            single { SaveReminderViewModel(get(), get()) }
-            single { RemindersLocalRepository(get()) }
+            single { SaveReminderViewModel(get(), get(),get(),get()) }
+            single { RemindersLocalRepository(get(),Dispatchers.Unconfined,get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { MainViewModel(get()) }
             single<ReminderDataSource> { get<RemindersLocalRepository>() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
+            single { LocationServices.getGeofencingClient(appContext) }
+            single { MyResultIntentReceiver(Handler()) }
         }
         //declare a new koin module
         startKoin {

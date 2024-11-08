@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.local.RemindersLocalRepository
@@ -54,7 +55,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
         ).allowMainThreadQueries().build()
         //
         localDataSource = RemindersLocalRepository(
-            database.reminderDao(), Dispatchers.Unconfined
+            database.reminderDao(), Dispatchers.Unconfined, LocationServices.getFusedLocationProviderClient(appContext)
         )
     }
 

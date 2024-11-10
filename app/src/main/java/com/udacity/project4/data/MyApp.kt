@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 class MyApp : MultiDexApplication() {
@@ -43,8 +44,8 @@ class MyApp : MultiDexApplication() {
          */
         val myModule = module {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
-            viewModel { RemindersListViewModel(get(), get() as ReminderDataSource) }
-            viewModel { AuthenticationViewModel(get()) }
+            viewModelOf(::RemindersListViewModel)
+            viewModelOf(::AuthenticationViewModel)
             //Declare singleton definitions to be later injected using by inject()
             single { SaveReminderViewModel(get(), get(), get(),get()) }
             single { RemindersLocalRepository(get(), Dispatchers.IO, get()) }

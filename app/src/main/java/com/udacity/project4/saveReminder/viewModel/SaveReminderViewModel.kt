@@ -103,6 +103,10 @@ class SaveReminderViewModel(
     val selectedLocationLatLng: LiveData<LatLng?>
         get() = _selectedLocationLatLng
 
+    private var _currentMapStyle = MutableLiveData<Int>(R.id.normal_map)
+    val currentMapStyle: LiveData<Int>
+        get() = _currentMapStyle
+
 
     /**
      * Clear the live data objects to start fresh next time the view model gets called
@@ -142,8 +146,12 @@ class SaveReminderViewModel(
     fun onSaveReminderClick() {
         when {
             _reminderTitle.value.isNullOrEmpty() -> showToastInt.value = R.string.err_enter_title
-            _reminderDescription.value.isNullOrEmpty() -> showToastInt.value = R.string.text_msg_please_enter_description
-            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.value = R.string.err_select_location
+            _reminderDescription.value.isNullOrEmpty() -> showToastInt.value =
+                R.string.text_msg_please_enter_description
+
+            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.value =
+                R.string.err_select_location
+
             else -> _saveReminder.value = true
         }
     }
@@ -223,6 +231,10 @@ class SaveReminderViewModel(
             _longitude.value = selectedPOI.value!!.latLng.longitude
             _saveLocation.value = true
         } ?: showSnackBarInt.postValue(R.string.err_select_location)
+    }
+
+    fun setCurrentMapStyle(style: Int) {
+        _currentMapStyle.value = style
     }
 
     @SuppressLint("MissingPermission")

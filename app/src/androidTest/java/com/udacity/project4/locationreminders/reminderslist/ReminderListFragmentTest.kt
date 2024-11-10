@@ -54,6 +54,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
@@ -96,16 +97,16 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         stopKoin()//stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
         val myModule = module {
-            viewModel { RemindersListViewModel(appContext, get() as FakeTestRepository) }
-            viewModel { AuthenticationViewModel(get()) }
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get(), get()) }
+            viewModelOf(::RemindersListViewModel)
+            viewModelOf(::AuthenticationViewModel)
+            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get(),get()) }
             single { MainViewModel(get()) }
             single { RemindersLocalRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
             single { LocationServices.getGeofencingClient(appContext) }
-            single { MyResultIntentReceiver(Handler()) }
+            single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
 
         }
         //declare a new koin module

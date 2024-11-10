@@ -2,17 +2,11 @@ package com.udacity.project4.data.local
 
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
-import com.udacity.project4.utils.AppSharedMethods.getLocationNameReceiver
-import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
-import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
-import com.udacity.project4.utils.Constants
-import com.udacity.project4.utils.moveCameraToLocation
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

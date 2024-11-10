@@ -3,6 +3,8 @@ package com.udacity.project4.data
 import android.os.Handler
 import android.os.Looper
 import androidx.multidex.MultiDexApplication
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
@@ -11,6 +13,7 @@ import com.udacity.project4.data.local.RemindersLocalRepository
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -40,6 +43,7 @@ class MyApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         mAppInstance = this
+
         /**
          * use Koin Library as a service locator
          */
@@ -56,11 +60,13 @@ class MyApp : MultiDexApplication() {
             single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
             single { LocationServices.getGeofencingClient(this@MyApp) }
             single {MyResultIntentReceiver(Handler(Looper.getMainLooper())) }
+            single { FetchAddressWorker(get(),get()) }
         }
 
         startKoin {
             androidContext(this@MyApp)
             modules(listOf(myModule))
         }
+
     }
 }

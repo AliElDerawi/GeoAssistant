@@ -14,9 +14,6 @@ import android.content.res.Resources
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
-import android.util.Patterns
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,6 +21,9 @@ import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -170,11 +170,18 @@ object AppSharedMethods {
         }
     }
 
-    fun getLocationNameReceiver(mLatLng: LatLng, mResultReceiver: MyResultIntentReceiver) {
-        val intent = Intent(MyApp.getInstance().applicationContext, FetchAddressIntentService::class.java)
-        intent.putExtra(Constants.RECEIVER, mResultReceiver)
-        intent.putExtra(Constants.EXTRA_LOCATION_DATA_EXTRA, mLatLng)
-        MyApp.getInstance().startService(intent)
+    fun startFetchAddressWorker(mLatLng: LatLng , mResultReceiver: MyResultIntentReceiver) {
+        // Store the receiver in the singleton
+        // Pass latitude and longitude as input data
+        val inputData = Data.Builder()
+            .putDouble(Constants.EXTRA_LATITUDE, mLatLng.latitude)
+            .putDouble(Constants.EXTRA_LONGITUDE, mLatLng.longitude)
+            .build()
+        FetchAddressWorker.receiver = mResultReceiver
+        val fetchAddressWorkRequest = OneTimeWorkRequestBuilder<FetchAddressWorker>()
+            .setInputData(inputData)
+            .build()
+        WorkManager.getInstance(MyApp.getInstance().applicationContext).enqueue(fetchAddressWorkRequest)
     }
 
     fun getCurrentLocale(context: Context): Locale {

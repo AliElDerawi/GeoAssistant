@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.udacity.project4.data.dto.Result
-import com.udacity.project4.utils.AppSharedMethods.getLocationNameReceiver
+import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 
 class SaveReminderViewModel(
@@ -158,10 +158,10 @@ class SaveReminderViewModel(
 
     fun setSelectedPOIAndShowName(pointOfInterest: PointOfInterest) {
         _selectedPOI.value = pointOfInterest
-        getLocationNameReceiver(
+        startFetchAddressWorker(
             LatLng(
                 pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude
-            ), mResultIntentReceiver
+            ), mResultReceiver = mResultIntentReceiver
         )
     }
 
@@ -171,10 +171,10 @@ class SaveReminderViewModel(
 
     fun setSelectedLocationLatLngAndShowName(latLng: LatLng) {
         _selectedLocationLatLng.value = latLng
-        getLocationNameReceiver(
+        startFetchAddressWorker(
             LatLng(
                 selectedLocationLatLng.value!!.latitude, selectedLocationLatLng.value!!.longitude
-            ), mResultIntentReceiver
+            ),mResultReceiver = mResultIntentReceiver
         )
     }
 

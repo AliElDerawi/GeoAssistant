@@ -33,11 +33,8 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
-import com.udacity.project4.remindersList.view.ReminderListFragmentDirections
-import com.udacity.project4.utils.AppSharedMethods.getLocationNameReceiver
 import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
-import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.addMarkerWithName

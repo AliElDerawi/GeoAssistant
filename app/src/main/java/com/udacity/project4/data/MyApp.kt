@@ -1,6 +1,7 @@
 package com.udacity.project4.data
 
 import android.os.Handler
+import android.os.Looper
 import androidx.multidex.MultiDexApplication
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.authentication.AuthenticationViewModel
@@ -54,7 +55,7 @@ class MyApp : MultiDexApplication() {
             single<ReminderDataSource> { get<RemindersLocalRepository>() }
             single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
             single { LocationServices.getGeofencingClient(this@MyApp) }
-            single {MyResultIntentReceiver(Handler()) }
+            single {MyResultIntentReceiver(Handler(Looper.getMainLooper())) }
         }
 
         startKoin {

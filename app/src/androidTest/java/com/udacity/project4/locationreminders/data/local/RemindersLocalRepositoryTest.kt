@@ -13,11 +13,10 @@ import com.udacity.project4.data.local.RemindersLocalRepository
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.getOrAwaitValue
+import com.udacity.project4.util.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`

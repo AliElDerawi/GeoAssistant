@@ -8,14 +8,13 @@ import androidx.test.filters.SmallTest;
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.getOrAwaitValue
+import com.udacity.project4.util.getOrAwaitValue
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi;
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue

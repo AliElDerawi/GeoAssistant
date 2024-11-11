@@ -24,6 +24,8 @@ import com.udacity.project4.FakeTestRepository
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.local.RemindersLocalRepository
 import com.udacity.project4.main.view.MainActivity
@@ -37,6 +39,7 @@ import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.util.monitorFragment
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.EspressoIdlingResource
+import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -52,6 +55,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.dsl.viewModelOf
@@ -99,11 +103,14 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         val myModule = module {
             viewModelOf(::RemindersListViewModel)
             viewModelOf(::AuthenticationViewModel)
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get(),get()) }
+            workerOf(::GeofenceTransitionsWorker)
+            workerOf(::FetchAddressWorker)
+            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
             single { MainViewModel(get()) }
             single { RemindersLocalRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
+            single<ReminderDataSource> { get<FakeTestRepository>() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
             single { LocationServices.getGeofencingClient(appContext) }
             single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }

@@ -52,7 +52,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel =
             SaveReminderViewModel(
                 ApplicationProvider.getApplicationContext(), reminderLocalRepository,
-                LocationServices.getGeofencingClient(appContext), MyResultIntentReceiver(Handler(appContext.mainLooper))
+                LocationServices.getGeofencingClient(appContext)
             )
     }
 

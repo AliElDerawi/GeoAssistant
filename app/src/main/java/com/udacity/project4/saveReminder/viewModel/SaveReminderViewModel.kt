@@ -36,7 +36,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
-import com.udacity.project4.utils.MyResultIntentReceiver
 
 class SaveReminderViewModel(
     val app: Application,
@@ -144,14 +143,14 @@ class SaveReminderViewModel(
 
     fun onSaveReminderClick() {
         when {
-            _reminderTitle.value.isNullOrEmpty() -> showToastInt.value = R.string.err_enter_title
-            _reminderDescription.value.isNullOrEmpty() -> showToastInt.value =
+            _reminderTitle.value.isNullOrEmpty() -> showToastInt.postValue(R.string.err_enter_title)
+            _reminderDescription.value.isNullOrEmpty() -> showToastInt.postValue(
                 R.string.text_msg_please_enter_description
-
-            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.value =
+            )
+            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.postValue(
                 R.string.err_select_location
-
-            else -> _saveReminder.value = true
+            )
+            else -> _saveReminder.postValue(true)
         }
     }
 

@@ -34,6 +34,7 @@ import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.local.RemindersLocalRepository
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
@@ -44,6 +45,7 @@ import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.EspressoIdlingResource
+import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -53,6 +55,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.core.module.dsl.viewModelOf
@@ -86,15 +90,17 @@ class AppNavigationTest : AutoCloseKoinTest() {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModelOf(::RemindersListViewModel)
             viewModelOf(::AuthenticationViewModel)
+            workerOf(::GeofenceTransitionsWorker)
+            workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
-            single { SaveReminderViewModel(get(), get(),get(),get()) }
+            single { SaveReminderViewModel(get(), get(),get()) }
             single { RemindersLocalRepository(get(),Dispatchers.Unconfined,get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { MainViewModel(get()) }
             single<ReminderDataSource> { get<RemindersLocalRepository>() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
             single { LocationServices.getGeofencingClient(appContext) }
-            single { MyResultIntentReceiver(Handler()) }
+            single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
         }
         //declare a new koin module
         startKoin {

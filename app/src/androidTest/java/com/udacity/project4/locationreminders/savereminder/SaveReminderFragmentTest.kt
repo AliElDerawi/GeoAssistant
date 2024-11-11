@@ -14,6 +14,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
@@ -77,8 +78,8 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
     private lateinit var appContext: Application
 
     @get:Rule
-    val activityRule: ActivityTestRule<MainActivity> =
-        ActivityTestRule(MainActivity::class.java)
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
 
     @Before
     fun registerIdlingResource() {
@@ -111,7 +112,7 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
             workerOf(::FetchAddressWorker)
             single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
             single { MainViewModel(get()) }
-            single { RemindersLocalRepository(get(),Dispatchers.Unconfined,get()) }
+            single { RemindersLocalRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single<ReminderDataSource> { get<FakeTestRepository>() }
@@ -140,13 +141,16 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
             Navigation.setViewNavController(it.view!!, navController)
         }
         saveReminderViewModel.onSaveReminderClick()
-        onView(withText(R.string.err_enter_title)).inRoot(
-            withDecorView(
-                not(
-                    activityRule.activity.window?.decorView
+        activityRule.scenario.onActivity { activity ->
+            // Perform actions on the activity instance here
+            onView(withText(R.string.err_enter_title)).inRoot(
+                withDecorView(
+                    not(
+                        activity.window?.decorView
+                    )
                 )
-            )
-        ).check(ViewAssertions.matches(isDisplayed()))
+            ).check(ViewAssertions.matches(isDisplayed()))
+        }
         scenario.close()
     }
 }

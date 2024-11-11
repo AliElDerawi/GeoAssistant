@@ -7,6 +7,7 @@ import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -38,7 +39,7 @@ class RemindersLocalRepository(
     override fun getReminders(): Result<Flow<List<ReminderDTO>>> {
         return wrapEspressoIdlingResource {
             try {
-                val reminders = remindersDao.getReminders()
+                val reminders = remindersDao.getReminders(AppSharedMethods.getCurrentUserId())
                 Result.Success(reminders)
             } catch (ex: Exception) {
                 Result.Error(ex.localizedMessage)
@@ -66,7 +67,7 @@ class RemindersLocalRepository(
         return wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 try {
-                    val reminder = remindersDao.getReminderById(id)
+                    val reminder = remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
                     reminder.first()?.let {
                         Result.Success(reminder)
                     } ?: Result.Error(

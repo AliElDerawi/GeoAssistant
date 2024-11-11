@@ -204,7 +204,8 @@ class SaveReminderViewModel(
                     reminderData.location,
                     reminderData.latitude,
                     reminderData.longitude,
-                    reminderData.id
+                    userId = AppSharedMethods.getCurrentUserId(),
+                    reminderData.id,
                 )
             )
             showLoading.postValue(false)

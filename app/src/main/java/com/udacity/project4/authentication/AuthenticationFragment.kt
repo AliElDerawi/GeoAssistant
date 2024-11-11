@@ -71,12 +71,14 @@ class AuthenticationFragment : BaseFragment() {
         val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
-            val user = FirebaseAuth.getInstance().currentUser
-            Timber.d("onSignInResult: " + user!!.email)
-            setLoginStatus(true)
-            mViewModel.navigationCommand.value = NavigationCommand.To(
-                AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
-            )
+            FirebaseAuth.getInstance().currentUser?.let { user ->
+                Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
+                setLoginStatus(true, user)
+                mViewModel.navigationCommand.value = NavigationCommand.To(
+                    AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
+                )
+            } ?: Timber.d("onSignInResult: User is null")
+
         } else {
             // Sign in failed.
             response?.error?.let { error ->

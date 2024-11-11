@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseUser
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
@@ -89,10 +90,14 @@ object AppSharedMethods {
         )
     }
 
+    fun getCurrentUserId(): String {
+        return getSharedPreference().getString(AppSharedData.PREF_USER_ID, "") ?: ""
+    }
 
-    fun setLoginStatus(isLogin: Boolean) {
-        getSharedPreference().edit{
+    fun setLoginStatus(isLogin: Boolean, user: FirebaseUser? = null) {
+        getSharedPreference().edit {
             putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin)
+            user?.let { putString(AppSharedData.PREF_USER_ID, user.uid) }
         }
     }
 

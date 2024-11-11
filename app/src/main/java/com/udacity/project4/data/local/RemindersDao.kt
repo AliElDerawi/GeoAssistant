@@ -16,15 +16,15 @@ interface RemindersDao {
     /**
      * @return all reminders.
      */
-    @Query("SELECT * FROM reminders")
-    fun getReminders(): Flow<List<ReminderDTO>>
+    @Query("SELECT * FROM reminders where userId = :userId")
+    fun getReminders(userId: String): Flow<List<ReminderDTO>>
 
     /**
      * @param reminderId the id of the reminder
      * @return the reminder object with the reminderId
      */
-    @Query("SELECT * FROM reminders where entry_id = :reminderId")
-    fun getReminderById(reminderId: String): Flow<ReminderDTO?>
+    @Query("SELECT * FROM reminders where entry_id = :reminderId and userId = :userId")
+    fun getReminderById(reminderId: String, userId: String): Flow<ReminderDTO?>
 
     /**
      * Insert a reminder in the database. If the reminder already exists, replace it.

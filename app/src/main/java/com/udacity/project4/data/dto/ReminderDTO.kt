@@ -2,6 +2,7 @@ package com.udacity.project4.data.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.*
 
@@ -23,5 +24,6 @@ data class ReminderDTO(
     @ColumnInfo(name = "location") var location: String?,
     @ColumnInfo(name = "latitude") var latitude: Double?,
     @ColumnInfo(name = "longitude") var longitude: Double?,
+    @ColumnInfo(name = "userId") var userId: String = "",
     @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
 )

@@ -13,19 +13,19 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.location.LocationManager
 import android.os.Build
-import android.provider.Settings
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -73,12 +73,27 @@ object AppSharedMethods {
     }
 
     fun getSharedPreference(): SharedPreferences {
-        return MyApp.getInstance()
-            .getSharedPreferences(AppSharedData.MY_PREF, Context.MODE_PRIVATE)
+        return getEncryptedSharedPrefs(MyApp.getInstance())
     }
 
+    private fun getEncryptedSharedPrefs(context: Context): SharedPreferences {
+        val masterKey =
+            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+
+        return EncryptedSharedPreferences.create(
+            context,
+            AppSharedData.MY_ENCRYPTED_PREF,
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
+
+
     fun setLoginStatus(isLogin: Boolean) {
-        getSharedPreference().edit().putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin).apply()
+        getSharedPreference().edit{
+            putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin)
+        }
     }
 
     fun <T> MutableLiveData<T>.notifyObserver() {

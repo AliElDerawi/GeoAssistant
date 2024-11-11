@@ -80,6 +80,8 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation libs.androidx.room.ktx
 
+    implementation libs.security.crypto.ktx
+
     // WorkManager
     implementation libs.andoidx.work
 

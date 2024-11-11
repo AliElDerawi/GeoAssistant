@@ -19,6 +19,7 @@ import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
@@ -56,7 +57,7 @@ class MyApp : MultiDexApplication() {
             workerOf(::GeofenceTransitionsWorker)
             workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
-            single { SaveReminderViewModel(get(), get(), get(), get()) }
+            single { SaveReminderViewModel(get(), get(), get()) }
             single { RemindersLocalRepository(get(), Dispatchers.IO, get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
             single { MainViewModel(get()) }

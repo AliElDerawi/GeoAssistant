@@ -157,14 +157,13 @@ object AppSharedMethods {
                 locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
     }
 
-    fun startFetchAddressWorker(mLatLng: LatLng, mResultReceiver: MyResultIntentReceiver) {
+    fun startFetchAddressWorker(mLatLng: LatLng) {
         // Store the receiver in the singleton
         // Pass latitude and longitude as input data
         val inputData = Data.Builder()
             .putDouble(Constants.EXTRA_LATITUDE, mLatLng.latitude)
             .putDouble(Constants.EXTRA_LONGITUDE, mLatLng.longitude)
             .build()
-        FetchAddressWorker.receiver = mResultReceiver
         val fetchAddressWorkRequest = OneTimeWorkRequestBuilder<FetchAddressWorker>()
             .setInputData(inputData)
             .build()

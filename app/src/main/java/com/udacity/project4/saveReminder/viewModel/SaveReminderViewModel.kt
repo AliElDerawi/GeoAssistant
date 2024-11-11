@@ -41,8 +41,7 @@ import com.udacity.project4.utils.MyResultIntentReceiver
 class SaveReminderViewModel(
     val app: Application,
     val remindersLocalRepository: ReminderDataSource,
-    val geofencingClient: GeofencingClient,
-    val mResultIntentReceiver: MyResultIntentReceiver
+    val geofencingClient: GeofencingClient
 ) : BaseViewModel(app) {
 
     private var _reminderTitle = MutableStateFlow<String?>("")
@@ -161,7 +160,7 @@ class SaveReminderViewModel(
         startFetchAddressWorker(
             LatLng(
                 pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude
-            ), mResultReceiver = mResultIntentReceiver
+            )
         )
     }
 
@@ -174,7 +173,7 @@ class SaveReminderViewModel(
         startFetchAddressWorker(
             LatLng(
                 selectedLocationLatLng.value!!.latitude, selectedLocationLatLng.value!!.longitude
-            ),mResultReceiver = mResultIntentReceiver
+            ),
         )
     }
 

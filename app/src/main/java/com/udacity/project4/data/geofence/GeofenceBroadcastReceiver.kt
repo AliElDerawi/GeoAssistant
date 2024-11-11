@@ -9,6 +9,7 @@ import androidx.work.workDataOf
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.utils.Constants.ACTION_GEOFENCE_EVENT
 import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
+import com.udacity.project4.utils.NotificationUtils.errorMessage
 import timber.log.Timber
 
 /**
@@ -28,7 +29,8 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         // Get GeofencingEvent from the Intent
         GeofencingEvent.fromIntent(intent)?.let { geofencingEvent ->
             if (geofencingEvent.hasError()) {
-                Timber.e("Geofence error: ${geofencingEvent.errorCode}")
+                val errorMessage = errorMessage(context, geofencingEvent.errorCode)
+                Timber.d("Geofence Error: $errorMessage")
                 return
             }
             val geofenceTransition = geofencingEvent.geofenceTransition

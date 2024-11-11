@@ -1,21 +1,19 @@
 package com.udacity.project4.locationreminders.data
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.locationreminders.MainCoroutinesRules
+import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
-import com.udacity.project4.locationreminders.getOrAwaitValue
+import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
 import org.hamcrest.core.IsNot
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.koin.test.AutoCloseKoinTest
 
 
@@ -47,19 +45,19 @@ class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun getTasks_compareOldRemindersWithAllRemindersDataSource() =
-        mainCoroutineRule.runBlockingTest {
-            val reminderFlow = tasksRepository.getReminders() as Result.Success
-            Assert.assertThat(reminderFlow.data.getOrAwaitValue(), IsNot(IsEqual(allReminders)))
-        }
+    fun getTasks_compareOldRemindersWithAllRemindersDataSource() = runTest {
+        // When reminders are requested from the reminders repository
+        val reminderFlow = tasksRepository.getReminders() as Result.Success
+        // Then reminders are loaded from the local data source
+        assertThat(reminderFlow.data.getOrAwaitValue(), IsEqual(oldReminders))
+    }
 
     @Test
-    fun getNewTasks_checkAddNewRemindersAndAllRemindersDataSource() =
-        mainCoroutineRule.runBlockingTest {
-            // When new reminder are added to repository
-            tasksRepository.addReminders(*newReminder.toTypedArray())
-            val reminderFlow = tasksRepository.getReminders() as Result.Success
-            Assert.assertThat(reminderFlow.data.getOrAwaitValue(), IsEqual(allReminders))
-        }
-
+    fun getNewTasks_checkAddNewRemindersAndAllRemindersDataSource() = runTest {
+        // When new reminders are added to the reminders repository
+        tasksRepository.addReminders(*newReminder.toTypedArray())
+        val reminderFlow = tasksRepository.getReminders() as Result.Success
+        // Then reminders are loaded from the local data source
+        assertThat(reminderFlow.data.getOrAwaitValue(), IsEqual(allReminders))
+    }
 }

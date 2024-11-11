@@ -1,21 +1,20 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.app.Application
-import android.os.Handler
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.location.LocationServices
-import com.udacity.project4.locationreminders.MainCoroutinesRules
+import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.getOrAwaitValue
+import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
-import com.udacity.project4.utils.MyResultIntentReceiver
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -57,7 +56,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun saveNewReminder_checkReminderValue() = mainCoroutineRule.runBlockingTest {
+    fun saveNewReminder_checkReminderValue() = runTest {
         val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0)
         saveReminderViewModel.saveReminder(
             ReminderDataItem(

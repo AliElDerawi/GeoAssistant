@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders
+package com.udacity.project4.locationreminders.util
 
 import androidx.annotation.VisibleForTesting
 import kotlinx.coroutines.flow.Flow

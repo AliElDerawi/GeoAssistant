@@ -11,6 +11,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.text.TextUtils
@@ -151,26 +152,12 @@ object AppSharedMethods {
         )
     }
 
-    fun isLocationEnabled(mContext: Context): Boolean {
-        var locationMode = 0
-        val locationProviders: String
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            locationMode = try {
-                Settings.Secure.getInt(mContext.contentResolver, Settings.Secure.LOCATION_MODE)
-            } catch (e: Settings.SettingNotFoundException) {
-                e.printStackTrace()
-                return false
-            }
-            locationMode != Settings.Secure.LOCATION_MODE_OFF
-        } else {
-            locationProviders = Settings.Secure.getString(
-                mContext.contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED
-            )
-            !TextUtils.isEmpty(locationProviders)
-        }
+    fun Context.isLocationEnabled(): Boolean {
+        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true ||
+                locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
     }
 
-    fun startFetchAddressWorker(mLatLng: LatLng , mResultReceiver: MyResultIntentReceiver) {
+    fun startFetchAddressWorker(mLatLng: LatLng, mResultReceiver: MyResultIntentReceiver) {
         // Store the receiver in the singleton
         // Pass latitude and longitude as input data
         val inputData = Data.Builder()
@@ -181,7 +168,8 @@ object AppSharedMethods {
         val fetchAddressWorkRequest = OneTimeWorkRequestBuilder<FetchAddressWorker>()
             .setInputData(inputData)
             .build()
-        WorkManager.getInstance(MyApp.getInstance().applicationContext).enqueue(fetchAddressWorkRequest)
+        WorkManager.getInstance(MyApp.getInstance().applicationContext)
+            .enqueue(fetchAddressWorkRequest)
     }
 
     fun getCurrentLocale(context: Context): Locale {
@@ -257,7 +245,7 @@ fun FloatingActionButton.setStatusStyle(isEnabled: Boolean) {
     }
 }
 
-fun Activity.getSnackBar(message: String , duration : Int = Snackbar.LENGTH_LONG): Snackbar {
+fun Activity.getSnackBar(message: String, duration: Int = Snackbar.LENGTH_LONG): Snackbar {
     return Snackbar.make(findViewById(android.R.id.content), message, duration)
 }
 
@@ -269,7 +257,7 @@ fun GoogleMap.moveCameraToLocation(latLng: LatLng, zoom: Float) {
     moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
 }
 
- fun GoogleMap.setCustomMapStyle(mayStyle : Int) {
+fun GoogleMap.setCustomMapStyle(mayStyle: Int) {
     try {
         // Customize the styling of the base map using a JSON object defined
         // in a raw resource file.
@@ -286,7 +274,7 @@ fun GoogleMap.moveCameraToLocation(latLng: LatLng, zoom: Float) {
     }
 }
 
-fun GoogleMap.addMarkerWithName(latLng: LatLng, name : String) : Marker? {
+fun GoogleMap.addMarkerWithName(latLng: LatLng, name: String): Marker? {
     return addMarker(
         MarkerOptions().position(latLng).title(name)
             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
@@ -296,3 +284,5 @@ fun GoogleMap.addMarkerWithName(latLng: LatLng, name : String) : Marker? {
 val Context.notificationManager: NotificationManager?
     get() = getSystemService<NotificationManager>()
 
+val Context.locationManager: LocationManager?
+    get() = getSystemService<LocationManager>()

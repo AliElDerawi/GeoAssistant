@@ -138,7 +138,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                         } ?: run {
                             Timber.d("getLastUserLocation:currentLocation NULL")
                             setDefaultLocation()
-                            if (!isLocationEnabled(mActivity)) {
+                            if (!mActivity.isLocationEnabled()) {
                                 mViewModel.showToast.value =
                                     mActivity.getString(R.string.text_enable_gps_msg)
                             }
@@ -158,6 +158,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     }
 
     private fun initMenu() {
+        // TODO: Change the map type based on the user's selection.
         val menuHost: MenuHost = mActivity
         // Add menu items without using the Fragment Menu APIs
         // Note how we can tie the MenuProvider to the viewLifecycleOwner
@@ -195,36 +196,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
-
-
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.map_options, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-//        // TODO: Change the map type based on the user's selection.
-//        R.id.normal_map -> {
-//            mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-//            true
-//        }
-//
-//        R.id.hybrid_map -> {
-//            mGoogleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-//            true
-//        }
-//
-//        R.id.satellite_map -> {
-//            mGoogleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-//            true
-//        }
-//
-//        R.id.terrain_map -> {
-//            mGoogleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-//            true
-//        }
-//
-//        else -> super.onOptionsItemSelected(item)
-//    }
 
     private
     val requestPermissionLauncher =

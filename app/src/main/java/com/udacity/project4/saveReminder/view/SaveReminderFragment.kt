@@ -31,6 +31,7 @@ import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods
+import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.getSnackBar
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
@@ -85,7 +86,7 @@ class SaveReminderFragment : BaseFragment() {
                 if (it) {
                     if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mActivity)) {
                         Timber.d("Foreground and Background Permission granted")
-                        if (AppSharedMethods.isLocationEnabled(mActivity)) {
+                        if (mActivity.isLocationEnabled()) {
                             handleNotificationPermission()
                         } else {
                             checkDeviceLocationSettings()
@@ -202,7 +203,7 @@ class SaveReminderFragment : BaseFragment() {
                             Timber.d("Error getting location settings resolution: ${sendEx.message}")
                         }
                     } else {
-                        if (AppSharedMethods.isLocationEnabled(requireContext())) {
+                        if (mActivity.isLocationEnabled()) {
                             handleNotificationPermission()
                         } else {
                             showEnableLocationSnackBar()

@@ -3,6 +3,12 @@ package com.udacity.project4.data.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.google.android.gms.location.GeofencingEvent
+import com.udacity.project4.utils.Constants.ACTION_GEOFENCE_EVENT
+import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
 import timber.log.Timber
 
 /**
@@ -15,11 +21,30 @@ import timber.log.Timber
  *
  */
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
-//        // TODO: implement the onReceive method to receive the geofencing events at the background
+    //        // TODO: implement the onReceive method to receive the geofencing events at the background
     override fun onReceive(context: Context, intent: Intent) {
         // TODO: Step 11 implement the onReceive method
-        Timber.d("onReceive:called")
-        GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
+        Timber.d("onReceive: called")
+        // Get GeofencingEvent from the Intent
+        GeofencingEvent.fromIntent(intent)?.let { geofencingEvent ->
+            if (geofencingEvent.hasError()) {
+                Timber.e("Geofence error: ${geofencingEvent.errorCode}")
+                return
+            }
+            val geofenceTransition = geofencingEvent.geofenceTransition
+            geofencingEvent.triggeringGeofences?.firstOrNull()?.requestId?.let { fenceId ->
+                val data = workDataOf(
+                    EXTRA_FENCE_ID to fenceId,
+                    ACTION_GEOFENCE_EVENT to geofenceTransition
+                )
+                val geofenceWorkRequest = OneTimeWorkRequestBuilder<GeofenceTransitionsWorker>()
+                    .setInputData(data)
+                    .build()
+                WorkManager.getInstance(context).enqueue(geofenceWorkRequest)
+            } ?: run {
+                Timber.e("No Geofence Trigger Found! Abort mission!")
+            }
+        }
     }
 
 }

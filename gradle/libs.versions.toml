@@ -42,6 +42,7 @@ ksp = '2.0.21-1.0.25'
 googleServicesVersion = "4.4.2"
 truthVersion = "1.6.0"
 gradlePluginSecretVersion = '2.0.1'
+workVersion = "2.10.0"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "androidXTestCoreVersion" }
@@ -101,6 +102,7 @@ dataStore = { group = "androidx.datastore", name = "datastore-preferences", vers
 splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreenVersion" }
 truth = { module = "androidx.test.ext:truth", version.ref = "truthVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
+andoidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradleToolsVersion" }

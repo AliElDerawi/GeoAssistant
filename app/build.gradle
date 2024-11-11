@@ -28,14 +28,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-//        unitTestTarget34 {
-//            initWith(buildTypes.debug)
-//            matchingFallbacks = ['debug']
-//            // Set both targetSdkVersion and maxSdkVersion to 35
-//            targetSdkVersion 35 // for testing only
-//            // Optionally, if you want to set a maxSdkVersion, do so as well:
-//            maxSdkVersion 35 // Allow up to API level 35
-//        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -50,10 +42,6 @@ android {
         returnDefaultValues = true
     }
 
-//    dataBinding {
-//        enabled = true
-//        enabledForTests = true
-//    }
     buildFeatures {
         dataBinding true
         buildConfig true
@@ -92,14 +80,17 @@ dependencies {
     // Kotlin Extensions and Coroutines support for Room
     implementation libs.androidx.room.ktx
 
+    // WorkManager
+    implementation libs.andoidx.work
+
     // Koin
     implementation libs.koin.android
     implementation libs.koin.core
 
     implementation libs.koin.compat
-    // Jetpack WorkManager
+    //  Jetpack WorkManager with Koin
     implementation libs.koin.workmanager
-    // Navigation Graph
+    // Navigation Graph with Koin
     implementation libs.koin.navigation
 
     // Maps & Geofencing

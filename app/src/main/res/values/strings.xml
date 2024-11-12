@@ -32,7 +32,7 @@
     <string name="geofences_not_added">Problem in adding geofences.</string>
     <string name="welcome">Welcome</string>
     <string name="err_enter_title">Please enter title</string>
-    <string name="err_select_location">Please select location</string>
+    <string name="err_select_location">Please mark a location on the map</string>
 
     <!-- Error strings -->
     <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>

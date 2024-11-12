@@ -1,6 +1,7 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.annotation.TargetApi
+import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.os.Handler
@@ -141,16 +142,18 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
             Navigation.setViewNavController(it.view!!, navController)
         }
         saveReminderViewModel.onSaveReminderClick()
-        activityRule.scenario.onActivity { activity ->
+        var activity : Activity? = null
+        activityRule.scenario.onActivity { it ->
+            activity = it
             // Perform actions on the activity instance here
-            onView(withText(R.string.err_enter_title)).inRoot(
-                withDecorView(
-                    not(
-                        activity.window?.decorView
-                    )
-                )
-            ).check(ViewAssertions.matches(isDisplayed()))
         }
+        onView(withText(R.string.err_enter_title)).inRoot(
+            withDecorView(
+                not(
+                    activity?.window?.decorView
+                )
+            )
+        ).check(ViewAssertions.matches(isDisplayed()))
         scenario.close()
     }
 }

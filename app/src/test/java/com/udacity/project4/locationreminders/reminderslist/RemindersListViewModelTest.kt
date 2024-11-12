@@ -8,6 +8,7 @@ import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -36,9 +37,11 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutinesRules()
+    private val testUserID = "testUserID"
 
     @Before
     fun setupViewModel() {
+        AppSharedMethods.setLoginStatus(true, testUserID,null)
         //Get our real repository
         reminderLocalRepository = FakeDataSource()
         //clear the data to start fresh

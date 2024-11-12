@@ -194,7 +194,7 @@ class SaveReminderViewModel(
     /**
      * Save the reminder to the data source
      */
-    fun saveReminder(reminderData: ReminderDataItem) {
+    fun saveReminder(reminderData: ReminderDataItem , userId : String? = AppSharedMethods.getCurrentUserId()) {
         showLoading.postValue(true)
         viewModelScope.launch {
             remindersLocalRepository.saveReminder(
@@ -204,7 +204,7 @@ class SaveReminderViewModel(
                     reminderData.location,
                     reminderData.latitude,
                     reminderData.longitude,
-                    userId = AppSharedMethods.getCurrentUserId(),
+                    userId!!,
                     reminderData.id,
                 )
             )

@@ -1,9 +1,13 @@
 package com.udacity.project4.locationreminders.data
 
+import android.app.Application
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.locationreminders.util.getOrAwaitValue
+import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
@@ -14,15 +18,19 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.koin.test.AutoCloseKoinTest
+import org.robolectric.annotation.Config
 
-
+@Config(sdk = [34])
+@RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
 class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
 
-    private val reminder1 = ReminderDTO("Title1", "Description1", "Location1", 1.0, 1.0, "id1")
-    private val reminder2 = ReminderDTO("Title2", "Description2", "Location2", 2.0, 2.0, "id2")
-    private val reminder3 = ReminderDTO("Title3", "Description3", "Location3", 3.0, 3.0, "id3")
+    private val testUserID = "testUserID"
+    private val reminder1 = ReminderDTO("Title1", "Description1", "Location1", 1.0, 1.0, testUserID,"id1")
+    private val reminder2 = ReminderDTO("Title2", "Description2", "Location2", 2.0, 2.0, testUserID,"id2")
+    private val reminder3 = ReminderDTO("Title3", "Description3", "Location3", 3.0, 3.0, testUserID,"id3")
     private val allReminders = listOf(reminder1, reminder2, reminder3).sortedBy { it.id }
     private val oldReminders = listOf(reminder1).sortedBy { it.id }
     private val newReminder = listOf(reminder2, reminder3).sortedBy { it.id }
@@ -36,12 +44,11 @@ class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
 
     @Before
     fun createRepository() {
-
+        AppSharedMethods.setLoginStatus(true, testUserID,null)
         tasksRemoteDataSource = FakeDataSource(allReminders.toMutableList())
         tasksLocalDataSource = FakeDataSource(oldReminders.toMutableList())
         tasksRepository = FakeDataSource()
         tasksRepository.addReminders(*oldReminders.toTypedArray())
-
     }
 
     @Test

@@ -14,6 +14,7 @@ import android.content.res.Resources
 import android.location.LocationManager
 import android.os.Build
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -73,8 +74,12 @@ object AppSharedMethods {
         Snackbar.make(findViewById(android.R.id.content), getString(message), duration).show()
     }
 
-    fun getSharedPreference(): SharedPreferences {
-        return getEncryptedSharedPrefs(MyApp.getInstance())
+    fun getSharedPreference(productionEnvironment: Boolean? = true): SharedPreferences {
+        return productionEnvironment?.let {
+            return getEncryptedSharedPrefs(MyApp.getInstance())
+        } ?: MyApp.getInstance().getSharedPreferences(
+            AppSharedData.MY_ENCRYPTED_PREF, Context.MODE_PRIVATE
+        )
     }
 
     private fun getEncryptedSharedPrefs(context: Context): SharedPreferences {
@@ -91,11 +96,15 @@ object AppSharedMethods {
     }
 
     fun getCurrentUserId(): String {
-        return getSharedPreference().getString(AppSharedData.PREF_USER_ID, "") ?: ""
+        return getSharedPreference().getString(AppSharedData.PREF_USER_ID, "")!!
     }
 
-    fun setLoginStatus(isLogin: Boolean, userID: String? = null) {
-        getSharedPreference().edit {
+    fun setLoginStatus(
+        isLogin: Boolean,
+        userID: String? = null,
+        productionEnvironment: Boolean? = true
+    ) {
+        getSharedPreference(productionEnvironment).edit {
             putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin)
             userID?.let { putString(AppSharedData.PREF_USER_ID, userID) }
         }

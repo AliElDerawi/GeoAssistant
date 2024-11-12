@@ -11,6 +11,7 @@ import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.utils.AppSharedMethods
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -34,6 +35,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     private lateinit var saveReminderViewModel: SaveReminderViewModel
     private lateinit var reminderLocalRepository: FakeDataSource
     private lateinit var appContext: Application
+    private val testUserID = "testUserID"
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -46,6 +48,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     fun setupViewModel() {
         //Get our real repository
         appContext = ApplicationProvider.getApplicationContext()
+        AppSharedMethods.setLoginStatus(true, testUserID, null)
         reminderLocalRepository = FakeDataSource()
         //clear the data to start fresh
         saveReminderViewModel =
@@ -57,15 +60,16 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun saveNewReminder_checkReminderValue() = runTest {
-        val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0)
+        val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0, testUserID)
         saveReminderViewModel.saveReminder(
             ReminderDataItem(
                 reminder.title,
                 reminder.description,
                 reminder.location,
                 reminder.latitude,
-                reminder.longitude
-            )
+                reminder.longitude,
+                reminder.id,
+            ),testUserID
         )
         val value = saveReminderViewModel.createGeofence.getOrAwaitValue()
         assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))

@@ -14,6 +14,7 @@ import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.util.getOrAwaitValue
+import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -44,11 +45,13 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
     private lateinit var appContext: Application
+    private val testUserID = "testUserID"
 
     @Before
     fun init() {
         stopKoin()//stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
+        AppSharedMethods.setLoginStatus(true, testUserID)
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(), RemindersDatabase::class.java
         ).allowMainThreadQueries().build()
@@ -64,7 +67,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
     @Test
     fun insertReminderAndGetById_checkSuccess() = runTest {
         // GIVEN - insert a reminder
-        val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0)
+        val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0,testUserID)
         localDataSource.saveReminder(
             ReminderDTO(
                 reminderDataItem.title,
@@ -72,6 +75,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
                 reminderDataItem.location,
                 reminderDataItem.latitude,
                 reminderDataItem.longitude,
+                testUserID,
                 reminderDataItem.id
             )
         )

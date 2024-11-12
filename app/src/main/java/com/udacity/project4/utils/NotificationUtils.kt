@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
@@ -11,8 +12,8 @@ import androidx.core.content.getSystemService
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.main.view.MainActivity
 
 
@@ -48,12 +49,15 @@ object NotificationUtils {
             GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
                 R.string.geofence_not_available
             )
+
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
                 R.string.geofence_too_many_geofences
             )
+
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
                 R.string.geofence_too_many_pending_intents
             )
+
             else -> resources.getString(R.string.unknown_geofence_error)
         }
     }
@@ -66,6 +70,10 @@ object NotificationUtils {
         val notificationManager = context.notificationManager
         val intent =
             context.createIntent<MainActivity>(ReminderDescriptionFragment.EXTRA_ReminderDataItem to reminderDataItem)
+                .apply {
+                    action = "actionstring" + System.currentTimeMillis()
+                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                }
         val notificationPendingIntent = PendingIntent.getActivity(
             context, 0, intent, PendingIntent.FLAG_MUTABLE
         )

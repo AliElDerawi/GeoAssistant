@@ -73,7 +73,7 @@ class AuthenticationFragment : BaseFragment() {
             // Successfully signed in
             FirebaseAuth.getInstance().currentUser?.let { user ->
                 Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
-                setLoginStatus(true, user)
+                setLoginStatus(true, user.uid)
                 mViewModel.navigationCommand.value = NavigationCommand.To(
                     AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
                 )

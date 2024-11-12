@@ -94,10 +94,10 @@ object AppSharedMethods {
         return getSharedPreference().getString(AppSharedData.PREF_USER_ID, "") ?: ""
     }
 
-    fun setLoginStatus(isLogin: Boolean, user: FirebaseUser? = null) {
+    fun setLoginStatus(isLogin: Boolean, userID: String? = null) {
         getSharedPreference().edit {
             putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin)
-            user?.let { putString(AppSharedData.PREF_USER_ID, user.uid) }
+            userID?.let { putString(AppSharedData.PREF_USER_ID, userID) }
         }
     }
 

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.safe.args)
     alias(libs.plugins.gradle.plugin.secret)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -167,5 +168,3 @@ dependencies {
     androidTestImplementation libs.koin.test.junit5
 
 }
-
-apply plugin: 'com.google.gms.google-services'

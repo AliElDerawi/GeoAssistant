@@ -7,7 +7,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.android.gms.location.GeofencingEvent
-import com.udacity.project4.utils.Constants.ACTION_GEOFENCE_EVENT
+import com.udacity.project4.utils.Constants.EXTRA_ACTION_GEOFENCE_EVENT
 import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
 import com.udacity.project4.utils.NotificationUtils.errorMessage
 import timber.log.Timber
@@ -37,7 +37,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             geofencingEvent.triggeringGeofences?.firstOrNull()?.requestId?.let { fenceId ->
                 val data = workDataOf(
                     EXTRA_FENCE_ID to fenceId,
-                    ACTION_GEOFENCE_EVENT to geofenceTransition
+                    EXTRA_ACTION_GEOFENCE_EVENT to geofenceTransition
                 )
                 val geofenceWorkRequest = OneTimeWorkRequestBuilder<GeofenceTransitionsWorker>()
                     .setInputData(data)

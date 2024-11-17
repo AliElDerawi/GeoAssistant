@@ -14,14 +14,13 @@ import android.content.res.Resources
 import android.location.LocationManager
 import android.os.Build
 import android.widget.Toast
-import androidx.annotation.VisibleForTesting
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.content.getSystemService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
-import androidx.lifecycle.MutableLiveData
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.work.Data
@@ -36,7 +35,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseUser
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
@@ -50,7 +48,7 @@ object AppSharedMethods {
 
     private var mToast: Toast? = null
 
-    fun Activity.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
         mToast?.cancel()
         mToast = Toast.makeText(MyApp.getInstance().applicationContext, message, duration)
         mToast!!.show()
@@ -110,10 +108,6 @@ object AppSharedMethods {
         }
     }
 
-    fun <T> MutableLiveData<T>.notifyObserver() {
-        this.value = this.value
-    }
-
     @TargetApi(Build.VERSION_CODES.Q)
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Activity): Boolean {
         return (ContextCompat.checkSelfPermission(
@@ -152,32 +146,18 @@ object AppSharedMethods {
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
-    fun showAndRequestFineLocationDialog(mActivity: Activity) {
-        ActivityCompat.requestPermissions(
-            mActivity,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            Constants.REQUEST_LOCATION_PERMISSION
-        )
-    }
-
-    fun showForegroundLocationRequestPermission(mActivity: Activity): Boolean {
+    fun shouldShowForegroundLocationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
         return ActivityCompat.shouldShowRequestPermissionRationale(
             mActivity, Manifest.permission.ACCESS_FINE_LOCATION
         )
     }
 
-    fun showBackgroundLocationRequestPermission(mActivity: Activity): Boolean {
+    @TargetApi(Build.VERSION_CODES.Q)
+    fun shouldShowBackgroundLocationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
         return ActivityCompat.shouldShowRequestPermissionRationale(
             mActivity, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        )
-    }
-
-    fun showPostNotificationRequestPermission(mActivity: Activity): Boolean {
-//         Return True if user denied , and false if a user select never show again
-        return ActivityCompat.shouldShowRequestPermissionRationale(
-            mActivity, Manifest.permission.POST_NOTIFICATIONS
         )
     }
 
@@ -213,6 +193,7 @@ object AppSharedMethods {
         return formatter.format(lat).toString() + " " + formatter.format(longt).toString()
     }
 
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
     fun isReceiveNotificationPermissionGranted(mActivity: Activity): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.POST_NOTIFICATIONS
@@ -240,77 +221,78 @@ object AppSharedMethods {
     fun isSupportsAndroid33(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     }
-}
 
-fun isLogin(): Boolean {
-    return getSharedPreference().getBoolean(AppSharedData.PREF_IS_LOGIN, false)
-}
-
-inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<String, Any>): Intent {
-    val intent = Intent(this, T::class.java)
-    intent.putExtras(bundleOf(*params))
-    intent.setAction(Intent.ACTION_VIEW)
-    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    return intent
-}
-
-fun Context.getCompatColorStateList(color: Int): ColorStateList {
-    return ColorStateList.valueOf(
-        ResourcesCompat.getColor(
-            resources, color, null
-        )
-    )
-}
-
-fun FloatingActionButton.setStatusStyle(isEnabled: Boolean) {
-    val backgroundColorStateList = if (isEnabled) {
-        context.getCompatColorStateList(R.color.colorAccent)
-    } else {
-        context.getCompatColorStateList(R.color.colorGrayB2)
+    fun isLogin(): Boolean {
+        return getSharedPreference().getBoolean(AppSharedData.PREF_IS_LOGIN, false)
     }
-    apply {
-        backgroundTintList = backgroundColorStateList
+
+    inline fun <reified T : Activity> Context.createIntent(vararg params: Pair<String, Any>): Intent {
+        val intent = Intent(this, T::class.java)
+        intent.putExtras(bundleOf(*params))
+        intent.setAction(Intent.ACTION_VIEW)
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        return intent
     }
-}
 
-fun Activity.getSnackBar(message: String, duration: Int = Snackbar.LENGTH_LONG): Snackbar {
-    return Snackbar.make(findViewById(android.R.id.content), message, duration)
-}
-
-fun GoogleMap.animateCameraToLocation(latLng: LatLng, zoom: Float) {
-    animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
-}
-
-fun GoogleMap.moveCameraToLocation(latLng: LatLng, zoom: Float) {
-    moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
-}
-
-fun GoogleMap.setCustomMapStyle(mayStyle: Int) {
-    try {
-        // Customize the styling of the base map using a JSON object defined
-        // in a raw resource file.
-        val success = setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(
-                MyApp.getInstance().applicationContext, mayStyle
+    fun Context.getCompatColorStateList(color: Int): ColorStateList {
+        return ColorStateList.valueOf(
+            ResourcesCompat.getColor(
+                resources, color, null
             )
         )
-        if (!success) {
-            Timber.e("Style parsing failed.")
-        }
-    } catch (e: Resources.NotFoundException) {
-        Timber.e("Can't find style. Error: ", e)
     }
+
+    fun FloatingActionButton.setStatusStyle(isEnabled: Boolean) {
+        val backgroundColorStateList = if (isEnabled) {
+            context.getCompatColorStateList(R.color.colorAccent)
+        } else {
+            context.getCompatColorStateList(R.color.colorGrayB2)
+        }
+        apply {
+            backgroundTintList = backgroundColorStateList
+        }
+    }
+
+    fun Activity.getSnackBar(message: String, duration: Int = Snackbar.LENGTH_LONG): Snackbar {
+        return Snackbar.make(findViewById(android.R.id.content), message, duration)
+    }
+
+    fun GoogleMap.animateCameraToLocation(latLng: LatLng, zoom: Float) {
+        animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+    }
+
+    fun GoogleMap.moveCameraToLocation(latLng: LatLng, zoom: Float) {
+        moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+    }
+
+    fun GoogleMap.setCustomMapStyle(mayStyle: Int) {
+        try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    MyApp.getInstance().applicationContext, mayStyle
+                )
+            )
+            if (!success) {
+                Timber.e("Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e("Can't find style. Error: ", e)
+        }
+    }
+
+    fun GoogleMap.addMarkerWithName(latLng: LatLng, name: String): Marker? {
+        return addMarker(
+            MarkerOptions().position(latLng).title(name)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+        )
+    }
+
+    val Context.notificationManager: NotificationManager?
+        get() = getSystemService<NotificationManager>()
+
+    val Context.locationManager: LocationManager?
+        get() = getSystemService<LocationManager>()
+
 }
-
-fun GoogleMap.addMarkerWithName(latLng: LatLng, name: String): Marker? {
-    return addMarker(
-        MarkerOptions().position(latLng).title(name)
-            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
-    )
-}
-
-val Context.notificationManager: NotificationManager?
-    get() = getSystemService<NotificationManager>()
-
-val Context.locationManager: LocationManager?
-    get() = getSystemService<LocationManager>()

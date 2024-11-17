@@ -18,9 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.udacity.project4.FakeTestRepository
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationViewModel
@@ -28,7 +26,6 @@ import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.local.RemindersLocalRepository
-import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
 import com.udacity.project4.main.view.MainActivity
 import com.udacity.project4.main.viewModel.MainViewModel
@@ -49,8 +46,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -147,7 +142,7 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
             activity = it
             // Perform actions on the activity instance here
         }
-        onView(withText(R.string.err_enter_title)).inRoot(
+        onView(withText(R.string.msg_enter_title)).inRoot(
             withDecorView(
                 not(
                     activity?.window?.decorView

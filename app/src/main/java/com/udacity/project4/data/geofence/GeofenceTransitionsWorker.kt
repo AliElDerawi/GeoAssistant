@@ -8,8 +8,7 @@ import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result.Success
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.utils.Constants
-import com.udacity.project4.utils.Constants.ACTION_GEOFENCE_EVENT
+import com.udacity.project4.utils.Constants.EXTRA_ACTION_GEOFENCE_EVENT
 import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
 import com.udacity.project4.utils.NotificationUtils.sendNotificationAboutEnteredGeofence
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +28,7 @@ class GeofenceTransitionsWorker(
 
         return try {
             val fenceId = inputData.getString(EXTRA_FENCE_ID)
-            val geofenceTransition = inputData.getInt(ACTION_GEOFENCE_EVENT, -1)
+            val geofenceTransition = inputData.getInt(EXTRA_ACTION_GEOFENCE_EVENT, -1)
 
             fenceId?.let {
                 when (geofenceTransition) {

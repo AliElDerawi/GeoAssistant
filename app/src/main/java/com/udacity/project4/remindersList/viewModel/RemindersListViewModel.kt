@@ -15,17 +15,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
-    app: Application,
-    private val dataSource: ReminderDataSource
-) : BaseViewModel(app) {
+    private val mApp: Application,
+    private val mReminderDataSource: ReminderDataSource
+) : BaseViewModel(mApp) {
     // list that holds the reminder data to be displayed on the UI
-    private var _remindersList = MutableStateFlow<List<ReminderDataItem>>(listOf())
-    val remindersList: StateFlow<List<ReminderDataItem>>
-        get() = _remindersList
+    private var _remindersListStateFlow = MutableStateFlow<List<ReminderDataItem>>(listOf())
+    val remindersListStateFlow: StateFlow<List<ReminderDataItem>>
+        get() = _remindersListStateFlow
 
-    private var _addReminderLiveData = SingleLiveEvent<Boolean>()
-    val addReminderLiveData: LiveData<Boolean>
-        get() = _addReminderLiveData
+    private var _addReminderSingleLiveEvent = SingleLiveEvent<Boolean>()
+    val addReminderSingleLiveEvent: LiveData<Boolean>
+        get() = _addReminderSingleLiveEvent
 
     init {
         loadReminders()
@@ -39,7 +39,7 @@ class RemindersListViewModel(
         showLoading.postValue(true)
         viewModelScope.launch {
             //interacting with the dataSource has to be through a coroutine
-            val result = dataSource.getReminders()
+            val result = mReminderDataSource.getReminders()
             showLoading.postValue(false)
             when (result) {
                 is Result.Success<*> -> {
@@ -56,7 +56,7 @@ class RemindersListViewModel(
                                 reminder.id
                             )
                         }
-                        _remindersList.value = (dataList)
+                        _remindersListStateFlow.value = (dataList)
                     }
                 }
 
@@ -72,10 +72,10 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersList.value.isEmpty()
+        showNoData.value = remindersListStateFlow.value.isEmpty()
     }
 
     fun addReminderClick() {
-        _addReminderLiveData.value = true
+        _addReminderSingleLiveEvent.value = true
     }
 }

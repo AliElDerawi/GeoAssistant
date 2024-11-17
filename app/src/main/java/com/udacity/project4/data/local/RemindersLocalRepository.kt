@@ -93,14 +93,16 @@ class RemindersLocalRepository(
 
     override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
         return wrapEspressoIdlingResource {
-            try {
-                val location = fusedLocationProviderClient.lastLocation.await()
-                Result.Success(flow { emit(location) })
-            } catch (e: SecurityException) {
-                Timber.e(e)
-                Result.Error(e.localizedMessage)
-            } catch (e: Exception) {
-                Result.Error(e.localizedMessage)
+            withContext(ioDispatcher){
+                try {
+                    val location = fusedLocationProviderClient.lastLocation.await()
+                    Result.Success(flow { emit(location) })
+                } catch (e: SecurityException) {
+                    Timber.e(e)
+                    Result.Error(e.localizedMessage)
+                } catch (e: Exception) {
+                    Result.Error(e.localizedMessage)
+                }
             }
         }
     }

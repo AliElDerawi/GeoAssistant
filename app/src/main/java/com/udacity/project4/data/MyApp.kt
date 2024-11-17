@@ -22,8 +22,10 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+
 
 class MyApp : MultiDexApplication() {
 
@@ -32,13 +34,9 @@ class MyApp : MultiDexApplication() {
         private var mAppInstance: MyApp? = null
 
         fun getInstance(): MyApp {
-            if (mAppInstance == null) {
-                synchronized(MyApp::class.java) {
-                    if (mAppInstance == null)
-                        mAppInstance = MyApp()
-                }
+            return mAppInstance ?: synchronized(this) {
+                mAppInstance ?: MyApp().also { mAppInstance = it }
             }
-            return mAppInstance!!
         }
 
     }
@@ -57,10 +55,10 @@ class MyApp : MultiDexApplication() {
             workerOf(::GeofenceTransitionsWorker)
             workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
-            single { SaveReminderViewModel(get(), get(), get()) }
+            singleOf(::SaveReminderViewModel)
+            singleOf(::MainViewModel)
             single { RemindersLocalRepository(get(), Dispatchers.IO, get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
-            single { MainViewModel(get()) }
             single<ReminderDataSource> { get<RemindersLocalRepository>() }
             single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
             single { LocationServices.getGeofencingClient(this@MyApp) }

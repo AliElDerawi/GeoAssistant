@@ -38,84 +38,69 @@ import com.udacity.project4.data.dto.Result
 import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
 
 class SaveReminderViewModel(
-    val app: Application,
-    val remindersLocalRepository: ReminderDataSource,
-    val geofencingClient: GeofencingClient
-) : BaseViewModel(app) {
+    private val mApp: Application,
+    private val mRemindersLocalRepository: ReminderDataSource,
+    private val mGeofencingClient: GeofencingClient
+) : BaseViewModel(mApp) {
 
-    private var _reminderTitle = MutableStateFlow<String?>("")
-    val reminderTitle: StateFlow<String?>
-        get() = _reminderTitle
+    private var _reminderTitleStateFlow = MutableStateFlow<String?>("")
+    val reminderTitleStateFlow: StateFlow<String?>
+        get() = _reminderTitleStateFlow
 
-    private var _reminderDescription = MutableStateFlow<String?>("")
-    val reminderDescription: StateFlow<String?>
-        get() = _reminderDescription
+    private var _reminderDescriptionStateFlow = MutableStateFlow<String?>("")
+    val reminderDescriptionStateFlow: StateFlow<String?>
+        get() = _reminderDescriptionStateFlow
 
-    private var _reminderSelectedLocationStr = MutableStateFlow<String?>("")
-    val reminderSelectedLocationStr: StateFlow<String?>
-        get() = _reminderSelectedLocationStr
+    private var _reminderSelectedLocationStrStateFlow = MutableStateFlow<String?>("")
+    val reminderSelectedLocationStrStateFlow: StateFlow<String?>
+        get() = _reminderSelectedLocationStrStateFlow
 
-    val isCreateReminderEnabled: StateFlow<Boolean> = combine(
-        _reminderTitle, _reminderDescription, _reminderSelectedLocationStr
+    val isCreateReminderEnabledStateFlow: StateFlow<Boolean> = combine(
+        _reminderTitleStateFlow, _reminderDescriptionStateFlow, _reminderSelectedLocationStrStateFlow
     ) { title, description, location ->
         !title.isNullOrEmpty() && !description.isNullOrEmpty() && !location.isNullOrEmpty()
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
-    private var _selectedPOI = MutableLiveData<PointOfInterest?>()
-    val selectedPOI: LiveData<PointOfInterest?>
-        get() = _selectedPOI
+    private var _selectedPOILiveData = MutableLiveData<PointOfInterest?>()
+    val selectedPOILiveData: LiveData<PointOfInterest?>
+        get() = _selectedPOILiveData
 
-    private var _latitude = MutableLiveData<Double?>()
-    val latitude: LiveData<Double?>
-        get() = _latitude
+    private var _moveMapSingleLiveEvent = SingleLiveEvent<Boolean>()
+    val moveMapSingleLiveEvent: LiveData<Boolean>
+        get() = _moveMapSingleLiveEvent
 
-    private var _longitude = MutableLiveData<Double?>()
-    val longitude: LiveData<Double?>
-        get() = _longitude
+    private var _saveLocationSingleLiveEvent = SingleLiveEvent<Boolean>()
+    val saveLocationSingleLiveEvent: LiveData<Boolean>
+        get() = _saveLocationSingleLiveEvent
 
-    private var _moveMap = SingleLiveEvent<Boolean>()
-    val moveMap: LiveData<Boolean>
-        get() = _moveMap
+    private var _saveReminderSingleLiveEvent = SingleLiveEvent<Boolean>()
+    val saveReminderSingleLiveEvent: LiveData<Boolean>
+        get() = _saveReminderSingleLiveEvent
 
-    private var _saveLocation = SingleLiveEvent<Boolean>()
-    val saveLocation: LiveData<Boolean>
-        get() = _saveLocation
+    private var _createGeofenceSingleLiveEvent = SingleLiveEvent<ReminderDataItem?>()
+    val createGeofenceSingleLiveEvent: LiveData<ReminderDataItem?>
+        get() = _createGeofenceSingleLiveEvent
 
-    private var _saveReminder = SingleLiveEvent<Boolean>()
-    val saveReminder: LiveData<Boolean>
-        get() = _saveReminder
+    private var _lastUserLocationStateFlow = MutableStateFlow<Location?>(null)
+    val lastUserLocationStateFlow: StateFlow<Location?>
+        get() = _lastUserLocationStateFlow
 
-    private var _createGeofence = SingleLiveEvent<ReminderDataItem?>()
-    val createGeofence: LiveData<ReminderDataItem?>
-        get() = _createGeofence
+    private var _selectedLocationLatLngLiveData = MutableLiveData<LatLng?>()
+    val selectedLocationLatLngLiveData: LiveData<LatLng?>
+        get() = _selectedLocationLatLngLiveData
 
-    private var _selectLocation = SingleLiveEvent<Boolean>()
-    val selectLocation: LiveData<Boolean>
-        get() = _selectLocation
-
-    private var _lastUserLocationFlow = MutableStateFlow<Location?>(null)
-    val lastUserLocationFlow: StateFlow<Location?>
-        get() = _lastUserLocationFlow
-
-    private var _selectedLocationLatLng = MutableLiveData<LatLng?>()
-    val selectedLocationLatLng: LiveData<LatLng?>
-        get() = _selectedLocationLatLng
-
-    private var _currentMapStyle = MutableLiveData<Int>(R.id.normal_map)
-    val currentMapStyle: LiveData<Int>
-        get() = _currentMapStyle
-
+    private var _currentMapStyleLiveData = MutableLiveData<Int>(R.id.normal_map)
+    val currentMapStyleLiveData: LiveData<Int>
+        get() = _currentMapStyleLiveData
 
     /**
      * Clear the live data objects to start fresh next time the view model gets called
      */
     fun onClear() {
-        _reminderTitle.value = null
-        _reminderDescription.value = null
-        _reminderSelectedLocationStr.value = null
-        _selectedPOI.value = null
-        _latitude.value = null
-        _longitude.value = null
+        _reminderTitleStateFlow.value = null
+        _reminderDescriptionStateFlow.value = null
+        _reminderSelectedLocationStrStateFlow.value = null
+        _selectedPOILiveData.value = null
     }
 
     override fun onCleared() {
@@ -124,17 +109,17 @@ class SaveReminderViewModel(
     }
 
     private val geofencePendingIntent: PendingIntent by lazy {
-        val intent = Intent(app, GeofenceBroadcastReceiver::class.java)
-        intent.action = Constants.ACTION_GEOFENCE_EVENT
-        PendingIntent.getBroadcast(app, 0, intent, PendingIntent.FLAG_MUTABLE)
+        val intent = Intent(mApp, GeofenceBroadcastReceiver::class.java)
+        intent.action = Constants.EXTRA_ACTION_GEOFENCE_EVENT
+        PendingIntent.getBroadcast(mApp, 0, intent, PendingIntent.FLAG_MUTABLE)
     }
 
     fun onTitleTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        _reminderTitle.value = s.toString()
+        _reminderTitleStateFlow.value = s.toString()
     }
 
     fun onDescriptionTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-        _reminderDescription.value = s.toString()
+        _reminderDescriptionStateFlow.value = s.toString()
     }
 
     /**
@@ -143,19 +128,19 @@ class SaveReminderViewModel(
 
     fun onSaveReminderClick() {
         when {
-            _reminderTitle.value.isNullOrEmpty() -> showToastInt.postValue(R.string.err_enter_title)
-            _reminderDescription.value.isNullOrEmpty() -> showToastInt.postValue(
-                R.string.text_msg_please_enter_description
+            _reminderTitleStateFlow.value.isNullOrEmpty() -> showToastInt.postValue(R.string.msg_enter_title)
+            _reminderDescriptionStateFlow.value.isNullOrEmpty() -> showToastInt.postValue(
+                R.string.msg_please_enter_description
             )
-            _reminderSelectedLocationStr.value.isNullOrEmpty() -> showToastInt.postValue(
-                R.string.err_select_location
+            _reminderSelectedLocationStrStateFlow.value.isNullOrEmpty() -> showToastInt.postValue(
+                R.string.msg_select_location
             )
-            else -> _saveReminder.postValue(true)
+            else -> _saveReminderSingleLiveEvent.postValue(true)
         }
     }
 
     fun setSelectedPOIAndShowName(pointOfInterest: PointOfInterest) {
-        _selectedPOI.value = pointOfInterest
+        _selectedPOILiveData.value = pointOfInterest
         startFetchAddressWorker(
             LatLng(
                 pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude
@@ -164,29 +149,29 @@ class SaveReminderViewModel(
     }
 
     fun setSelectedPOI(pointOfInterest: PointOfInterest) {
-        _selectedPOI.value = pointOfInterest
+        _selectedPOILiveData.value = pointOfInterest
     }
 
     fun setSelectedLocationLatLngAndShowName(latLng: LatLng) {
-        _selectedLocationLatLng.value = latLng
+        _selectedLocationLatLngLiveData.value = latLng
         startFetchAddressWorker(
             LatLng(
-                selectedLocationLatLng.value!!.latitude, selectedLocationLatLng.value!!.longitude
+                selectedLocationLatLngLiveData.value!!.latitude, selectedLocationLatLngLiveData.value!!.longitude
             ),
         )
     }
 
     fun createGeofenceAfterGrantPermission() {
-        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(app)) {
-            showToast.postValue(app.getString(R.string.text_enable_background_location_permission_msg))
+        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
+            showToast.postValue(mApp.getString(R.string.msg_enable_background_location_permission))
             return
         }
-        NotificationUtils.createChannel(app)
-        val title = reminderTitle.value
-        val description = reminderDescription.value
-        val location = reminderSelectedLocationStr.value
-        val latitude = latitude.value
-        val longitude = longitude.value
+        NotificationUtils.createChannel(mApp)
+        val title = reminderTitleStateFlow.value
+        val description = reminderDescriptionStateFlow.value
+        val location = reminderSelectedLocationStrStateFlow.value
+        val latitude = selectedPOILiveData.value!!.latLng.latitude
+        val longitude = selectedPOILiveData.value!!.latLng.longitude
         val reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
         saveReminder(reminderDataItem)
     }
@@ -197,7 +182,7 @@ class SaveReminderViewModel(
     fun saveReminder(reminderData: ReminderDataItem , userId : String? = AppSharedMethods.getCurrentUserId()) {
         showLoading.postValue(true)
         viewModelScope.launch {
-            remindersLocalRepository.saveReminder(
+            mRemindersLocalRepository.saveReminder(
                 ReminderDTO(
                     reminderData.title,
                     reminderData.description,
@@ -209,8 +194,8 @@ class SaveReminderViewModel(
                 )
             )
             showLoading.postValue(false)
-            showToastInt.postValue(R.string.reminder_saved)
-            _createGeofence.value = (reminderData)
+            showToastInt.postValue(R.string.msg_reminder_saved)
+            _createGeofenceSingleLiveEvent.value = (reminderData)
             continueSaveReminder(reminderData)
         }
     }
@@ -220,26 +205,24 @@ class SaveReminderViewModel(
      */
 
     fun navigateToLastMarkedLocation() {
-        _moveMap.value = true
+        _moveMapSingleLiveEvent.value = true
     }
 
     fun saveLocation() {
-        selectedPOI.value?.let {
-            _reminderSelectedLocationStr.value = selectedPOI.value!!.name
-            _latitude.value = selectedPOI.value!!.latLng.latitude
-            _longitude.value = selectedPOI.value!!.latLng.longitude
-            _saveLocation.value = true
-        } ?: showSnackBarInt.postValue(R.string.err_select_location)
+        selectedPOILiveData.value?.let {
+            _reminderSelectedLocationStrStateFlow.value = selectedPOILiveData.value!!.name
+            _saveLocationSingleLiveEvent.value = true
+        } ?: showSnackBarInt.postValue(R.string.msg_select_location)
     }
 
     fun setCurrentMapStyle(style: Int) {
-        _currentMapStyle.value = style
+        _currentMapStyleLiveData.value = style
     }
 
     @SuppressLint("MissingPermission")
     private fun continueSaveReminder(reminderDataItem: ReminderDataItem) {
-        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(app)) {
-            showToastInt.value = R.string.location_required_for_create_geofence_error
+        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
+            showToastInt.value = R.string.msg_location_required_for_create_geofence_error
             return
         }
         val geofence = Geofence.Builder().setRequestId(reminderDataItem.id).setCircularRegion(
@@ -253,16 +236,16 @@ class SaveReminderViewModel(
             GeofencingRequest.Builder().setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
                 .addGeofence(geofence).build()
 
-        geofencingClient.removeGeofences(geofencePendingIntent).run {
+        mGeofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnCompleteListener {
-                geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
+                mGeofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
-                        showToastInt.value = R.string.geofences_added
+                        showToastInt.value = R.string.msg_geofences_added
                         Timber.d("Add Geofence", geofence.requestId)
                         navigationCommand.value = NavigationCommand.Back
                     }
                     addOnFailureListener {
-                        showToastInt.value = R.string.geofences_not_added
+                        showToastInt.value = R.string.msg_geofences_not_added
                         if ((it.message != null)) {
                             Timber.w(it.message + "")
                         }
@@ -279,30 +262,30 @@ class SaveReminderViewModel(
     }
 
     fun removeGeofences() {
-        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(app)) {
+        if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             return
         }
-        geofencingClient.removeGeofences(geofencePendingIntent).run {
+        mGeofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnSuccessListener {
-                Timber.d(app.getString(R.string.geofences_removed))
-                showToastInt.value = R.string.geofences_removed
+                Timber.d(mApp.getString(R.string.msg_geofences_removed))
+                showToastInt.value = R.string.msg_geofences_removed
             }
             addOnFailureListener {
-                Timber.d(app.getString(R.string.geofences_not_removed))
+                Timber.d(mApp.getString(R.string.msg_geofences_not_removed))
             }
         }
     }
 
     fun getLastUserLocation() {
-        if (isForegroundPermissionGranted(app)) {
+        if (isForegroundPermissionGranted(mApp)) {
             viewModelScope.launch(Dispatchers.IO) {
-                remindersLocalRepository.getLastUserLocation().let {
+                mRemindersLocalRepository.getLastUserLocation().let {
                     if (it is Result.Success) {
                         it.data.collect { location ->
-                            _lastUserLocationFlow.value = location
+                            _lastUserLocationStateFlow.value = location
                         }
                     } else {
-                        _lastUserLocationFlow.value = null
+                        _lastUserLocationStateFlow.value = null
                     }
                 }
             }

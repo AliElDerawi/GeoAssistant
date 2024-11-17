@@ -54,8 +54,7 @@ class AuthenticationFragment : BaseFragment() {
     }
 
     private fun initViewModelObserver() {
-
-        mViewModel.completeLoginLiveData.observe(viewLifecycleOwner) { redirect ->
+        mViewModel.completeLoginSingleLiveEvent.observe(viewLifecycleOwner) { redirect ->
             if (redirect) {
                 val signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()

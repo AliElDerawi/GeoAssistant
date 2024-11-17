@@ -14,7 +14,6 @@ import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -71,7 +70,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
                 reminder.id,
             ),testUserID
         )
-        val value = saveReminderViewModel.createGeofence.getOrAwaitValue()
+        val value = saveReminderViewModel.createGeofenceSingleLiveEvent.getOrAwaitValue()
         assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
         assertThat(value!!.title, `is`(reminder.title))
     }

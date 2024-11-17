@@ -63,7 +63,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     @Test
     fun loadReminders_checkEmptyList() = runTest {
         remindersListViewModel.loadReminders()
-        assertThat(remindersListViewModel.remindersList.getOrAwaitValue(), `is`(emptyList()))
+        assertThat(remindersListViewModel.remindersListStateFlow.getOrAwaitValue(), `is`(emptyList()))
     }
 
     @Test

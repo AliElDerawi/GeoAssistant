@@ -29,29 +29,31 @@ abstract class BaseFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        mViewModel.showErrorMessage.observe(this) {
-            mActivity.showToast(it, Toast.LENGTH_LONG)
-        }
-        mViewModel.showToast.observe(this) {
-            mActivity.showToast(it, Toast.LENGTH_LONG)
-        }
-        mViewModel.showToastInt.observe(this) {
-            mActivity.showToast(it, Toast.LENGTH_LONG)
-        }
-        mViewModel.showSnackBar.observe(this) {
-            mActivity.showSnackBar(it, Snackbar.LENGTH_LONG)
-        }
-        mViewModel.showSnackBarInt.observe(this) {
-            mActivity.showSnackBar(it, Snackbar.LENGTH_LONG)
-        }
-        mViewModel.navigationCommand.observe(this) { command ->
-            when (command) {
-                is NavigationCommand.To -> findNavController().navigate(command.directions)
-                is NavigationCommand.Back -> findNavController().popBackStack()
-                is NavigationCommand.BackTo -> findNavController().popBackStack(
-                    command.destinationId,
-                    false
-                )
+        with(mViewModel){
+            showErrorMessage.observe(viewLifecycleOwner) {
+                showToast(it, Toast.LENGTH_LONG)
+            }
+            showToast.observe(viewLifecycleOwner) {
+                showToast(it, Toast.LENGTH_LONG)
+            }
+            showToastInt.observe(viewLifecycleOwner) {
+                mActivity.showToast(it, Toast.LENGTH_LONG)
+            }
+            showSnackBar.observe(viewLifecycleOwner) {
+                mActivity.showSnackBar(it, Snackbar.LENGTH_LONG)
+            }
+            showSnackBarInt.observe(viewLifecycleOwner) {
+                mActivity.showSnackBar(it, Snackbar.LENGTH_LONG)
+            }
+            navigationCommand.observe(viewLifecycleOwner) { command ->
+                when (command) {
+                    is NavigationCommand.To -> findNavController().navigate(command.directions)
+                    is NavigationCommand.Back -> findNavController().popBackStack()
+                    is NavigationCommand.BackTo -> findNavController().popBackStack(
+                        command.destinationId,
+                        false
+                    )
+                }
             }
         }
     }

@@ -10,13 +10,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.udacity.project4.R
-import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.ActivityMainBinding
 import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
-import com.udacity.project4.utils.isLogin
+import com.udacity.project4.utils.AppSharedMethods.isLogin
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -28,8 +27,8 @@ class MainActivity : AppCompatActivity() {
 
     private val mMainViewModel: MainViewModel by inject()
     private lateinit var mBinding: ActivityMainBinding
-    private lateinit var navController: NavController
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var mNavController: NavController
+    private lateinit var mAppBarConfiguration: AppBarConfiguration
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             val bundle = Bundle().apply {
                 putParcelable(ReminderDescriptionFragment.EXTRA_ReminderDataItem, reminderDataItem)
             }
-            navController.navigate(R.id.reminderDescriptionFragment, bundle)
+            mNavController.navigate(R.id.reminderDescriptionFragment, bundle)
         }
 
     }
@@ -64,35 +63,38 @@ class MainActivity : AppCompatActivity() {
                     setSupportActionBar(mainToolbar)
                     mainToolbar.setTitle(null)
                 }
-        navController =
+        initListener(savedInstanceState)
+        initViewModelObservers()
+    }
+
+    private fun initListener(savedInstanceState: Bundle?){
+        mNavController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
-        appBarConfiguration = AppBarConfiguration(navController.graph)
+        mAppBarConfiguration = AppBarConfiguration(mNavController.graph)
         Timber.plant(Timber.DebugTree())
         if (savedInstanceState == null) {
             val startDestination =
                 if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
-            val navGraph = navController.navInflater.inflate(R.navigation.main_navigation).apply {
+            val navGraph = mNavController.navInflater.inflate(R.navigation.main_navigation).apply {
                 setStartDestination(startDestination)
             }
-            navController.graph = navGraph
+            mNavController.graph = navGraph
         }
-        initViewModelObservers()
     }
 
     private fun initViewModelObservers() {
         with(mMainViewModel) {
-            hideToolbar.observe(this@MainActivity) {
+            hideToolbarLiveData.observe(this@MainActivity) {
                 mBinding.mainToolbar.visibility = if (it) View.GONE else View.VISIBLE
             }
-
-            showUpButton.observe(this@MainActivity) {
+            showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
             }
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
+        return NavigationUI.navigateUp(mNavController, mAppBarConfiguration)
     }
 
 }

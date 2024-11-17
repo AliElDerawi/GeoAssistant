@@ -3,10 +3,8 @@ package com.udacity.project4.remindersList.view
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.core.content.edit
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
@@ -18,8 +16,6 @@ import com.udacity.project4.remindersList.adapter.RemindersListAdapter
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
-import com.udacity.project4.utils.AppSharedData
-import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
@@ -31,10 +27,10 @@ class ReminderListFragment : BaseFragment() {
 
     // Use Koin to retrieve the ViewModel instance
     override val mViewModel: RemindersListViewModel by viewModel()
-    private lateinit var mBinding: FragmentRemindersBinding
-    private lateinit var mActivity: FragmentActivity
     private val mSharedViewModel: MainViewModel by inject()
     private val mSaveReminderViewModel: SaveReminderViewModel by inject()
+    private lateinit var mBinding: FragmentRemindersBinding
+    private lateinit var mActivity: FragmentActivity
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -71,7 +67,6 @@ class ReminderListFragment : BaseFragment() {
             addReminderFAB.setOnClickListener {
                 navigateToAddReminder()
             }
-
             refreshLayout.setOnRefreshListener {
                 mViewModel.loadReminders()
                 refreshLayout.isRefreshing = false
@@ -80,7 +75,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun initViewModelObservers() {
-        mViewModel.addReminderLiveData.observe(viewLifecycleOwner) {
+        mViewModel.addReminderSingleLiveEvent.observe(viewLifecycleOwner) {
             if (it) {
                 navigateToAddReminder()
             }
@@ -104,7 +99,7 @@ class ReminderListFragment : BaseFragment() {
                 )
         }
         // Setup the recycler view using the extension function
-        mBinding.reminderssRecyclerView.setup(adapter)
+        mBinding.remindersRecyclerView.setup(adapter)
     }
 
     private fun initMenu() {

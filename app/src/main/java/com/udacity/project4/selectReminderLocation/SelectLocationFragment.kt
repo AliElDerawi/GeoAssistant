@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
@@ -16,7 +15,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -33,14 +31,14 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.utils.AppSharedMethods.addMarkerWithName
+import com.udacity.project4.utils.AppSharedMethods.animateCameraToLocation
 import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
+import com.udacity.project4.utils.AppSharedMethods.moveCameraToLocation
+import com.udacity.project4.utils.AppSharedMethods.setCustomMapStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
-import com.udacity.project4.utils.addMarkerWithName
-import com.udacity.project4.utils.animateCameraToLocation
-import com.udacity.project4.utils.moveCameraToLocation
-import com.udacity.project4.utils.setCustomMapStyle
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import kotlinx.coroutines.launch
@@ -52,11 +50,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
     // Use Koin to get the view model of the SaveReminder
     override val mViewModel: SaveReminderViewModel by inject()
-    private lateinit var mBinding: FragmentSelectLocationBinding
     private val mSharedViewModel: MainViewModel by inject()
+    private val mResultReceiver: MyResultIntentReceiver by inject()
+    private lateinit var mBinding: FragmentSelectLocationBinding
     private lateinit var mActivity: FragmentActivity
     private lateinit var mGoogleMap: GoogleMap
-    private val mResultReceiver: MyResultIntentReceiver by inject()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -102,29 +100,29 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
     private fun initViewModelObserver() {
         with(mViewModel) {
-            selectedPOI.observe(viewLifecycleOwner) {
+            selectedPOILiveData.observe(viewLifecycleOwner) {
                 it?.let {
                     mGoogleMap.clear()
                     val poiMarker = mGoogleMap.addMarkerWithName(it.latLng, it.name)
-                    mViewModel.setSelectedLocationLatLngAndShowName(it.latLng)
+                    setSelectedLocationLatLngAndShowName(it.latLng)
                     poiMarker?.showInfoWindow()
                 }
             }
-            moveMap.observe(viewLifecycleOwner) {
+            moveMapSingleLiveEvent.observe(viewLifecycleOwner) {
                 if (it) {
                     updateLocation()
                 }
             }
-            saveLocation.observe(viewLifecycleOwner) {
+            saveLocationSingleLiveEvent.observe(viewLifecycleOwner) {
                 if (it) {
                     onLocationSelected()
                 }
             }
             lifecycleScope.launch {
                 lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    lastUserLocationFlow.collect { location ->
+                    lastUserLocationStateFlow.collect { location ->
                         location?.let {
-                            mViewModel.setSelectedLocationLatLngAndShowName(
+                            setSelectedLocationLatLngAndShowName(
                                 LatLng(
                                     it.latitude,
                                     it.longitude
@@ -132,15 +130,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                             )
                             Timber.d("getLastUserLocation:mLastKnownLocation: $mViewModel.selectedLocationLatLng.value!!")
                             mGoogleMap.moveCameraToLocation(
-                                mViewModel.selectedLocationLatLng.value!!,
-                                Constants.CURRENT_LOCATION_ZOON
+                                selectedLocationLatLngLiveData.value!!,
+                                Constants.CURRENT_LOCATION_ZOOM
                             )
                         } ?: run {
                             Timber.d("getLastUserLocation:currentLocation NULL")
                             setDefaultLocation()
                             if (!mActivity.isLocationEnabled()) {
-                                mViewModel.showToast.value =
-                                    mActivity.getString(R.string.text_enable_gps_msg)
+                                showToast.value =
+                                    mActivity.getString(R.string.msg_enable_gps)
                             }
                         }
                     }
@@ -148,7 +146,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             }
         }
     }
-
 
     private fun onLocationSelected() {
         // TODO: When the user confirms on the selected location,
@@ -171,24 +168,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // TODO Comment : We can use NavigationUI.onNavDestinationSelected() to handle the navigation
-                when (menuItem.itemId) {
+                mGoogleMap.mapType = when (menuItem.itemId) {
                     // TODO: Change the map type based on the user's selection.
-                    R.id.normal_map -> {
-                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-                    }
-
-                    R.id.hybrid_map -> {
-                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-                    }
-
-                    R.id.satellite_map -> {
-                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-                    }
-
-                    R.id.terrain_map -> {
-                        mGoogleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-                    }
-
+                    R.id.normal_map -> GoogleMap.MAP_TYPE_NORMAL
+                    R.id.hybrid_map -> GoogleMap.MAP_TYPE_HYBRID
+                    R.id.satellite_map -> GoogleMap.MAP_TYPE_SATELLITE
+                    R.id.terrain_map -> GoogleMap.MAP_TYPE_TERRAIN
                     else -> return false
                 }
                 mViewModel.setCurrentMapStyle(mGoogleMap.mapType)
@@ -197,15 +182,14 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private
-    val requestPermissionLauncher =
+    private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 Timber.d("Location Permission granted")
                 checkDeviceLocationSettings()
             } else {
                 mViewModel.showToast.value =
-                    mActivity.getString(R.string.text_msg_foreground_location_services)
+                    mActivity.getString(R.string.msg_foreground_location_services)
                 initMap()
             }
         }
@@ -217,7 +201,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     override fun onMapReady(googleMap: GoogleMap) {
         Timber.d("onMapReady:called")
         mGoogleMap = googleMap.apply {
-            mapType = mViewModel.currentMapStyle.value!!
+            mapType = mViewModel.currentMapStyleLiveData.value!!
             setOnPoiClickListener { poi ->
                 mViewModel.setSelectedPOIAndShowName(
                     PointOfInterest(poi.latLng, poi.placeId, poi.name)
@@ -340,11 +324,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         }
 
     private fun updateLocation() {
-        mViewModel.selectedLocationLatLng.value?.let {
+        mViewModel.selectedLocationLatLngLiveData.value?.let {
             Timber.d("updateLocation:mSelectedLocation ${it.longitude}")
             mGoogleMap.animateCameraToLocation(
                 it,
-                Constants.CURRENT_LOCATION_ZOON
+                Constants.CURRENT_LOCATION_ZOOM
             )
         } ?: mViewModel.getLastUserLocation()
     }
@@ -363,12 +347,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             mAddressOutput
                 ?: mActivity.getString(R.string.msg_address_location_network_issue)
 
-        if (resultCode == Constants.SUCCESS_RESULT && mViewModel.selectedPOI.value != null && mViewModel.selectedPOI.value!!.name.isEmpty()) {
+        if (resultCode == Constants.SUCCESS_RESULT && mViewModel.selectedPOILiveData.value != null && mViewModel.selectedPOILiveData.value!!.name.isEmpty()) {
             Timber.d("onReceiveResult:called:updateName")
             mViewModel.setSelectedPOI(
                 PointOfInterest(
-                    mViewModel.selectedPOI.value!!.latLng,
-                    mViewModel.selectedPOI.value!!.placeId,
+                    mViewModel.selectedPOILiveData.value!!.latLng,
+                    mViewModel.selectedPOILiveData.value!!.placeId,
                     mAddressOutput.toString()
                 )
             )

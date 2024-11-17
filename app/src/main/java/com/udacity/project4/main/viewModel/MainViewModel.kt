@@ -1,23 +1,22 @@
 package com.udacity.project4.main.viewModel
 
 import android.app.Application
-import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.udacity.project4.base.BaseViewModel
 
-class MainViewModel(app: Application) : BaseViewModel(app) {
+class MainViewModel(private val mApp: Application) : BaseViewModel(mApp) {
 
-    private var _hideToolbar = MutableLiveData<Boolean>()
-    val hideToolbar: LiveData<Boolean>
-        get() = _hideToolbar
+    private var _hideToolbarLiveData = MutableLiveData<Boolean>()
+    val hideToolbarLiveData: LiveData<Boolean>
+        get() = _hideToolbarLiveData
 
-    private var _showUpButton = MutableLiveData<Boolean>()
-    val showUpButton: LiveData<Boolean>
-        get() = _showUpButton
+    private var _showUpButtonLiveData = MutableLiveData<Boolean>()
+    val showUpButtonLiveData: LiveData<Boolean>
+        get() = _showUpButtonLiveData
 
     fun setHideToolbar(hideToolbar: Boolean) {
-        _hideToolbar.value = hideToolbar
+        _hideToolbarLiveData.value = hideToolbar
     }
 
 }

@@ -15,6 +15,8 @@ import com.udacity.project4.R
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.main.view.MainActivity
+import com.udacity.project4.utils.AppSharedMethods.createIntent
+import com.udacity.project4.utils.AppSharedMethods.notificationManager
 
 
 object NotificationUtils {
@@ -33,7 +35,7 @@ object NotificationUtils {
                 lightColor = Color.RED
                 enableVibration(true)
                 description =
-                    context.getString(R.string.notification_channel_description)
+                    context.getString(R.string.text_notification_channel_description)
             }
             context.getSystemService<NotificationManager>()?.apply {
                 createNotificationChannel(notificationChannel)
@@ -47,18 +49,18 @@ object NotificationUtils {
         val resources = context.resources
         return when (errorCode) {
             GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
-                R.string.geofence_not_available
+                R.string.msg_geofence_not_available
             )
 
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
-                R.string.geofence_too_many_geofences
+                R.string.msg_geofence_too_many_geofences
             )
 
             GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
-                R.string.geofence_too_many_pending_intents
+                R.string.msg_geofence_too_many_pending_intents
             )
 
-            else -> resources.getString(R.string.unknown_geofence_error)
+            else -> resources.getString(R.string.msg_unknown_geofence_error)
         }
     }
 
@@ -81,7 +83,7 @@ object NotificationUtils {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(
                 TextUtils.concat(
-                    context.getString(R.string.text_msg_entered_geofence),
+                    context.getString(R.string.msg_entered_geofence),
                     " ",
                     reminderDataItem.title
                 )

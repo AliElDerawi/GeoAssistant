@@ -1,93 +1,68 @@
 <resources>
     <string name="app_name">Location Reminders</string>
-    <string name="error_happened">Error happened</string>
-    <string name="retry">Retry</string>
-    <string name="no_data">No Data</string>
-    <string name="reminder_title">Reminder Title</string>
-    <string name="reminder_desc">Description</string>
-    <string name="reminder_location">Reminder Location</string>
-    <string name="save">Save</string>
-    <string name="reminder_saved">Reminder Saved !</string>
-    <string name="logout">Logout</string>
-    <string name="welcome_to_the_location_reminder_app">Welcome to the location reminder app</string>
-    <string name="login">Login</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="normal_map">Normal Map</string>
-    <string name="hybrid_map">Hybrid Map</string>
-    <string name="satellite_map">Satellite Map</string>
-    <string name="terrain_map">Terrain Map</string>
-    <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
-    <string name="dropped_pin">Dropped Pin</string>
-    <string name="poi">poi</string>
-    <string name="location_required_for_current_location_error">Location services should be enabled to navigate to your current location.</string>
-    <string name="location_required_for_create_geofence_error">Location services should be enabled to create geofences for the app.</string>
-    <string name="permission_denied_explanation">You need to grant location permission in order to select the location.</string>
-    <string name="settings">Settings</string>
-    <string name="select_poi">Please select a point of interest</string>
-    <string name="channel_name">GeofenceStatus</string>
-    <string name="notification_channel_description">Geofence status notification</string>
-    <string name="content_text">Location Reminder</string>
-    <string name="select_title">Please select title</string>
-    <string name="select_location">Please select location</string>
-    <string name="geofences_not_added">Problem in adding geofences.</string>
-    <string name="welcome">Welcome</string>
-    <string name="err_enter_title">Please enter title</string>
-    <string name="err_select_location">Please select location</string>
 
-    <!-- Error strings -->
-    <string name="geofence_unknown_error">Unknown error: the Geofence service is not available now.</string>
-    <string name="geofence_not_available">Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.</string>
-    <string name="geofence_too_many_geofences">Your app has registered too many geofences.</string>
-    <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
-    <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
-
-    <!-- Login strings -->
+    <!-- Login Strings -->
     <string name="text_sign_in_now">SingIn Now</string>
-    <string name="text_one_step_right_service">You are one step away to get your proper service</string>
+    <string name="text_one_step_remain">You are one step away from using the app</string>
     <string name="text_logo_description">This is the logo of the app</string>
     <string name="text_login">Login</string>
+    <string name="text_welcome_to_the_location_reminder_app">Welcome to the location reminder app</string>
 
+    <!-- Reminder List Strings -->
+    <string name="text_no_data">No Data</string>
+    <string name="text_logout">Logout</string>
 
-    <!-- Location permission strings -->
-    <string name="text_enable_background_location_permission_msg">Enable location permission , so the app can create geofence for the reminder</string>
-    <string name="text_msg_cant_access_background_location_services">Unfortunately , the app cannot create geofence without location permission. Please enable it in the settings.</string>
+    <!-- Save Reminder Strings -->
+    <string name="text_reminder_title">Reminder Title</string>
+    <string name="text_reminder_desc">Description</string>
+    <string name="text_reminder_location">Reminder Location</string>
+    <string name="msg_reminder_saved">Reminder Saved !</string>
+    <string name="msg_please_enter_description">Please enter description</string>
+    <string name="text_add_new_reminder_button">Add new reminder button</string>
+    <string name="text_add_reminder">Add Reminder</string>
+    <string name="msg_enter_title">Please enter title</string>
 
-    <string name="text_msg_foreground_location_services">Unfortunately , the app cannot navigate to your current location without location permission. Please enable it in the settings.</string>
+    <!-- Select Location Strings -->
+    <string name="text_normal_map">Normal Map</string>
+    <string name="text_hybrid_map">Hybrid Map</string>
+    <string name="text_satellite_map">Satellite Map</string>
+    <string name="text_terrain_map">Terrain Map</string>
+    <string name="msg_location_required_for_create_geofence_error">Location services should be enabled to create geofences for the app.</string>
+    <string name="text_select_location">Select Location</string>
 
+    <!-- Notification Strings -->
+    <string name="channel_name">GeofenceStatus</string>
+    <string name="text_notification_channel_description">Geofence status notification</string>
+    <string name="msg_cant_post_notification">Unfortunately , the app cannot send geofence notification without permission. Please enable it in the settings.</string>
 
-    <!-- Post Notification permission strings -->
-    <string name="text_enable_post_permission_msg">Enable Post Notification permission , so the app can send notification about geofence reminders</string>
-    <string name="text_msg_cant_post_notification">Unfortunately , the app cannot send geofence notification without permission. Please enable it in the settings.</string>
+    <!-- Geofence Strings -->
+    <string name="msg_geofences_added">Clue Geofence added.</string>
+    <string name="msg_geofences_removed">Geofences removed.</string>
+    <string name="msg_geofences_not_removed">Geofences not removed.</string>
+    <string name="msg_unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
+    <string name="msg_geofence_not_available">Geofence service is not available now. Go to Settings>Location>Mode and choose High accuracy.</string>
+    <string name="msg_geofence_too_many_geofences">Your app has registered too many geofences.</string>
+    <string name="msg_geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
+    <string name="msg_entered_geofence">You have entered a Geofence area</string>
+    <string name="msg_geofences_not_added">Problem in adding geofences.</string>
+    <string name="text_error_reminder_not_found">Reminder not found!</string>
 
+    <!-- Location Permission Strings -->
+    <string name="msg_enable_background_location_permission">Enable location permission , so the app can create geofence for the reminder</string>
+    <string name="msg_cant_access_background_location_services">Unfortunately , the app cannot create geofence without location permission. Please enable it in the settings.</string>
+    <string name="msg_foreground_location_services">Unfortunately , the app cannot navigate to your current location without location permission. Please enable it in the settings.</string>
 
-    <!-- Select Location strings -->
+    <!-- Select Location Strings -->
     <string name="text_select_current_location">Select current location</string>
-    <string name="text_current_location_name">Current location name</string>
     <string name="text_current_location_icon">Current location icon</string>
     <string name="text_save_and_continue">Save and Continue</string>
     <string name="msg_address_location_network_issue">Network issue! We Can\'t retrieve location address name</string>
-    <string name="error_address_location_unknown" translatable="false">Unnamed Road</string>
-    <string name="text_enable_gps_msg">Select your location to take advantage of our services</string>
+    <string name="msg_address_location_unknown" translatable="false">Unnamed Road</string>
+    <string name="msg_enable_gps">Select your location to take advantage of our services</string>
     <string name="text_save_reminder_and_create_geofence_content_description">Save reminder and create geofence button</string>
+    <string name="msg_select_location">Please mark a location on the map</string>
 
-
-    <!--        <string name="default_web_client_id" translatable="false">webClientId.apps.googleusercontent.com</string>-->
-
-
-    <!--    Geofence Status Strings-->
-    <string name="geofences_added">Clue Geofence added.</string>
-    <string name="geofences_removed">Geofences removed.</string>
-    <string name="geofence_entered">Geofence entered.</string>
-    <string name="geofences_not_removed">Geofences not removed.</string>
-
-    <string name="unknown_geofence_error">
-        Unknown error: the Geofence service is not available now
-    </string>
-
-    <string name="text_msg_entered_geofence">You have entered a Geofence area</string>
-    <string name="text_msg_please_enter_description">Please enter description</string>
-    <string name="text_add_new_reminder_button">Add new reminder button</string>
+    <!-- Reminder Detail Strings -->
     <string name="text_geofence_detail">Geofence Detail</string>
-
 
 </resources>

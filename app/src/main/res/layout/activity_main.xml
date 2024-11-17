@@ -6,7 +6,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".main.MainActivity">
+        tools:context=".main.view.MainActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -22,29 +22,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="null">
-
+                app:popupTheme="@style/AppTheme.PopupOverlay">
 
                 <TextView
                     android:id="@+id/textView_toolbar_title"
+                    style="@style/ToolbarTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="?actionBarSize"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/text_sub_title"
-                    android:theme="@style/boldFont"
                     tools:text="@string/app_name" />
-
 
             </androidx.appcompat.widget.Toolbar>
 
-
         </com.google.android.material.appbar.AppBarLayout>
-
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/nav_host_fragment"
@@ -54,7 +46,6 @@
             app:defaultNavHost="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:navGraph="@navigation/main_navigation" />
-
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

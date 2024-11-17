@@ -1,0 +1,120 @@
+[versions]
+androidXTestCoreVersion = "1.6.1"
+androidXTestExtKotlinRunnerVersion = "1.2.1"
+androidXTestRulesVersion = "1.6.1"
+archLifecycleKtxVersion = "2.8.7"
+archLifecycleVersion = "2.2.0"
+archTestingVersion = "2.2.0"
+coroutinesVersion = "1.7.3"
+dexMakerVersion = "2.28.3"
+firebaseAuthKtxVersion = "23.1.0"
+firebaseUiAuthVersion = "8.0.2"
+fragmentTestingVersion = "1.8.5"
+kotlinVersion = '2.0.21'
+glideVersion = '4.15.1'
+koinVersion = '4.0.0'
+coreVersion = '1.15.0'
+appCompatVersion = '1.7.0'
+constraintLayoutVersion = '2.2.0'
+lifecycleViewmodelKtxVersion = "2.8.7"
+materialVersion = '1.12.0'
+mockitoVersion = "5.2.0"
+navigationVersion = '2.8.3'
+playServicesAuthVersion = "20.7.0"
+playServicesLocationVersion = "21.3.0"
+playServicesMapsVersion = "19.0.0"
+robolectricVersion = "4.13"
+roomVersion = "2.6.1"
+safeArgsVersion = '2.8.3'
+recyclerViewVersion = '1.3.2'
+recyclerViewSelectionVersion = '1.1.0'
+gradleToolsVersion = "8.7.2"
+multidexVersion = '2.0.1'
+swipeRefreshVersion = "1.1.0"
+timberVersion = '5.0.1'
+junitVersion = '4.13.2'
+espressoVersion = '3.6.1'
+junitTestVersion = '1.2.1'
+securityCryptoVersion = '1.1.0-alpha06'
+dataStoreVersion = '1.1.1'
+splashScreenVersion = '1.0.1'
+ksp = '2.0.21-1.0.25'
+googleServicesVersion = "4.4.2"
+truthVersion = "1.6.0"
+gradlePluginSecretVersion = '2.0.1'
+workVersion = "2.10.0"
+
+[libraries]
+androidx-core = { module = "androidx.test:core", version.ref = "androidXTestCoreVersion" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreVersion" }
+androidx-core-testing = { module = "androidx.arch.core:core-testing", version.ref = "archTestingVersion" }
+androidx-espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoVersion" }
+androidx-espresso-idling-resource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espressoVersion" }
+androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoVersion" }
+androidx-fragment-testing = { module = "androidx.fragment:fragment-testing", version.ref = "fragmentTestingVersion" }
+androidx-idling-concurrent = { module = "androidx.test.espresso.idling:idling-concurrent", version.ref = "espressoVersion" }
+androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "androidXTestExtKotlinRunnerVersion" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "archLifecycleVersion" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "archLifecycleKtxVersion" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtxVersion" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "roomVersion" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+androidx-rules = { module = "androidx.test:rules", version.ref = "androidXTestRulesVersion" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swipeRefreshVersion" }
+annotations = { module = "org.robolectric:annotations", version.ref = "robolectricVersion" }
+core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidXTestCoreVersion" }
+dexmaker-mockito = { module = "com.linkedin.dexmaker:dexmaker-mockito", version.ref = "dexMakerVersion" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuthKtxVersion" }
+firebase-ui-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseUiAuthVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitTestVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoVersion" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appCompatVersion" }
+koin-android-test = { module = "io.insert-koin:koin-android-test", version.ref = "koinVersion" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinVersion" }
+koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koinVersion" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glideVersion" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glideVersion" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
+koin-compat = { group = "io.insert-koin", name = "koin-android-compat", version.ref = "koinVersion" }
+koin-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager", version.ref = "koinVersion" }
+koin-navigation = { group = "io.insert-koin", name = "koin-androidx-navigation", version.ref = "koinVersion" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koinVersion" }
+constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayoutVersion" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoVersion" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationVersion" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationVersion" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuthVersion" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
+recyclerView = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerViewVersion" }
+recyclerViewSelection = { group = "androidx.recyclerview", name = "recyclerview-selection", version.ref = "recyclerViewSelectionVersion" }
+multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidexVersion" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectricVersion" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
+security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoVersion" }
+dataStore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStoreVersion" }
+splashScreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreenVersion" }
+truth = { module = "androidx.test.ext:truth", version.ref = "truthVersion" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
+andoidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradleToolsVersion" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+kotlin-android = { id = "kotlin-android" }
+kotlin-parcelize = { id = "kotlin-parcelize" }
+kotlin-kapt = { id = "kotlin-kapt" }
+safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "safeArgsVersion" }
+gradle-plugin-secret = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "gradlePluginSecretVersion" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesVersion" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+
+
+

@@ -6,6 +6,8 @@ import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.project4.base.BaseRecyclerViewAdapter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 object BindingAdapters {
 
@@ -15,12 +17,12 @@ object BindingAdapters {
     @Suppress("UNCHECKED_CAST")
     @BindingAdapter("android:liveData")
     @JvmStatic
-    fun <T> setRecyclerViewData(recyclerView: RecyclerView, items: LiveData<List<T>>?) {
-        items?.value?.let { itemList ->
-            (recyclerView.adapter as? BaseRecyclerViewAdapter<T>)?.apply {
-                clear()
-                addData(itemList)
+    fun <T : Any> RecyclerView.setRecyclerViewData(items: List<T>?) {
+        items?.let { list ->
+            if (adapter == null) {
+                this.adapter = adapter as? BaseRecyclerViewAdapter<T>
             }
+            (adapter as? BaseRecyclerViewAdapter<T>)?.submitList(list)
         }
     }
 
@@ -29,19 +31,17 @@ object BindingAdapters {
      */
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
-    fun setFadeVisible(view: View, visible: Boolean? = true) {
-        if (view.tag == null) {
-            view.tag = true
-            view.visibility = if (visible == true) View.VISIBLE else View.GONE
-        } else {
-            view.animate().cancel()
-            if (visible == true) {
-                if (view.visibility == View.GONE)
-                    view.fadeIn()
-            } else {
-                if (view.visibility == View.VISIBLE)
-                    view.fadeOut()
+    fun View.setFadeVisible( visible: Boolean? = true) {
+        tag?.let {
+            animate().cancel()
+            if (visible == true && visibility == View.GONE) {
+                fadeIn()
+            } else if (visible != true && visibility == View.VISIBLE) {
+                fadeOut()
             }
+        } ?: run {
+            tag = true
+            visibility = if (visible == true) View.VISIBLE else View.GONE
         }
     }
 

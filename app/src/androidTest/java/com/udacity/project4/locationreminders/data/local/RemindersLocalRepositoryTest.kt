@@ -1,15 +1,23 @@
 package com.udacity.project4.locationreminders.data.local
 
+import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.udacity.project4.locationreminders.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.data.dto.Result
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
+import com.google.android.gms.location.LocationServices
+import com.udacity.project4.R
+import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.local.RemindersDatabase
+import com.udacity.project4.data.model.ReminderDataItem
+import com.udacity.project4.util.getOrAwaitValue
+import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -21,7 +29,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.koin.test.AutoCloseKoinTest
+import org.robolectric.annotation.Config
 
+@Config(sdk = [34])
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 //Medium Test to test the repository
@@ -29,39 +39,35 @@ import org.koin.test.AutoCloseKoinTest
 class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
 
 //    TODO: Add testing implementation to the RemindersLocalRepository.kt
-
     private lateinit var database: RemindersDatabase
     private lateinit var localDataSource: RemindersLocalRepository
-
-
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+    private lateinit var appContext: Application
+    private val testUserID = "testUserID"
 
     @Before
     fun init() {
         stopKoin()//stop the original app koin
-
+        appContext = ApplicationProvider.getApplicationContext()
+        AppSharedMethods.setLoginStatus(true, testUserID)
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(), RemindersDatabase::class.java
         ).allowMainThreadQueries().build()
-
-
         //
         localDataSource = RemindersLocalRepository(
-            database.reminderDao(), Dispatchers.Unconfined
+            database.reminderDao(), Dispatchers.Unconfined, LocationServices.getFusedLocationProviderClient(appContext)
         )
     }
 
     @After
     fun closeDb() = database.close()
 
-
     @Test
     fun insertReminderAndGetById_checkSuccess() = runTest {
         // GIVEN - insert a reminder
-
-        val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0)
+        val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0,testUserID)
         localDataSource.saveReminder(
             ReminderDTO(
                 reminderDataItem.title,
@@ -69,53 +75,39 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
                 reminderDataItem.location,
                 reminderDataItem.latitude,
                 reminderDataItem.longitude,
+                testUserID,
                 reminderDataItem.id
             )
         )
-
         // WHEN - Get the task by id from the database
-        val result = localDataSource.getReminder(reminderDataItem.id)
-
-        result as Result.Success
-
+        val resultFlow = localDataSource.getReminder(reminderDataItem.id)
+        resultFlow as Result.Success<Flow<ReminderDTO>>
+        val result = resultFlow.data.getOrAwaitValue()
         // THEN - The loaded data contains the expected values
-        assertThat<ReminderDTO>(result.data as ReminderDTO, CoreMatchers.notNullValue())
-        assertThat(result.data.id, `is`(reminderDataItem.id))
-        assertThat(result.data.title, `is`(reminderDataItem.title))
-        assertThat(result.data.description, `is`(reminderDataItem.description))
+        assertThat<ReminderDTO>(result, CoreMatchers.notNullValue())
+        assertThat(result.id, `is`(reminderDataItem.id))
+        assertThat(result.title, `is`(reminderDataItem.title))
+        assertThat(result.description, `is`(reminderDataItem.description))
     }
-
 
     @Test
     fun getReminderById_checkNotFound() = runTest {
         // GIVEN - insert a reminder
-
-
         // WHEN - Get the task by id from the database
         val result = localDataSource.getReminder("-1")
-
         result as Result.Error
-
         // THEN - The loaded data contains the expected values
-        assertThat(result.message, `is`("Reminder not found!"))
-
+        assertThat(result.message, `is`(appContext.getString(R.string.text_error_reminder_not_found)))
     }
-
 
     @Test
     fun getReminders_checkEmptyListError() = runTest {
         // GIVEN - insert a reminder
-
-
         // WHEN - Get the task by id from the database
         val result = localDataSource.getReminders()
-
         result as Result.Success
-
         // THEN - The loaded data contains the expected values
-        assertThat(result.data, `is`(emptyList()))
-
+        assertThat(result.data.getOrAwaitValue(), `is`(emptyList()))
     }
-
 
 }

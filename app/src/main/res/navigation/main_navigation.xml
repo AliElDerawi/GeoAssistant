@@ -7,21 +7,25 @@
 
     <fragment
         android:id="@+id/reminderListFragment"
-        android:name="com.udacity.project4.locationreminders.reminderslist.ReminderListFragment"
+        android:name="com.udacity.project4.remindersList.view.ReminderListFragment"
         android:label="ReminderListFragment"
         tools:layout="@layout/fragment_reminders">
         <action
             android:id="@+id/to_save_reminder"
-            app:destination="@id/saveReminderFragment" />
+            app:destination="@id/saveReminderFragment"
+            app:popUpTo="@id/reminderListFragment" />
         <action
             android:id="@+id/action_reminderListFragment_to_authenticationFragment"
             app:destination="@id/authenticationFragment" />
+        <action
+            android:id="@+id/action_reminderListFragment_to_reminderDescriptionFragment"
+            app:destination="@id/reminderDescriptionFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.project4.locationreminders.savereminder.SaveReminderFragment"
-        android:label="Add Reminder"
+        android:name="com.udacity.project4.saveReminder.view.SaveReminderFragment"
+        android:label="@string/text_add_reminder"
         tools:layout="@layout/fragment_save_reminder">
         <action
             android:id="@+id/action_saveReminderFragment_to_reminderListFragment"
@@ -33,19 +37,28 @@
 
     <fragment
         android:id="@+id/selectLocationFragment"
-        android:name="com.udacity.project4.locationreminders.savereminder.selectreminderlocation.SelectLocationFragment"
-        android:label="Select Location"
+        android:name="com.udacity.project4.selectReminderLocation.SelectLocationFragment"
+        android:label="@string/text_select_location"
         tools:layout="@layout/fragment_select_location" />
 
     <fragment
-        tools:layout="@layout/fragment_authentication"
         android:id="@+id/authenticationFragment"
         android:name="com.udacity.project4.authentication.AuthenticationFragment"
-        android:label="AuthenticationFragment" >
+        android:label="AuthenticationFragment"
+        tools:layout="@layout/fragment_authentication">
         <action
             android:id="@+id/action_authenticationFragment_to_reminderListFragment"
             app:destination="@id/reminderListFragment"
             app:popUpTo="@id/authenticationFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/reminderDescriptionFragment"
+        android:name="com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment"
+        android:label="@string/text_geofence_detail"
+        tools:layout="@layout/fragment_reminder_description">
+        <argument
+            android:name="reminderDataItem"
+            app:argType="com.udacity.project4.data.model.ReminderDataItem" />
     </fragment>
 </navigation>

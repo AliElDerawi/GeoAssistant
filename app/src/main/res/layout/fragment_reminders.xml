@@ -8,6 +8,7 @@
         <variable
             name="viewModel"
             type="com.udacity.project4.remindersList.viewModel.RemindersListViewModel" />
+
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -18,14 +19,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorWhite">
+            android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/reminderssRecyclerView"
+                android:id="@+id/remindersRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:liveData="@{viewModel.remindersList}"
+                android:liveData="@{viewModel.remindersListStateFlow}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -33,14 +33,14 @@
 
             <TextView
                 android:id="@+id/noDataTextView"
+                style="@style/TitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/text_no_data"
                 android:fadeVisible="@{viewModel.showNoData.booleanValue()}"
                 android:gravity="center"
-                android:text="@string/no_data"
-                android:contentDescription="@string/no_data"
+                android:text="@string/text_no_data"
                 android:textSize="@dimen/text_size_large"
-                style="@style/TitleStyle"
                 app:drawableTopCompat="@drawable/ic_no_data"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -63,14 +63,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_normal"
-                android:onClick="@{() -> viewModel.addReminderClick()}"
-                android:src="@drawable/ic_add"
-                app:fabSize="normal"
                 android:contentDescription="@string/text_add_new_reminder_button"
-                app:layout_anchor="@id/reminderssRecyclerView"
+                android:onClick="@{() -> viewModel.addReminderClick()}"
+                app:fabSize="normal"
+                app:layout_anchor="@id/remindersRecyclerView"
                 app:layout_anchorGravity="bottom|right|end"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/ic_add" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </layout>

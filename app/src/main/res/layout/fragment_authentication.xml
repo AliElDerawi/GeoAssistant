@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/margin_left_right">
 
-
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/logo_cardView"
                 android:layout_width="100dp"
@@ -49,16 +47,15 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-
             <TextView
                 android:id="@+id/title_textView"
+                style="@style/TitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_btnView"
                 android:contentDescription="@string/text_sign_in_now"
                 android:gravity="center"
-                style="@style/TitleStyle"
                 android:paddingStart="@dimen/margin_btnView"
                 android:paddingEnd="@dimen/margin_btnView"
                 android:text="@string/text_sign_in_now"
@@ -68,21 +65,20 @@
 
             <TextView
                 android:id="@+id/subTitle_textView"
+                style="@style/BodyStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_btnView"
-                android:contentDescription="@string/text_one_step_right_service"
+                android:contentDescription="@string/text_one_step_remain"
                 android:gravity="center"
                 android:lineSpacingMultiplier="0.7"
                 android:paddingStart="@dimen/margin_btnView"
                 android:paddingEnd="@dimen/margin_btnView"
-                android:text="@string/text_one_step_right_service"
+                android:text="@string/text_one_step_remain"
                 android:textColor="@color/colorBlack63"
-                style="@style/BodyStyle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/title_textView" />
-
 
             <Button
                 android:id="@+id/login_button"
@@ -93,19 +89,13 @@
                 android:layout_marginTop="@dimen/margin_left_right"
                 android:layout_marginEnd="@dimen/margin_btnView"
                 android:backgroundTint="@color/colorAccent"
-                android:elevation="0dp"
                 android:onClick="@{() -> viewModel.loginClick()}"
                 android:text="@string/text_login"
-                app:cornerRadius="@dimen/dim_button_corner"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:strokeWidth="0dp" />
-
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     </ScrollView>
-
 
 </layout>
 

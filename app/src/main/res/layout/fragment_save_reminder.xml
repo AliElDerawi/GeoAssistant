@@ -8,6 +8,7 @@
         <variable
             name="viewModel"
             type="com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel" />
+
     </data>
 
     <ScrollView
@@ -17,17 +18,16 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorWhite">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/reminderTitle"
+                style="@style/BodyStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/reminder_title"
+                android:hint="@string/text_reminder_title"
                 android:imeOptions="actionNext"
                 android:inputType="text"
-                style="@style/BodyStyle"
                 android:onTextChanged="@{(text, start, before, count) -> viewModel.onTitleTextChanged(text,start,before,count)}"
                 android:paddingStart="@dimen/margin_btnView"
                 android:paddingEnd="@dimen/margin_btnView"
@@ -37,11 +37,11 @@
 
             <EditText
                 android:id="@+id/reminderDescription"
+                style="@style/BodyStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                style="@style/BodyStyle"
-                android:hint="@string/reminder_desc"
+                android:hint="@string/text_reminder_desc"
                 android:imeOptions="actionNext"
                 android:inputType="textMultiLine"
                 android:lines="10"
@@ -54,21 +54,21 @@
 
             <TextView
                 android:id="@+id/selectLocation"
+                style="@style/BodyStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
-                style="@style/BodyStyle"
-                android:contentDescription="@string/reminder_location"
+                android:contentDescription="@string/text_reminder_location"
                 android:drawablePadding="@dimen/margin_small"
                 android:focusable="true"
-                android:paddingBottom="@dimen/margin_small"
-                android:paddingTop="@dimen/margin_small"
                 android:gravity="center_vertical"
                 android:onClick="@{() -> viewModel.selectLocationClick()}"
                 android:paddingStart="@dimen/margin_btnView"
+                android:paddingTop="@dimen/margin_small"
                 android:paddingEnd="@dimen/margin_btnView"
-                android:text="@string/reminder_location"
+                android:paddingBottom="@dimen/margin_small"
+                android:text="@string/text_reminder_location"
                 android:textColor="@color/colorBlack"
                 app:drawableStartCompat="@drawable/ic_location_v02"
                 app:layout_constraintStart_toStartOf="parent"
@@ -76,19 +76,18 @@
 
             <TextView
                 android:id="@+id/selectedLocation"
+                style="@style/BodyStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/margin_btnView"
-                android:paddingStart="@dimen/margin_btnView"
-                style="@style/BodyStyle"
-                app:layout_constraintHorizontal_bias="0.0"
-                android:textAlignment="viewStart"
                 android:lineSpacingMultiplier="0.8"
+                android:paddingStart="@dimen/margin_btnView"
+                android:paddingEnd="@dimen/margin_btnView"
                 android:textColor="@color/colorBlack"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectLocation"
-                app:locationTitle="@{viewModel.reminderSelectedLocationStr}"
+                app:locationTitle="@{viewModel.reminderSelectedLocationStrStateFlow}"
                 tools:text="@string/app_name" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -101,13 +100,13 @@
                 android:contentDescription="@string/text_save_reminder_and_create_geofence_content_description"
                 android:fadeVisible="@{!viewModel.showLoading.booleanValue()}"
                 android:onClick="@{() -> viewModel.onSaveReminderClick()}"
-                android:src="@drawable/ic_save"
                 app:fabSize="normal"
                 app:layout_anchorGravity="bottom|right|end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectLocation"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/ic_save" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -123,8 +122,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectLocation"
                 app:layout_constraintVertical_bias="1.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 

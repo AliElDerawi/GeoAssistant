@@ -8,6 +8,7 @@
         <variable
             name="viewModel"
             type="com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,7 +17,7 @@
 
         <!-- TODO: Add the map fragment for the user to select the location -->
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="0dp"
@@ -37,7 +38,6 @@
             app:layout_constraintBottom_toTopOf="@+id/cardView_location"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_select_location" />
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_location"
@@ -60,7 +60,6 @@
                 android:paddingEnd="@dimen/dim_10_dp"
                 android:paddingBottom="@dimen/dim_7_dp">
 
-
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView_location_icon"
                     android:layout_width="32dp"
@@ -77,30 +76,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:padding="@dimen/dim_7_dp"
                         android:contentDescription="@string/text_current_location_icon"
+                        android:padding="@dimen/dim_7_dp"
                         app:srcCompat="@drawable/ic_location_v02" />
-
 
                 </androidx.cardview.widget.CardView>
 
-
                 <TextView
                     android:id="@+id/textView_location_name"
+                    style="@style/BodyStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dim_10_dp"
                     android:layout_marginTop="@dimen/dim_negative_6_dp"
                     android:lineSpacingMultiplier="0.7"
-                    android:textAlignment="viewStart"
                     android:textColor="@color/colorDark1C"
-                    style="@style/BodyStyle"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/cardView_location_icon"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Long Location Name..........................................................." />
-
 
                 <ProgressBar
                     android:id="@+id/progressBar_loading"
@@ -118,12 +113,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         </androidx.cardview.widget.CardView>
-
 
         <Button
             android:id="@+id/button_save"
@@ -135,15 +127,10 @@
             android:layout_marginEnd="@dimen/margin_btnView"
             android:layout_marginBottom="@dimen/margin_top_view"
             android:backgroundTint="@color/colorAccent"
-            android:gravity="center"
             android:onClick="@{() -> viewModel.saveLocation()}"
             android:text="@string/text_save_and_continue"
-            android:textColor="@color/colorWhite"
-            app:cornerRadius="@dimen/dim_14_dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:strokeColor="@color/colorAccent"
-            app:strokeWidth="0dp" />
-
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

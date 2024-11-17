@@ -74,6 +74,8 @@ dependencies {
     implementation libs.navigation.fragment
     implementation libs.navigation.ui
     implementation libs.androidx.espresso.idling.resource
+    implementation libs.recyclerView
+    implementation libs.recyclerViewSelection
 
     // Room dependencies
     implementation libs.androidx.room.runtime

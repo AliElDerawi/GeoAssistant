@@ -11,6 +11,7 @@ import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.remindersList.adapter.RemindersListAdapter
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
@@ -90,7 +91,7 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        val adapter = RemindersListAdapter {
+        val adapter = RemindersListAdapter(ReminderDataItem.getReminderDataDiffCallback()) {
             mViewModel.navigationCommand.value =
                 NavigationCommand.To(
                     ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(

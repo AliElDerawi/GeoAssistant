@@ -12,7 +12,7 @@ import com.udacity.project4.base.BaseRecyclerViewAdapter
 /**
  * Extension function to setup the RecyclerView.
  */
-fun <T> RecyclerView.setup(
+fun <T:Any> RecyclerView.setup(
     adapter: BaseRecyclerViewAdapter<T>
 ) {
     this.apply {

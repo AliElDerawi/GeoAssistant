@@ -1,6 +1,7 @@
 package com.udacity.project4.data.model
 
 import android.os.Parcelable
+import com.udacity.project4.base.GenericModelCallBack
 import kotlinx.parcelize.Parcelize
 import java.util.*
 
@@ -16,4 +17,12 @@ data class ReminderDataItem(
     var latitude: Double?,
     var longitude: Double?,
     val id: String = UUID.randomUUID().toString()
-) : Parcelable
+) : Parcelable{
+    companion object{
+        fun getReminderDataDiffCallback(): GenericModelCallBack<ReminderDataItem> {
+            return GenericModelCallBack(_areItemsTheSame = { oldItem, newItem ->
+                oldItem.id == newItem.id
+            }, _areContentsTheSame = { oldItem, newItem -> oldItem == newItem })
+        }
+    }
+}

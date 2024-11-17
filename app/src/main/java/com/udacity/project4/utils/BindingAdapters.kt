@@ -17,12 +17,12 @@ object BindingAdapters {
     @Suppress("UNCHECKED_CAST")
     @BindingAdapter("android:liveData")
     @JvmStatic
-    fun <T> setRecyclerViewData(recyclerView: RecyclerView, items: List<T>?) {
-        items?.let { itemList ->
-            (recyclerView.adapter as? BaseRecyclerViewAdapter<T>)?.apply {
-                clear()
-                addData(itemList)
+    fun <T : Any> RecyclerView.setRecyclerViewData(items: List<T>?) {
+        items?.let { list ->
+            if (adapter == null) {
+                this.adapter = adapter as? BaseRecyclerViewAdapter<T>
             }
+            (adapter as? BaseRecyclerViewAdapter<T>)?.submitList(list)
         }
     }
 
@@ -31,17 +31,17 @@ object BindingAdapters {
      */
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
-    fun setFadeVisible(view: View, visible: Boolean? = true) {
-        view.tag?.let {
-            view.animate().cancel()
-            if (visible == true && view.visibility == View.GONE) {
-                view.fadeIn()
-            } else if (visible != true && view.visibility == View.VISIBLE) {
-                view.fadeOut()
+    fun View.setFadeVisible( visible: Boolean? = true) {
+        tag?.let {
+            animate().cancel()
+            if (visible == true && visibility == View.GONE) {
+                fadeIn()
+            } else if (visible != true && visibility == View.VISIBLE) {
+                fadeOut()
             }
         } ?: run {
-            view.tag = true
-            view.visibility = if (visible == true) View.VISIBLE else View.GONE
+            tag = true
+            visibility = if (visible == true) View.VISIBLE else View.GONE
         }
     }
 

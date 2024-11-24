@@ -30,11 +30,12 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
         GeofencingEvent.fromIntent(intent)?.let { geofencingEvent ->
             if (geofencingEvent.hasError()) {
                 val errorMessage = errorMessage(context, geofencingEvent.errorCode)
-                Timber.d("Geofence Error: $errorMessage")
+                Timber.d("onReceive:Geofence Error: $errorMessage")
                 return
             }
             val geofenceTransition = geofencingEvent.geofenceTransition
             geofencingEvent.triggeringGeofences?.firstOrNull()?.requestId?.let { fenceId ->
+                Timber.d("onReceive:Geofence Triggered: $fenceId")
                 val data = workDataOf(
                     EXTRA_FENCE_ID to fenceId,
                     EXTRA_ACTION_GEOFENCE_EVENT to geofenceTransition
@@ -44,7 +45,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                     .build()
                 WorkManager.getInstance(context).enqueue(geofenceWorkRequest)
             } ?: run {
-                Timber.e("No Geofence Trigger Found! Abort mission!")
+                Timber.e("onReceive:No Geofence Trigger Found! Abort mission!")
             }
         }
     }

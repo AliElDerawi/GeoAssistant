@@ -50,7 +50,11 @@
         <receiver
             android:name=".data.geofence.GeofenceBroadcastReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="com.udacity.project4.action.ACTION_GEOFENCE_EVENT" />-->
+<!--            </intent-filter>-->
+        </receiver>
 
     </application>
 </manifest>

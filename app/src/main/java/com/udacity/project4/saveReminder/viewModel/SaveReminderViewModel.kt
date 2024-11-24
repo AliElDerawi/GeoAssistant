@@ -232,6 +232,8 @@ class SaveReminderViewModel(
         ).setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER).build()
 
+        Timber.d("Geofence created: ${geofence.requestId} " +"reminderId: ${reminderDataItem.id}")
+
         val geofencingRequest =
             GeofencingRequest.Builder().setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
                 .addGeofence(geofence).build()

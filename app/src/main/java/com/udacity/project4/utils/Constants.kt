@@ -6,8 +6,6 @@ import com.google.android.gms.maps.model.LatLng
 import java.util.concurrent.TimeUnit
 
 object Constants {
-    const val REQUEST_LOCATION_PERMISSION = 3000
-
     private const val PACKAGE_NAME = BuildConfig.APPLICATION_ID
 
     const val SUCCESS_RESULT = 0
@@ -24,8 +22,8 @@ object Constants {
     const val MIN_LOCATION_UPDATE_INTERVAL = 1 * 60 * 1000L
     const val MAX_LOCATION_UPDATE_INTERVAL = 2 * 60 * 1000L
 
-    const val GEOFENCE_RADIUS_IN_METERS = 100f
-    val GEOFENCE_EXPIRATION_IN_MILLISECONDS: Long = TimeUnit.HOURS.toMillis(1)
+    const val GEOFENCE_RADIUS_IN_METERS = 1500f
+    val GEOFENCE_EXPIRATION_IN_MILLISECONDS: Long = TimeUnit.HOURS.toMillis(12)
 
     val FIREBASE_LOGIN_PROVIDER = arrayListOf(
         AuthUI.IdpConfig.EmailBuilder().build(),

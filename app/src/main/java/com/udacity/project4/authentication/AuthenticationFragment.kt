@@ -59,6 +59,7 @@ class AuthenticationFragment : BaseFragment() {
                 val signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setLogo(R.drawable.ic_location_logo)
+                    .setTheme(R.style.Theme_FirebaseAuthUI_EdgeToEdge) // Use the custom theme
                     .setAvailableProviders(Constants.FIREBASE_LOGIN_PROVIDER)
                     .build()
                 signInLauncher.launch(signInIntent)

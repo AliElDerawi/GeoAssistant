@@ -85,4 +85,12 @@
         <item name="android:indeterminateTint">@color/colorAccent</item>
     </style>
 
+    <style name="Theme.FirebaseAuthUI.EdgeToEdge" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
 </resources>

@@ -42,7 +42,7 @@
                     android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/text_logo_description"
-                    app:srcCompat="@drawable/ic_location_logo" />
+                    app:srcCompat="@drawable/ic_app_logo" />
 
             </com.google.android.material.card.MaterialCardView>
 

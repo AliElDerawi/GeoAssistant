@@ -43,7 +43,7 @@
 
     <fragment
         android:id="@+id/authenticationFragment"
-        android:name="com.udacity.project4.authentication.AuthenticationFragment"
+        android:name="com.udacity.project4.authentication.view.AuthenticationFragment"
         android:label="AuthenticationFragment"
         tools:layout="@layout/fragment_authentication">
         <action

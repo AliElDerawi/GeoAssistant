@@ -3,7 +3,6 @@ package com.udacity.project4.locationreminders.reminderslist
 import android.app.Application
 import android.os.Bundle
 import android.os.Handler
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -22,8 +21,7 @@ import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.FakeTestRepository
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthenticationViewModel
-import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
@@ -33,7 +31,6 @@ import com.udacity.project4.remindersList.view.ReminderListFragment
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
-import com.udacity.project4.remindersList.view.ReminderListFragmentDirections
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.util.monitorFragment
@@ -43,18 +40,12 @@ import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -63,7 +54,6 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
 import org.robolectric.annotation.Config
 
 @Config(sdk = [34])

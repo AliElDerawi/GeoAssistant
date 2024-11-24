@@ -1,4 +1,4 @@
-package com.udacity.project4.authentication
+package com.udacity.project4.authentication.viewModel
 
 import android.app.Application
 import androidx.lifecycle.LiveData

@@ -1,4 +1,4 @@
-package com.udacity.project4.authentication
+package com.udacity.project4.authentication.view
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -12,6 +12,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
+import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentAuthenticationBinding

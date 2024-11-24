@@ -11,9 +11,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.udacity.project4.R
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.ActivityMainBinding
 import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
-import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main)
                 .apply {
                     setSupportActionBar(mainToolbar)
-                    mainToolbar.setTitle(null)
+                    supportActionBar?.title = null
                     root.applyWindowsPadding()
                     setStatusBarColorAndStyle(getCompatColor(R.color.colorPrimary))
                 }
@@ -96,6 +96,9 @@ class MainActivity : AppCompatActivity() {
             }
             showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
+            }
+            toolbarTitle.observe(this@MainActivity) {
+                mBinding.textViewToolbarTitle.text = it
             }
         }
     }

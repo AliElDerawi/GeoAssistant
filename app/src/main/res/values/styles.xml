@@ -37,7 +37,7 @@
 
     <style name="ToolbarTitleStyle">
         <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:textSize">@dimen/text_sub_title</item>
+        <item name="android:textSize">@dimen/text_large</item>
         <item name="android:fontFamily">@font/cairo_bold</item>
         <item name="android:gravity">center</item>
     </style>

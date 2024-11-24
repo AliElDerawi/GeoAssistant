@@ -32,7 +32,6 @@ import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.setStatusStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import com.udacity.project4.utils.setTitle
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -59,9 +58,11 @@ class SaveReminderFragment : BaseFragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
         }
-        mSharedViewModel.setHideToolbar(false)
+        mSharedViewModel.apply {
+            setHideToolbar(false)
+            setToolbarTitle(getString(R.string.app_name))
+        }
         setDisplayHomeAsUpEnabled(true)
-        setTitle(mActivity.getString(R.string.text_add_reminder))
         return mBinding.root
     }
 

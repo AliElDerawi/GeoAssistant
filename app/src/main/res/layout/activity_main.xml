@@ -31,7 +31,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    tools:text="@string/app_name" />
+                    android:text="@string/app_name" />
 
             </com.google.android.material.appbar.MaterialToolbar>
 

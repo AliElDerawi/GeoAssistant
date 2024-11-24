@@ -13,13 +13,21 @@
         <action
             android:id="@+id/to_save_reminder"
             app:destination="@id/saveReminderFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/reminderListFragment" />
         <action
             android:id="@+id/action_reminderListFragment_to_authenticationFragment"
             app:destination="@id/authenticationFragment" />
         <action
             android:id="@+id/action_reminderListFragment_to_reminderDescriptionFragment"
-            app:destination="@id/reminderDescriptionFragment" />
+            app:destination="@id/reminderDescriptionFragment"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -32,7 +40,11 @@
             app:destination="@id/reminderListFragment" />
         <action
             android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
-            app:destination="@id/selectLocationFragment" />
+            app:destination="@id/selectLocationFragment"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -49,9 +61,14 @@
         <action
             android:id="@+id/action_authenticationFragment_to_reminderListFragment"
             app:destination="@id/reminderListFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
             app:popUpTo="@id/authenticationFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
     <fragment
         android:id="@+id/reminderDescriptionFragment"
         android:name="com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment"
@@ -61,4 +78,5 @@
             android:name="reminderDataItem"
             app:argType="com.udacity.project4.data.model.ReminderDataItem" />
     </fragment>
+
 </navigation>

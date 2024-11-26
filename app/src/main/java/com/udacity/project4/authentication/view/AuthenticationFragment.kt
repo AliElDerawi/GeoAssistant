@@ -1,4 +1,4 @@
-package com.udacity.project4.authentication
+package com.udacity.project4.authentication.view
 
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -12,6 +12,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
+import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentAuthenticationBinding
@@ -58,7 +59,8 @@ class AuthenticationFragment : BaseFragment() {
             if (redirect) {
                 val signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
-                    .setLogo(R.drawable.ic_location_logo)
+                    .setLogo(R.drawable.ic_app_logo)
+                    .setTheme(R.style.Theme_FirebaseAuthUI_EdgeToEdge) // Use the custom theme
                     .setAvailableProviders(Constants.FIREBASE_LOGIN_PROVIDER)
                     .build()
                 signInLauncher.launch(signInIntent)

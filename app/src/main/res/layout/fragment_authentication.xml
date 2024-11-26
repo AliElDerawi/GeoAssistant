@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.udacity.project4.authentication.AuthenticationViewModel" />
+            type="com.udacity.project4.authentication.viewModel.AuthenticationViewModel" />
 
     </data>
 
@@ -35,7 +35,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="@color/colorWhite"
                 app:strokeWidth="0dp">
 
                 <ImageView
@@ -43,7 +42,7 @@
                     android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/text_logo_description"
-                    app:srcCompat="@drawable/ic_location_logo" />
+                    app:srcCompat="@drawable/ic_app_logo" />
 
             </com.google.android.material.card.MaterialCardView>
 

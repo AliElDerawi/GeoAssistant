@@ -11,7 +11,6 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentReminderDescriptionBinding
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import com.udacity.project4.utils.setTitle
 import org.koin.android.ext.android.inject
 
 /**
@@ -45,7 +44,10 @@ class ReminderDescriptionFragment : BaseFragment() {
                 ReminderDescriptionFragmentArgs.fromBundle(it).reminderDataItem
             }
         }
-        setTitle(mActivity.getString(R.string.text_geofence_detail))
+        mViewModel.apply {
+            setHideToolbar(false)
+            setToolbarTitle(getString(R.string.text_geofence_detail))
+        }
         setDisplayHomeAsUpEnabled(true)
         return mBinding.root
     }

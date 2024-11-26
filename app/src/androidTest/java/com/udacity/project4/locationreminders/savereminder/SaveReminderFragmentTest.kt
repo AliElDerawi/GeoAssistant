@@ -21,7 +21,7 @@ import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.FakeTestRepository
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthenticationViewModel
+import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB

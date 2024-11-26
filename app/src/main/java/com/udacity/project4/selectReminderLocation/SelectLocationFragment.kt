@@ -5,7 +5,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,18 +34,17 @@ import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
-import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods.addMarkerWithName
 import com.udacity.project4.utils.AppSharedMethods.animateCameraToLocation
-import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
+import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.moveCameraToLocation
 import com.udacity.project4.utils.AppSharedMethods.setCustomMapStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import com.udacity.project4.utils.setTitle
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -75,9 +79,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
         }
-        mSharedViewModel.setHideToolbar(false)
+        mSharedViewModel.apply {
+            setHideToolbar(false)
+            setToolbarTitle(getString(R.string.text_select_location))
+        }
         setDisplayHomeAsUpEnabled(true)
-        setTitle(getString(R.string.text_select_location))
         return mBinding.root
     }
 

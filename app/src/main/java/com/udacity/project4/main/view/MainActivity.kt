@@ -3,6 +3,7 @@ package com.udacity.project4.main.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
@@ -10,12 +11,15 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.udacity.project4.R
+import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.ActivityMainBinding
 import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
-import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
+import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
+import com.udacity.project4.utils.AppSharedMethods.getCompatColor
 import com.udacity.project4.utils.AppSharedMethods.isLogin
+import com.udacity.project4.utils.AppSharedMethods.setStatusBarColorAndStyle
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -57,11 +61,14 @@ class MainActivity : AppCompatActivity() {
         // TODO: If the user was authenticated, send him to RemindersActivity
         // TODO: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
+        enableEdgeToEdge()
         mBinding =
             DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main)
                 .apply {
                     setSupportActionBar(mainToolbar)
-                    mainToolbar.setTitle(null)
+                    supportActionBar?.title = null
+                    root.applyWindowsPadding()
+                    setStatusBarColorAndStyle(getCompatColor(R.color.colorPrimary))
                 }
         initListener(savedInstanceState)
         initViewModelObservers()
@@ -89,6 +96,9 @@ class MainActivity : AppCompatActivity() {
             }
             showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
+            }
+            toolbarTitle.observe(this@MainActivity) {
+                mBinding.textViewToolbarTitle.text = it
             }
         }
     }

@@ -2,7 +2,12 @@ package com.udacity.project4.remindersList.view
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
@@ -13,13 +18,12 @@ import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.FragmentRemindersBinding
+import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.remindersList.adapter.RemindersListAdapter
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
-import com.udacity.project4.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,10 +52,12 @@ class ReminderListFragment : BaseFragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
         }
-        mSharedViewModel.setHideToolbar(false)
+        mSharedViewModel.apply {
+            setHideToolbar(false)
+            setToolbarTitle(getString(R.string.app_name))
+        }
         mSaveReminderViewModel.onClear()
         setDisplayHomeAsUpEnabled(false)
-        setTitle(mActivity.getString(R.string.app_name))
         initViewModelObservers()
         return mBinding.root
     }

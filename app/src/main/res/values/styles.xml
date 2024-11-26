@@ -37,7 +37,7 @@
 
     <style name="ToolbarTitleStyle">
         <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:textSize">@dimen/text_sub_title</item>
+        <item name="android:textSize">@dimen/text_large</item>
         <item name="android:fontFamily">@font/cairo_bold</item>
         <item name="android:gravity">center</item>
     </style>
@@ -69,5 +69,28 @@
         <item name="strokeWidth">0dp</item>
     </style>
 
+    <style name="ToolbarStyle" parent="Widget.Material3.Toolbar">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="titleTextAppearance">@style/CustomToolbarTitleText</item>
+        <item name="popupTheme">@style/AppTheme.PopupOverlay</item>
+    </style>
+
+    <style name="CustomToolbarTitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/text_size_large</item>
+    </style>
+
+    <style name="ProgressBarIndeterminateStyle" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/custom_animated_progressbar</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:indeterminateTint">@color/colorAccent</item>
+    </style>
+
+    <style name="Theme.FirebaseAuthUI.EdgeToEdge" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
 
 </resources>

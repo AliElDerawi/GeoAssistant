@@ -3,10 +3,8 @@ package com.udacity.project4.data
 import android.os.Handler
 import android.os.Looper
 import androidx.multidex.MultiDexApplication
-import androidx.work.Configuration
-import androidx.work.WorkManager
 import com.google.android.gms.location.LocationServices
-import com.udacity.project4.authentication.AuthenticationViewModel
+import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
@@ -18,8 +16,6 @@ import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.MyResultIntentReceiver
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.workmanager.dsl.worker
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf

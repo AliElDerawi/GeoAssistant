@@ -13,6 +13,7 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
+import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
@@ -270,7 +271,9 @@ class SaveReminderViewModel(
         mGeofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnSuccessListener {
                 Timber.d(mApp.getString(R.string.msg_geofences_removed))
-                showToastInt.value = R.string.msg_geofences_removed
+//                if (BuildConfig.DEBUG) {
+//                    showToastInt.value = R.string.msg_geofences_removed
+//                }
             }
             addOnFailureListener {
                 Timber.d(mApp.getString(R.string.msg_geofences_not_removed))

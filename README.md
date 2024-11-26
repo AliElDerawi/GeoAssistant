@@ -1,8 +1,8 @@
-# LocationsReminder
+# GeoAssistant
 
-**"A Locations Reminder app that helps users select a location on the map and get a reminder notification when they enter that location using Android Geofence."**
+**"A Geofence (Locations) Reminder app that helps users select a location on the map and get a reminder notification when they enter that location using Android Geofence."**
 
-LocationsReminder is an app designed to help users create geofences and receive reminders for their favorite locations. It follows best practices for Android development with Kotlin. This project is part of the Udacity Android Kotlin Developer Nanodegree Program.
+GeoAssistant is a geofence-based reminder app that lets users select locations on the map and receive notifications when they enter them, utilizing Android Geofence technology. It follows **best practices** for Android development with Kotlin. This project is part of the **Udacity Android Kotlin Developer Nanodegree Program**.
 
 ## Summary
 
@@ -14,6 +14,7 @@ This project demonstrates:
 - Best practices for managing permissions, including seamless user experience.
 - Integration with Firebase Auth UI for easy login.
 - Google Maps integration and notification handling following best practices.
+- Background data updates using WorkManager.
 
 ## Main Features of the Project
 
@@ -114,11 +115,11 @@ This project requires creating an account on Firebase to enable Firebase Auth UI
 5. **Add Map API Key**: Add the Map API key to the `local.properties` file or follow the [Secrets Gradle Plugin guide](https://developers.google.com/maps/documentation/places/android-sdk/secrets-gradle-plugin).
 6. **Build the Project**: Use **Gradle Plugin v8.7.2** to build the project.
 
-**Note:** Ensure you have the latest version of Android Studio and the Gradle build tool installed. Please refer to the [official guide](https://developer.android.com/studio/install) if needed.
+**Note:** Ensure you have the latest version of Android Studio and the Gradle build tool installed. Please look at the [official guide](https://developer.android.com/studio/install) if needed.
 
 ## Main Included External Libraries
 
-- **[Koin (v4)](https://github.com/InsertKoinIO/koin)**: Dependency injection for better modularity.
+- **[Koin (v4)](https://github.com/InsertKoinIO/koin)**: Dependency injection framework, allowing modularity and making the project easier to test.
 - **[Timber](https://github.com/JakeWharton/timber)**: Logging utility for easier debugging.
 - **[FusedLocationProvider](https://developer.android.com/develop/sensors-and-location/location/retrieve-current)**: Fetches user's last known location.
 - **[MapsSdk](https://developers.google.com/maps/documentation/android-sdk/start)**: Integrates Google Maps functionality.
@@ -129,18 +130,25 @@ This project requires creating an account on Firebase to enable Firebase Auth UI
 - **[JUnit (v4)](https://github.com/junit-team/junit4)**: Unit testing.
 - **[Robolectric](https://github.com/robolectric/robolectric)**: Unit test environment.
 - **[Mockito (v5)](https://github.com/mockito/mockito)**: Mocking framework for testing.
-- **[Security Crypto](https://developer.android.com/jetpack/androidx/releases/security)**: Encrypts user-sensitive data.
+- **[Security Crypto](https://developer.android.com/jetpack/androidx/releases/security)**: Encrypts user-sensitive data to ensure security.
 - **[Secrets Gradle Plugin](https://developers.google.com/maps/documentation/places/android-sdk/secrets-gradle-plugin)**: Secure management of sensitive data.
-- **[KSP](https://developer.android.com/build/migrate-to-ksp)**: Annotation processing.
+- **[KSP](https://developer.android.com/build/migrate-to-ksp)**: Annotation processing plugin for for improved build performance.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for improvements or bug fixes.
+Contributions are welcome! Please open an issue or submit a pull request for improvements or bug fixes. Please feel free to reach out if you'd like to add new features or expand on existing ones.
+
+### How to Contribute
+
+- **Fork the Repository**: Click the "Fork" button at the top.
+- **Create a Feature Branch**: Branch off from `main` for any features (`git checkout -b feature/your-feature`).
+- **Submit a Pull Request**: Submit a PR describing your changes.
 
 ## Contact
 
-If you have any questions or need support, please get in touch with me through the issues section or contribute directly to enhance the project.
+Feel free to reach out for any collaboration opportunities or if you have any questions. I'd love to hear your thoughts and contributions!
+Check my **[GitHub profile](https://github.com/AliElDerawi)**.
 
 ## License
 
-This project is open-source and licensed under the Apache 2.0 License. The LICENSE file in this repository provides more details.
+This project is open-source and licensed under the Apache 2.0 License. The LICENSE file in this repository provides more details

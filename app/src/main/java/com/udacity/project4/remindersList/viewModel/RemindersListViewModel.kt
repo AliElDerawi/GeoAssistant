@@ -3,6 +3,7 @@ package com.udacity.project4.remindersList.viewModel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
@@ -61,7 +62,9 @@ class RemindersListViewModel(
                 }
 
                 is Result.Error ->
-                    showSnackBar.postValue(result.message)
+                    showSnackBar.postValue(
+                        result.message ?: mApp.getString(R.string.msg_error_fetching_reminders)
+                    )
             }
             //check if no data has to be shown
             invalidateShowNoData()

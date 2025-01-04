@@ -136,7 +136,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                             )
                             Timber.d("getLastUserLocation:mLastKnownLocation: $mViewModel.selectedLocationLatLng.value!!")
                             mGoogleMap.moveCameraToLocation(
-                                selectedLocationLatLngLiveData.value!!,
+                                selectedLocationLatLngStateFlow.value!!,
                                 Constants.CURRENT_LOCATION_ZOOM
                             )
                         } ?: run {
@@ -207,7 +207,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     override fun onMapReady(googleMap: GoogleMap) {
         Timber.d("onMapReady:called")
         mGoogleMap = googleMap.apply {
-            mapType = mViewModel.currentMapStyleLiveData.value!!
+            mapType = mViewModel.currentMapStyleStateFlow.value
             setOnPoiClickListener { poi ->
                 mViewModel.setSelectedPOIAndShowName(
                     PointOfInterest(poi.latLng, poi.placeId, poi.name)
@@ -330,7 +330,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         }
 
     private fun updateLocation() {
-        mViewModel.selectedLocationLatLngLiveData.value?.let {
+        mViewModel.selectedLocationLatLngStateFlow.value?.let {
             Timber.d("updateLocation:mSelectedLocation ${it.longitude}")
             mGoogleMap.animateCameraToLocation(
                 it,

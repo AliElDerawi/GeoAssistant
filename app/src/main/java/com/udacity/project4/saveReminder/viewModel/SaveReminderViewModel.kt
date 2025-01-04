@@ -1,10 +1,13 @@
 package com.udacity.project4.saveReminder.viewModel
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
 import android.location.Location
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -13,7 +16,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
-import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
@@ -86,13 +88,13 @@ class SaveReminderViewModel(
     val lastUserLocationStateFlow: StateFlow<Location?>
         get() = _lastUserLocationStateFlow
 
-    private var _selectedLocationLatLngLiveData = MutableLiveData<LatLng?>()
-    val selectedLocationLatLngLiveData: LiveData<LatLng?>
-        get() = _selectedLocationLatLngLiveData
+    private var _selectedLocationLatLngStateFlow = MutableStateFlow<LatLng?>(null)
+    val selectedLocationLatLngStateFlow: StateFlow<LatLng?>
+        get() = _selectedLocationLatLngStateFlow
 
-    private var _currentMapStyleLiveData = MutableLiveData<Int>(R.id.normal_map)
-    val currentMapStyleLiveData: LiveData<Int>
-        get() = _currentMapStyleLiveData
+    private var _currentMapStyleStateFlow = MutableStateFlow<Int>(R.id.normal_map)
+    val currentMapStyleStateFlow: StateFlow<Int>
+        get() = _currentMapStyleStateFlow
 
     /**
      * Clear the live data objects to start fresh next time the view model gets called
@@ -154,14 +156,15 @@ class SaveReminderViewModel(
     }
 
     fun setSelectedLocationLatLngAndShowName(latLng: LatLng) {
-        _selectedLocationLatLngLiveData.value = latLng
+        _selectedLocationLatLngStateFlow.value = latLng
         startFetchAddressWorker(
             LatLng(
-                selectedLocationLatLngLiveData.value!!.latitude, selectedLocationLatLngLiveData.value!!.longitude
+                selectedLocationLatLngStateFlow.value!!.latitude, selectedLocationLatLngStateFlow.value!!.longitude
             ),
         )
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
     fun createGeofenceAfterGrantPermission() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             showToast.postValue(mApp.getString(R.string.msg_enable_background_location_permission))
@@ -217,10 +220,10 @@ class SaveReminderViewModel(
     }
 
     fun setCurrentMapStyle(style: Int) {
-        _currentMapStyleLiveData.value = style
+        _currentMapStyleStateFlow.value = style
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "NewApi")
     private fun continueSaveReminder(reminderDataItem: ReminderDataItem) {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             showToastInt.value = R.string.msg_location_required_for_create_geofence_error
@@ -264,6 +267,7 @@ class SaveReminderViewModel(
         )
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
     fun removeGeofences() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             return

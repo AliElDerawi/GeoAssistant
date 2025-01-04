@@ -46,7 +46,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
-import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -139,6 +138,7 @@ object AppSharedMethods {
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Application): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
@@ -368,7 +368,11 @@ object AppSharedMethods {
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     }
                     ColorUtils.calculateLuminance(navigationBarColor) >= 0.5 -> {
-                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        } else {
+                           0
+                        }
                     }
                     else -> 0 // No flags for dark icons
                 }

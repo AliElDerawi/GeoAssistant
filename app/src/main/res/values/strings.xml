@@ -11,6 +11,7 @@
     <!-- Reminder List Strings -->
     <string name="text_no_data">No Data</string>
     <string name="text_logout">Logout</string>
+    <string name="msg_error_fetching_reminders">Error fetching reminders</string>
 
     <!-- Save Reminder Strings -->
     <string name="text_reminder_title">Reminder Title</string>

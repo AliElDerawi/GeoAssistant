@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
@@ -17,55 +18,55 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up JDK for Android
+      # Step 2: Grant execute permission for Gradlew
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
+      # Step 3: Create dummy local.defaults.properties
+      - name: Create dummy local.defaults.properties
+        run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
+
+      # Step 4: Create google-services.json
+      # Option 1: Use a dummy file (minimal configuration)
+      - name: Create dummy google-services.json
+        run: |
+          mkdir -p app/
+          echo '{
+            "project_info": {
+              "project_id": "dummy-project-id",
+              "project_number": "123456789",
+              "firebase_url": "https://dummy.firebaseio.com",
+              "storage_bucket": "dummy.appspot.com"
+            }
+          }' > app/google-services.json
+
+      # Uncomment the following if you need to use the real google-services.json file
+      # Option 2: Use the real file securely from GitHub Secrets
+      # - name: Create real google-services.json
+      #   run: |
+      #     echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > app/google-services.json
+
+      # Step 5: Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # Step 3: Set up Android SDK
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-
-      # Step 3: Create dummy local.defaults.properties
-      - name: Create dummy local.defaults.properties
-        run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
-
-      # Step 3: Create dummy google-services.json
-      - name: Create dummy google-services.json
-        run: |
-          mkdir -p app/
-          echo '{}' > app/google-services.json
-
-      # Step 4: Cache Gradle dependencies
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            gradle-
-
-      # Step 5: Grant executable permissions to the gradlew script
-      - name: Grant execute permission for Gradlew
-        run: chmod +x ./gradlew
-
-      # Step 5: Build the project
+      # Step 6: Build with Gradle
       - name: Build with Gradle
         run: ./gradlew assembleDebug
 
-      # Step 6: Run Lint checks
+      # Step 7: Run Kotlin Lint
       - name: Run Kotlin Lint
         run: ./gradlew lintDebug
 
-      # Step 7: Run unit tests
+      # Step 8: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
 
-      # Step 8: Run Instrumentation Tests (Optional)
+
+      # Step 89: Run Instrumentation Tests (Optional)
       # Uncomment this step if you have instrumentation tests configured
       # - name: Run Instrumented Tests
       #   run: ./gradlew connectedAndroidTest

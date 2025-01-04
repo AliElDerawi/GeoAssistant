@@ -1,10 +1,13 @@
 package com.udacity.project4.saveReminder.viewModel
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
 import android.location.Location
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -161,6 +164,7 @@ class SaveReminderViewModel(
         )
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
     fun createGeofenceAfterGrantPermission() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             showToast.postValue(mApp.getString(R.string.msg_enable_background_location_permission))
@@ -219,7 +223,7 @@ class SaveReminderViewModel(
         _currentMapStyleStateFlow.value = style
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission", "NewApi")
     private fun continueSaveReminder(reminderDataItem: ReminderDataItem) {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             showToastInt.value = R.string.msg_location_required_for_create_geofence_error
@@ -263,6 +267,7 @@ class SaveReminderViewModel(
         )
     }
 
+    @TargetApi(Build.VERSION_CODES.Q)
     fun removeGeofences() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             return

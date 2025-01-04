@@ -46,7 +46,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
-import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -139,7 +138,7 @@ object AppSharedMethods {
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @TargetApi(Build.VERSION_CODES.Q)
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Application): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION

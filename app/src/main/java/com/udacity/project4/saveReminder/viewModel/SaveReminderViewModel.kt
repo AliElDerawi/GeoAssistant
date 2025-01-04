@@ -13,7 +13,6 @@ import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
-import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.base.NavigationCommand
@@ -86,13 +85,13 @@ class SaveReminderViewModel(
     val lastUserLocationStateFlow: StateFlow<Location?>
         get() = _lastUserLocationStateFlow
 
-    private var _selectedLocationLatLngLiveData = MutableLiveData<LatLng?>()
-    val selectedLocationLatLngLiveData: LiveData<LatLng?>
-        get() = _selectedLocationLatLngLiveData
+    private var _selectedLocationLatLngStateFlow = MutableStateFlow<LatLng?>(null)
+    val selectedLocationLatLngStateFlow: StateFlow<LatLng?>
+        get() = _selectedLocationLatLngStateFlow
 
-    private var _currentMapStyleLiveData = MutableLiveData<Int>(R.id.normal_map)
-    val currentMapStyleLiveData: LiveData<Int>
-        get() = _currentMapStyleLiveData
+    private var _currentMapStyleStateFlow = MutableStateFlow<Int>(R.id.normal_map)
+    val currentMapStyleStateFlow: StateFlow<Int>
+        get() = _currentMapStyleStateFlow
 
     /**
      * Clear the live data objects to start fresh next time the view model gets called
@@ -154,10 +153,10 @@ class SaveReminderViewModel(
     }
 
     fun setSelectedLocationLatLngAndShowName(latLng: LatLng) {
-        _selectedLocationLatLngLiveData.value = latLng
+        _selectedLocationLatLngStateFlow.value = latLng
         startFetchAddressWorker(
             LatLng(
-                selectedLocationLatLngLiveData.value!!.latitude, selectedLocationLatLngLiveData.value!!.longitude
+                selectedLocationLatLngStateFlow.value!!.latitude, selectedLocationLatLngStateFlow.value!!.longitude
             ),
         )
     }
@@ -217,7 +216,7 @@ class SaveReminderViewModel(
     }
 
     fun setCurrentMapStyle(style: Int) {
-        _currentMapStyleLiveData.value = style
+        _currentMapStyleStateFlow.value = style
     }
 
     @SuppressLint("MissingPermission")

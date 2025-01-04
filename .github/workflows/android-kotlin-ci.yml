@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
     steps:
       # Step 1: Checkout the code

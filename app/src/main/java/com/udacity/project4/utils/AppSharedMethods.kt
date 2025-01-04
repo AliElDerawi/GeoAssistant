@@ -139,6 +139,7 @@ object AppSharedMethods {
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Application): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
@@ -368,7 +369,11 @@ object AppSharedMethods {
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     }
                     ColorUtils.calculateLuminance(navigationBarColor) >= 0.5 -> {
-                        View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        } else {
+                           0
+                        }
                     }
                     else -> 0 // No flags for dark icons
                 }

@@ -23,6 +23,7 @@ object BindingAdapters {
                 this.adapter = adapter as? BaseRecyclerViewAdapter<T>
             }
             (adapter as? BaseRecyclerViewAdapter<T>)?.submitList(list)
+            setHasFixedSize(true)
         }
     }
 

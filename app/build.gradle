@@ -65,13 +65,16 @@ android {
         // checked in version control.
         defaultPropertiesFileName = "local.defaults.properties"
 
-        // Load secrets from environment variables if the file is missing
-        loadEnvironmentVariables = true
-
         // Configure which keys should be ignored by the plugin by providing regular expressions.
         // "sdk.dir" is ignored by default.
         ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
     }
+
+    defaultConfig {
+        // Read the MAPS_API_KEY from environment variables or provide a default value
+        buildConfigField "String", "MAPS_API_KEY", "\"${System.getenv("MAPS_API_KEY") ?: "default_maps_api_key"}\""
+    }
+
 }
 
 dependencies {

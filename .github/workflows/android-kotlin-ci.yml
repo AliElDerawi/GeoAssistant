@@ -12,7 +12,6 @@ jobs:
 
     env:
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-      
 
     steps:
       # Step 1: Checkout the code
@@ -40,20 +39,33 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # Step 6: Build with Gradle
+     # Step 6: Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+
+    # Step 7: Cache Gradle dependencies
+      - name: Cache Gradle and Android SDK
+        uses: actions/cache@v3
+        with:
+            path: ~/.android
+            key: android-sdk-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            restore-keys: |
+              android-sdk-${{ runner.os }}-
+
+      # Step 8: Build with Gradle
       - name: Build with Gradle
         run: ./gradlew assembleDebug
 
-      # Step 7: Run Kotlin Lint
+      # Step 9: Run Kotlin Lint
       - name: Run Kotlin Lint
         run: ./gradlew lintDebug
 
-      # Step 8: Run Unit Tests
+      # Step 10: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
 
 
-      # Step 9: Run Instrumentation Tests (Optional)
+      # Step 11: Run Instrumentation Tests (Optional)
       # Uncomment this step if you have instrumentation tests configured
       # - name: Run Instrumented Tests
       #   run: ./gradlew connectedAndroidTest

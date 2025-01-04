@@ -32,6 +32,12 @@ jobs:
       - name: Create dummy local.defaults.properties
         run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
 
+      # Step 3: Create dummy google-services.json
+      - name: Create dummy google-services.json
+        run: |
+          mkdir -p app/
+          echo '{}' > app/google-services.json
+
       # Step 4: Cache Gradle dependencies
       - name: Cache Gradle dependencies
         uses: actions/cache@v3

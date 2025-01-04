@@ -28,6 +28,10 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
 
+      # Step 3: Create dummy local.defaults.properties
+      - name: Create dummy local.defaults.properties
+        run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
+
       # Step 4: Cache Gradle dependencies
       - name: Cache Gradle dependencies
         uses: actions/cache@v3

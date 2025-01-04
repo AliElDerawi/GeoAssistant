@@ -27,24 +27,9 @@ jobs:
         run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
 
       # Step 4: Create google-services.json
-      # Option 1: Use a dummy file (minimal configuration)
-      - name: Create dummy google-services.json
+      - name: Create real google-services.json
         run: |
-          mkdir -p app/
-          echo '{
-            "project_info": {
-              "project_id": "dummy-project-id",
-              "project_number": "123456789",
-              "firebase_url": "https://dummy.firebaseio.com",
-              "storage_bucket": "dummy.appspot.com"
-            }
-          }' > app/google-services.json
-
-      # Uncomment the following if you need to use the real google-services.json file
-      # Option 2: Use the real file securely from GitHub Secrets
-      # - name: Create real google-services.json
-      #   run: |
-      #     echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > app/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > app/google-services.json
 
       # Step 5: Set up JDK 17
       - name: Set up JDK 17
@@ -66,7 +51,7 @@ jobs:
         run: ./gradlew testDebugUnitTest
 
 
-      # Step 89: Run Instrumentation Tests (Optional)
+      # Step 9: Run Instrumentation Tests (Optional)
       # Uncomment this step if you have instrumentation tests configured
       # - name: Run Instrumented Tests
       #   run: ./gradlew connectedAndroidTest

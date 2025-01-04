@@ -1,4 +1,4 @@
-# GeoAssistant
+# GeoAssistant [![Build Status][ci-image]][ci]
 
 **"A Geofence (Locations) Reminder app that helps users select a location on the map and get a reminder notification when they enter that location using Android Geofence."**
 
@@ -152,3 +152,6 @@ Check my **[GitHub profile](https://github.com/AliElDerawi)**.
 ## License
 
 This project is open-source and licensed under the Apache 2.0 License. The LICENSE file in this repository provides more details
+
+[ci-image]: https://img.shields.io/github/actions/workflow/status/AliElDerawi/GeoAssistant/android-kotlin-ci.yml?label=Build%20Status&logo=github
+[ci]: https://github.com/AliElDerawi/GeoAssistant/actions?query=workflow%3ABuild

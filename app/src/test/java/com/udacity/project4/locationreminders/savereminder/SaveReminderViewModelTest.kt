@@ -10,7 +10,7 @@ import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi

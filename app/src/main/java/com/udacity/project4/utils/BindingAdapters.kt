@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.udacity.project4.data.base.BaseRecyclerViewAdapter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,7 @@ object BindingAdapters {
      */
     @BindingAdapter("android:fadeVisible")
     @JvmStatic
-    fun View.setFadeVisible( visible: Boolean? = true) {
+    fun View.setFadeVisible(visible: Boolean? = true) {
         tag?.let {
             animate().cancel()
             if (visible == true && visibility == View.GONE) {
@@ -65,6 +66,14 @@ object BindingAdapters {
     fun TextView.bindLocation(location: String?) {
         text = location
         contentDescription = location
+    }
+
+    @BindingAdapter("refreshing")
+    @JvmStatic
+    fun SwipeRefreshLayout.refreshing(visible: Boolean? = false) {
+        tag?.let {
+            if (visible == false) isRefreshing = false
+        }
     }
 
 }

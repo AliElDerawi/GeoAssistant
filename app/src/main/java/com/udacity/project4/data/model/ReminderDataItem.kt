@@ -1,7 +1,7 @@
 package com.udacity.project4.data.model
 
 import android.os.Parcelable
-import com.udacity.project4.base.GenericModelCallBack
+import com.udacity.project4.data.base.GenericModelCallBack
 import kotlinx.parcelize.Parcelize
 import java.util.*
 

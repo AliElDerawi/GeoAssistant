@@ -32,15 +32,15 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
-import com.udacity.project4.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.local.RemindersLocalRepository
-import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
-import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
-import com.udacity.project4.main.view.MainActivity
-import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
+import com.udacity.project4.features.main.view.MainActivity
+import com.udacity.project4.features.main.viewModel.MainViewModel
+import com.udacity.project4.features.remindersList.viewModel.RemindersListViewModel
+import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
 import com.udacity.project4.util.monitorActivity
 import com.udacity.project4.utils.AppSharedMethods
@@ -87,6 +87,7 @@ class AppNavigationTest : AutoCloseKoinTest() {
         val myModule = module {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModelOf(::RemindersListViewModel)
+
             viewModelOf(::AuthenticationViewModel)
             workerOf(::GeofenceTransitionsWorker)
             workerOf(::FetchAddressWorker)

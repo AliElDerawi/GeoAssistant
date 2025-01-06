@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.udacity.project4.base.BaseRecyclerViewAdapter
+import com.udacity.project4.data.base.BaseRecyclerViewAdapter
 
 /**
  * Extension function to setup the RecyclerView.

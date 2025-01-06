@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.udacity.project4.authentication.viewModel.AuthenticationViewModel" />
+            type="com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel" />
 
     </data>
 

@@ -7,7 +7,7 @@ import com.google.android.gms.location.LocationServices
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
-import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.features.remindersList.viewModel.RemindersListViewModel
@@ -53,9 +53,9 @@ class MyApp : MultiDexApplication() {
             //Declare singleton definitions to be later injected using by inject()
             singleOf(::SaveReminderViewModel)
             singleOf(::MainViewModel)
-            single { RemindersLocalRepository(get(), Dispatchers.IO, get()) }
+            single { RemindersRepository(get(), Dispatchers.IO, get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
-            single<ReminderDataSource> { get<RemindersLocalRepository>() }
+            single<ReminderDataSource> { get<RemindersRepository>() }
             single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
             single { LocationServices.getGeofencingClient(this@MyApp) }
             single { MyResultIntentReceiver(Handler(Looper.getMainLooper())) }

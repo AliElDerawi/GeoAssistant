@@ -24,7 +24,7 @@ import com.udacity.project4.R
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
-import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.features.main.view.MainActivity
 import com.udacity.project4.features.main.viewModel.MainViewModel
@@ -98,7 +98,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
             workerOf(::FetchAddressWorker)
             single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
             single { MainViewModel(get()) }
-            single { RemindersLocalRepository(get(), Dispatchers.Unconfined, get()) }
+            single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }
             single<ReminderDataSource> { get<FakeTestRepository>() }

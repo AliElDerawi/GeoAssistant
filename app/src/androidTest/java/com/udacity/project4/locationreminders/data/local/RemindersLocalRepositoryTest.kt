@@ -9,7 +9,7 @@ import androidx.test.filters.MediumTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
 import com.udacity.project4.data.dto.ReminderDTO
-import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
@@ -40,7 +40,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
 
 //    TODO - Completed: Add testing implementation to the RemindersLocalRepository.kt
     private lateinit var database: RemindersDatabase
-    private lateinit var localDataSource: RemindersLocalRepository
+    private lateinit var localDataSource: RemindersRepository
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -56,7 +56,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
             ApplicationProvider.getApplicationContext(), RemindersDatabase::class.java
         ).allowMainThreadQueries().build()
         //
-        localDataSource = RemindersLocalRepository(
+        localDataSource = RemindersRepository(
             database.reminderDao(), Dispatchers.Unconfined, LocationServices.getFusedLocationProviderClient(appContext)
         )
     }

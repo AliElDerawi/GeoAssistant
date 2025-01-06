@@ -35,7 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
-import com.udacity.project4.data.local.RemindersLocalRepository
+import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.features.main.view.MainActivity
 import com.udacity.project4.features.main.viewModel.MainViewModel
@@ -75,7 +75,7 @@ import org.robolectric.annotation.Config
 @LargeTest
 class AppNavigationTest : AutoCloseKoinTest() {
 
-    private lateinit var tasksRepository: RemindersLocalRepository
+    private lateinit var tasksRepository: RemindersRepository
     // An Idling Resource that waits for Data Binding to have no pending bindings
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var appContext: Application
@@ -93,10 +93,10 @@ class AppNavigationTest : AutoCloseKoinTest() {
             workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
             single { SaveReminderViewModel(get(), get(),get()) }
-            single { RemindersLocalRepository(get(),Dispatchers.Unconfined,get()) }
+            single { RemindersRepository(get(),Dispatchers.Unconfined,get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { MainViewModel(get()) }
-            single<ReminderDataSource> { get<RemindersLocalRepository>() }
+            single<ReminderDataSource> { get<RemindersRepository>() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
             single { LocationServices.getGeofencingClient(appContext) }
             single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }

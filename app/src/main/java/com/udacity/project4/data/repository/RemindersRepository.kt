@@ -1,4 +1,4 @@
-package com.udacity.project4.data.local
+package com.udacity.project4.data.repository
 
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -7,12 +7,13 @@ import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.local.RemindersDao
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -26,7 +27,7 @@ import timber.log.Timber
  * @param remindersDao the dao that does the Room db operations
  * @param ioDispatcher a coroutine dispatcher to offload the blocking IO tasks
  */
-class RemindersLocalRepository(
+class RemindersRepository(
     private val remindersDao: RemindersDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val fusedLocationProviderClient: FusedLocationProviderClient
@@ -74,6 +75,7 @@ class RemindersLocalRepository(
                         MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
                     )
                 } catch (ex: Exception) {
+                    ensureActive()
                     Result.Error(ex.localizedMessage)
                 }
             }
@@ -98,9 +100,11 @@ class RemindersLocalRepository(
                     val location = fusedLocationProviderClient.lastLocation.await()
                     Result.Success(flow { emit(location) })
                 } catch (e: SecurityException) {
+                    ensureActive()
                     Timber.e(e)
                     Result.Error(e.localizedMessage)
                 } catch (e: Exception) {
+                    ensureActive()
                     Result.Error(e.localizedMessage)
                 }
             }

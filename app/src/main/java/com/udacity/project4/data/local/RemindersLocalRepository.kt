@@ -11,6 +11,7 @@ import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -74,6 +75,7 @@ class RemindersLocalRepository(
                         MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
                     )
                 } catch (ex: Exception) {
+                    ensureActive()
                     Result.Error(ex.localizedMessage)
                 }
             }
@@ -98,9 +100,11 @@ class RemindersLocalRepository(
                     val location = fusedLocationProviderClient.lastLocation.await()
                     Result.Success(flow { emit(location) })
                 } catch (e: SecurityException) {
+                    ensureActive()
                     Timber.e(e)
                     Result.Error(e.localizedMessage)
                 } catch (e: Exception) {
+                    ensureActive()
                     Result.Error(e.localizedMessage)
                 }
             }

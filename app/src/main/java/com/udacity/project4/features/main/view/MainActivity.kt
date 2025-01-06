@@ -18,8 +18,8 @@ import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
 import com.udacity.project4.utils.AppSharedMethods.getCompatColor
-import com.udacity.project4.utils.AppSharedMethods.isLogin
 import com.udacity.project4.utils.AppSharedMethods.setStatusBarColorAndStyle
+import com.udacity.project4.utils.validateStartDestination
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -80,12 +80,7 @@ class MainActivity : AppCompatActivity() {
         mAppBarConfiguration = AppBarConfiguration(mNavController.graph)
         Timber.plant(Timber.DebugTree())
         if (savedInstanceState == null) {
-            val startDestination =
-                if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
-            val navGraph = mNavController.navInflater.inflate(R.navigation.main_navigation).apply {
-                setStartDestination(startDestination)
-            }
-            mNavController.graph = navGraph
+          mNavController.validateStartDestination()
         }
     }
 

@@ -30,7 +30,7 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
-    //TODO: provide testing to the SaveReminderView and its live data objects
+    //TODO  - Completed: provide testing to the SaveReminderView and its live data objects
     private lateinit var saveReminderViewModel: SaveReminderViewModel
     private lateinit var reminderLocalRepository: FakeDataSource
     private lateinit var appContext: Application

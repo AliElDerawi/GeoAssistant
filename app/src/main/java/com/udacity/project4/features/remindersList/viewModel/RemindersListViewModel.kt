@@ -10,6 +10,7 @@ import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.SingleLiveEvent
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +39,7 @@ class RemindersListViewModel(
      */
     fun loadReminders() {
         showLoading.postValue(true)
-        viewModelScope.launch {
+        viewModelScope.launch() {
             //interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
             showLoading.postValue(false)
@@ -75,7 +76,7 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersListStateFlow.value.isEmpty()
+        showNoData.postValue(remindersListStateFlow.value.isEmpty())
     }
 
     fun addReminderClick() {

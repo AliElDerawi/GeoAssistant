@@ -70,18 +70,18 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // TODO: add the map setup implementation
-        // TODO: zoom to the user location after taking his permission
-        // TODO: add style to the map
-        // TODO: put a marker to location that the user selected
-        // TODO: call this function after the user confirms on the selected location
+        // TODO - Completed: add the map setup implementation
+        // TODO - Completed: zoom to the user location after taking his permission
+        // TODO - Completed: add style to the map
+        // TODO - Completed: put a marker to location that the user selected
+        // TODO - Completed: call this function after the user confirms on the selected location
         mBinding = FragmentSelectLocationBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = mViewModel
         }
         mSharedViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.text_select_location))
+            setToolbarTitle(mActivity.getString(R.string.text_select_location))
         }
         setDisplayHomeAsUpEnabled(true)
         return mBinding.root
@@ -154,14 +154,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
     }
 
     private fun onLocationSelected() {
-        // TODO: When the user confirms on the selected location,
+        // TODO - Completed: When the user confirms on the selected location,
         //  send back the selected location details to the view model
         //  and navigate back to the previous fragment to save the reminder and add the geofence
         mViewModel.navigationCommand.value = NavigationCommand.Back
     }
 
     private fun initMenu() {
-        // TODO: Change the map type based on the user's selection.
         val menuHost: MenuHost = mActivity
         // Add menu items without using the Fragment Menu APIs
         // Note how we can tie the MenuProvider to the viewLifecycleOwner
@@ -175,7 +174,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 // TODO Comment : We can use NavigationUI.onNavDestinationSelected() to handle the navigation
                 mGoogleMap.mapType = when (menuItem.itemId) {
-                    // TODO: Change the map type based on the user's selection.
+                    // TODO - Completed: Change the map type based on the user's selection.
                     R.id.normal_map -> GoogleMap.MAP_TYPE_NORMAL
                     R.id.hybrid_map -> GoogleMap.MAP_TYPE_HYBRID
                     R.id.satellite_map -> GoogleMap.MAP_TYPE_SATELLITE
@@ -347,21 +346,24 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
         val mAddressOutput =
             resultData?.getString(Constants.EXTRA_RESULT_DATA_KEY)
-        mBinding.progressBarLoading.visibility = View.INVISIBLE
-        mBinding.textViewLocationName.visibility = View.VISIBLE
-        mBinding.textViewLocationName.text =
-            mAddressOutput
-                ?: mActivity.getString(R.string.msg_address_location_network_issue)
-
-        if (resultCode == Constants.SUCCESS_RESULT && mViewModel.selectedPOILiveData.value != null && mViewModel.selectedPOILiveData.value!!.name.isEmpty()) {
-            Timber.d("onReceiveResult:called:updateName")
-            mViewModel.setSelectedPOI(
-                PointOfInterest(
-                    mViewModel.selectedPOILiveData.value!!.latLng,
-                    mViewModel.selectedPOILiveData.value!!.placeId,
-                    mAddressOutput.toString()
+        with(mBinding) {
+            progressBarLoading.visibility = View.INVISIBLE
+            textViewLocationName.visibility = View.VISIBLE
+            textViewLocationName.text =
+                mAddressOutput
+                    ?: mActivity.getString(R.string.msg_address_location_network_issue)
+        }
+        with(mViewModel) {
+            if (resultCode == Constants.SUCCESS_RESULT && selectedPOILiveData.value != null && selectedPOILiveData.value!!.name.isEmpty()) {
+                Timber.d("onReceiveResult:called:updateName")
+                setSelectedPOI(
+                    PointOfInterest(
+                        selectedPOILiveData.value!!.latLng,
+                        selectedPOILiveData.value!!.placeId,
+                        mAddressOutput.toString()
+                    )
                 )
-            )
+            }
         }
     }
 

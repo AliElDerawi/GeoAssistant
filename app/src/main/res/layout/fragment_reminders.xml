@@ -15,6 +15,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        refreshing="@{viewModel.showLoading.booleanValue()}"
         tools:context=".remindersList.view.ReminderListFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout

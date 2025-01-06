@@ -76,7 +76,6 @@ class ReminderListFragment : BaseFragment() {
             }
             refreshLayout.setOnRefreshListener {
                 mViewModel.loadReminders()
-                refreshLayout.isRefreshing = false
             }
         }
     }

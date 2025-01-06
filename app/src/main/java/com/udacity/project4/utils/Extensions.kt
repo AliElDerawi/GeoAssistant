@@ -5,9 +5,12 @@ import android.animation.AnimatorListenerAdapter
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseRecyclerViewAdapter
+import com.udacity.project4.utils.AppSharedMethods.isLogin
 
 /**
  * Extension function to setup the RecyclerView.
@@ -58,4 +61,13 @@ fun View.fadeOut() {
             this@fadeOut.visibility = View.GONE
         }
     })
+}
+
+fun NavController.validateStartDestination(){
+    val startDestination =
+        if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
+    val navGraph = navInflater.inflate(R.navigation.main_navigation).apply {
+        setStartDestination(startDestination)
+    }
+    graph = navGraph
 }

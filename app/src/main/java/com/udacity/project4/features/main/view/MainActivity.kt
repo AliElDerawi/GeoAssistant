@@ -18,8 +18,8 @@ import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
 import com.udacity.project4.utils.AppSharedMethods.getCompatColor
-import com.udacity.project4.utils.AppSharedMethods.isLogin
 import com.udacity.project4.utils.AppSharedMethods.setStatusBarColorAndStyle
+import com.udacity.project4.utils.validateStartDestination
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Implement the create account and sign in using FirebaseUI,
+        // TODO - Completed: Implement the create account and sign in using FirebaseUI,
         //  use sign in using email and sign in using Google
-        // TODO: If the user was authenticated, send him to RemindersActivity
-        // TODO: a bonus is to customize the sign in flow to look nice using :
+        // TODO - Completed: If the user was authenticated, send him to RemindersActivity
+        // TODO - Completed: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
         enableEdgeToEdge()
         mBinding =
@@ -80,12 +80,7 @@ class MainActivity : AppCompatActivity() {
         mAppBarConfiguration = AppBarConfiguration(mNavController.graph)
         Timber.plant(Timber.DebugTree())
         if (savedInstanceState == null) {
-            val startDestination =
-                if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
-            val navGraph = mNavController.navInflater.inflate(R.navigation.main_navigation).apply {
-                setStartDestination(startDestination)
-            }
-            mNavController.graph = navGraph
+          mNavController.validateStartDestination()
         }
     }
 
@@ -97,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
             }
-            toolbarTitle.observe(this@MainActivity) {
+            toolbarTitleLiveData.observe(this@MainActivity) {
                 mBinding.textViewToolbarTitle.text = it
             }
         }

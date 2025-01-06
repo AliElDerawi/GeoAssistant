@@ -29,7 +29,8 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest : AutoCloseKoinTest() {
 
-    //TODO: provide testing to the RemindersListViewModel and its live data objects
+    //TODO - Completed: provide testing to the RemindersListViewModel and its live data objects
+
     private lateinit var remindersListViewModel: RemindersListViewModel
     private lateinit var reminderLocalRepository: FakeDataSource
     @get:Rule
@@ -45,7 +46,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
         //Get our real repository
         reminderLocalRepository = FakeDataSource()
         //clear the data to start fresh
-        // TODO : Comment, if we didn't inject application instance here, we can remove @RunWith(AndroidJUnit4::class) annotation
+        // TODO  : Comment, if we didn't inject application instance here, we can remove @RunWith(AndroidJUnit4::class) annotation
         remindersListViewModel =
             RemindersListViewModel(
                 ApplicationProvider.getApplicationContext(),

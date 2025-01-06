@@ -71,7 +71,7 @@ class SaveReminderFragment : BaseFragment() {
 
         initViewModelObservers()
 //        mBinding.saveReminder.setOnClickListener {
-//            // TODO: use the user entered reminder details to:
+//            // TODO - Completed: use the user entered reminder details to:
 //            //  1) add a geofencing request
 //            //  2) save the reminder to the local db
 //        }
@@ -218,7 +218,7 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun showEnableLocationSnackBar() {
         mActivity.getSnackBar(
-            getString(R.string.msg_location_required_for_create_geofence_error),
+            mActivity.getString(R.string.msg_location_required_for_create_geofence_error),
             Snackbar.LENGTH_INDEFINITE
         ).setAction(android.R.string.ok) {
             checkDeviceLocationSettings()

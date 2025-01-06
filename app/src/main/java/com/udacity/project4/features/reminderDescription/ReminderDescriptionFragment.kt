@@ -37,7 +37,7 @@ class ReminderDescriptionFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        // TODO: Add the implementation of the reminder details
+        // TODO - Completed: Add the implementation of the reminder details
         mBinding = FragmentReminderDescriptionBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             reminderDataItem = arguments?.let {

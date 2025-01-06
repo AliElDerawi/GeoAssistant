@@ -22,9 +22,9 @@ import timber.log.Timber
  *
  */
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
-    //        // TODO: implement the onReceive method to receive the geofencing events at the background
+    //        // TODO - Completed: implement the onReceive method to receive the geofencing events at the background
     override fun onReceive(context: Context, intent: Intent) {
-        // TODO: Step 11 implement the onReceive method
+        // TODO: Step 11 - Completed implement the onReceive method
         Timber.d("onReceive: called")
         // Get GeofencingEvent from the Intent
         GeofencingEvent.fromIntent(intent)?.let { geofencingEvent ->

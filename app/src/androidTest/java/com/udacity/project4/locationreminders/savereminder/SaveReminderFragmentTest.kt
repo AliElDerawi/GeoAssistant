@@ -64,9 +64,9 @@ import org.robolectric.annotation.Config
 @LargeTest
 class SaveReminderFragmentTest : AutoCloseKoinTest() {
 
-//    TODO: test the navigation of the fragments.
-//    TODO: test the displayed data on the UI.
-//    TODO: add testing for the error messages.
+//    TODO - Completed: test the navigation of the fragments.
+//    TODO - Completed: test the displayed data on the UI.
+//    TODO - Completed: add testing for the error messages.
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var saveReminderViewModel: SaveReminderViewModel

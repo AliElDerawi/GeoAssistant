@@ -38,7 +38,7 @@ import org.robolectric.annotation.Config
 @MediumTest
 class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
+//    TODO - Completed: Add testing implementation to the RemindersLocalRepository.kt
     private lateinit var database: RemindersDatabase
     private lateinit var localDataSource: RemindersLocalRepository
     // Executes each task synchronously using Architecture Components.

@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO: Implement the create account and sign in using FirebaseUI,
+        // TODO - Completed: Implement the create account and sign in using FirebaseUI,
         //  use sign in using email and sign in using Google
-        // TODO: If the user was authenticated, send him to RemindersActivity
-        // TODO: a bonus is to customize the sign in flow to look nice using :
+        // TODO - Completed: If the user was authenticated, send him to RemindersActivity
+        // TODO - Completed: a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
         enableEdgeToEdge()
         mBinding =

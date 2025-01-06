@@ -34,7 +34,7 @@ import org.robolectric.annotation.Config
 @SmallTest
 class RemindersDaoTest : AutoCloseKoinTest() {
 
-    //    TODO: Add testing implementation to the RemindersDao.kt
+    //    TODO - Completed: Add testing implementation to the RemindersDao.kt
     private lateinit var database: RemindersDatabase
 
     // Executes each task synchronously using Architecture Components.

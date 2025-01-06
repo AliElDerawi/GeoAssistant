@@ -27,8 +27,8 @@ import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.local.RemindersLocalRepository
 import com.udacity.project4.remindersList.viewModel.RemindersListViewModel
-import com.udacity.project4.main.view.MainActivity
-import com.udacity.project4.main.viewModel.MainViewModel
+import com.udacity.project4.features.main.view.MainActivity
+import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.saveReminder.view.SaveReminderFragment
 import com.udacity.project4.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource

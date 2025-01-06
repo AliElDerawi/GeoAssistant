@@ -38,7 +38,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".main.view.MainActivity"
+            android:name=".features.main.view.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>

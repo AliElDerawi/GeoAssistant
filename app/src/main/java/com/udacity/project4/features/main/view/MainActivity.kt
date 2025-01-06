@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
             }
-            toolbarTitle.observe(this@MainActivity) {
+            toolbarTitleLiveData.observe(this@MainActivity) {
                 mBinding.textViewToolbarTitle.text = it
             }
         }

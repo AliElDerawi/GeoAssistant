@@ -15,16 +15,16 @@ class MainViewModel(private val mApp: Application) : BaseViewModel(mApp) {
     val showUpButtonLiveData: LiveData<Boolean>
         get() = _showUpButtonLiveData
 
-    private var _toolbarTitle = MutableLiveData<String>()
-    val toolbarTitle: LiveData<String>
-        get() = _toolbarTitle
+    private var _toolbarTitleLiveData = MutableLiveData<String>()
+    val toolbarTitleLiveData: LiveData<String>
+        get() = _toolbarTitleLiveData
 
     fun setHideToolbar(hideToolbar: Boolean) {
         _hideToolbarLiveData.value = hideToolbar
     }
 
     fun setToolbarTitle(title: String) {
-        _toolbarTitle.value = title
+        _toolbarTitleLiveData.value = title
     }
 
 }

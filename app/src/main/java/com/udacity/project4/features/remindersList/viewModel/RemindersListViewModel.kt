@@ -39,7 +39,7 @@ class RemindersListViewModel(
      */
     fun loadReminders() {
         showLoading.postValue(true)
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch() {
             //interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
             showLoading.postValue(false)
@@ -76,7 +76,7 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersListStateFlow.value.isEmpty()
+        showNoData.postValue(remindersListStateFlow.value.isEmpty())
     }
 
     fun addReminderClick() {

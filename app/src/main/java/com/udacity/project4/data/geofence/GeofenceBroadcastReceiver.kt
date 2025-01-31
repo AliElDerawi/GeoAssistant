@@ -3,12 +3,14 @@ package com.udacity.project4.data.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.android.gms.location.GeofencingEvent
 import com.udacity.project4.utils.Constants.EXTRA_ACTION_GEOFENCE_EVENT
 import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
+import com.udacity.project4.utils.FetchAddressWorker
 import com.udacity.project4.utils.NotificationUtils.errorMessage
 import timber.log.Timber
 
@@ -43,7 +45,11 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                 val geofenceWorkRequest = OneTimeWorkRequestBuilder<GeofenceTransitionsWorker>()
                     .setInputData(data)
                     .build()
-                WorkManager.getInstance(context).enqueue(geofenceWorkRequest)
+                WorkManager.getInstance(context).beginUniqueWork(
+                    FetchAddressWorker::class.java.simpleName,
+                    ExistingWorkPolicy.REPLACE,
+                    geofenceWorkRequest
+                ).enqueue()
             } ?: run {
                 Timber.e("onReceive:No Geofence Trigger Found! Abort mission!")
             }

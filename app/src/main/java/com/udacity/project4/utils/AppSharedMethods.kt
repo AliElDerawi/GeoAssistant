@@ -33,6 +33,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -142,10 +143,9 @@ object AppSharedMethods {
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Application): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(
-                    mActivity.applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED)
+        ) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
+            mActivity.applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
@@ -178,15 +178,17 @@ object AppSharedMethods {
     fun startFetchAddressWorker(mLatLng: LatLng) {
         // Store the receiver in the singleton
         // Pass latitude and longitude as input data
-        val inputData = Data.Builder()
-            .putDouble(Constants.EXTRA_LATITUDE, mLatLng.latitude)
-            .putDouble(Constants.EXTRA_LONGITUDE, mLatLng.longitude)
-            .build()
-        val fetchAddressWorkRequest = OneTimeWorkRequestBuilder<FetchAddressWorker>()
-            .setInputData(inputData)
-            .build()
-        WorkManager.getInstance(MyApp.getInstance().applicationContext)
-            .enqueue(fetchAddressWorkRequest)
+        val inputData = Data.Builder().putDouble(Constants.EXTRA_LATITUDE, mLatLng.latitude)
+            .putDouble(Constants.EXTRA_LONGITUDE, mLatLng.longitude).build()
+        val fetchAddressWorkRequest =
+            OneTimeWorkRequestBuilder<FetchAddressWorker>().setInputData(inputData).build()
+
+        WorkManager.getInstance(MyApp.getInstance().applicationContext).beginUniqueWork(
+            FetchAddressWorker::class.java.simpleName,
+            ExistingWorkPolicy.REPLACE,
+            fetchAddressWorkRequest
+        ).enqueue()
+
     }
 
     fun getCurrentLocale(context: Context): Locale {

@@ -2,7 +2,6 @@ package com.udacity.project4.features.main.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -13,8 +12,8 @@ import androidx.navigation.ui.NavigationUI
 import com.udacity.project4.R
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.ActivityMainBinding
-import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.features.main.viewModel.MainViewModel
+import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
 import com.udacity.project4.utils.AppSharedMethods.getCompatColor
@@ -65,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         mBinding =
             DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main)
                 .apply {
+                    viewModel = mMainViewModel
+                    lifecycleOwner = this@MainActivity
                     setSupportActionBar(mainToolbar)
                     supportActionBar?.title = null
                     root.applyWindowsPadding()
@@ -74,26 +75,20 @@ class MainActivity : AppCompatActivity() {
         initViewModelObservers()
     }
 
-    private fun initListener(savedInstanceState: Bundle?){
+    private fun initListener(savedInstanceState: Bundle?) {
         mNavController =
             (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
         mAppBarConfiguration = AppBarConfiguration(mNavController.graph)
         Timber.plant(Timber.DebugTree())
         if (savedInstanceState == null) {
-          mNavController.validateStartDestination()
+            mNavController.validateStartDestination()
         }
     }
 
     private fun initViewModelObservers() {
         with(mMainViewModel) {
-            hideToolbarLiveData.observe(this@MainActivity) {
-                mBinding.mainToolbar.visibility = if (it) View.GONE else View.VISIBLE
-            }
             showUpButtonLiveData.observe(this@MainActivity) {
                 supportActionBar?.setDisplayHomeAsUpEnabled(it)
-            }
-            toolbarTitleLiveData.observe(this@MainActivity) {
-                mBinding.textViewToolbarTitle.text = it
             }
         }
     }

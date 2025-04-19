@@ -18,9 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
@@ -66,9 +64,7 @@ object AppSharedMethods {
     fun Activity.showToast(message: Int, duration: Int = Toast.LENGTH_SHORT) {
         mToast?.cancel()
         mToast = Toast.makeText(
-            MyApp.getInstance().applicationContext,
-            getString(message),
-            duration
+            MyApp.getInstance().applicationContext, getString(message), duration
         )
         mToast!!.show()
     }
@@ -107,9 +103,7 @@ object AppSharedMethods {
     }
 
     fun setLoginStatus(
-        isLogin: Boolean,
-        userID: String? = null,
-        productionEnvironment: Boolean? = true
+        isLogin: Boolean, userID: String? = null, productionEnvironment: Boolean? = true
     ) {
         getSharedPreference(productionEnvironment).edit {
             putBoolean(AppSharedData.PREF_IS_LOGIN, isLogin)
@@ -121,10 +115,9 @@ object AppSharedMethods {
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Activity): Boolean {
         return (ContextCompat.checkSelfPermission(
             mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED) &&
-                (ContextCompat.checkSelfPermission(
-                    mActivity.applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED)
+        ) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
+            mActivity.applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED)
     }
 
     fun isForegroundPermissionGranted(mActivity: Activity): Boolean {
@@ -171,8 +164,9 @@ object AppSharedMethods {
     }
 
     fun Context.isLocationEnabled(): Boolean {
-        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true ||
-                locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
+        return locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true || locationManager?.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        ) == true
     }
 
     fun startFetchAddressWorker(mLatLng: LatLng) {
@@ -338,12 +332,10 @@ object AppSharedMethods {
                 // If the color is dark, use light icons
                 window.insetsController?.apply {
                     setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        0, WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                     )
                     setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+                        0, WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
                     )
                 }
             } else {
@@ -369,13 +361,15 @@ object AppSharedMethods {
                     ColorUtils.calculateLuminance(statusBarColor) >= 0.5 -> {
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     }
+
                     ColorUtils.calculateLuminance(navigationBarColor) >= 0.5 -> {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
                         } else {
-                           0
+                            0
                         }
                     }
+
                     else -> 0 // No flags for dark icons
                 }
             }

@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.udacity.project4.features.main.viewModel.MainViewModel" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,12 +27,14 @@
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/main_toolbar"
                 style="@style/ToolbarStyle"
+                isHidden="@{viewModel.hideToolbarStateFlow}"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize">
 
                 <TextView
                     android:id="@+id/textView_toolbar_title"
                     style="@style/ToolbarTitleStyle"
+                    text="@{viewModel.toolbarTitleStateFlow}"
                     android:layout_width="wrap_content"
                     android:layout_height="?actionBarSize"
                     android:layout_centerHorizontal="true"

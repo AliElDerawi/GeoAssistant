@@ -9,6 +9,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.udacity.project4.data.base.BaseRecyclerViewAdapter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.w3c.dom.Text
+import timber.log.Timber.Forest.tag
 
 object BindingAdapters {
 
@@ -74,6 +76,20 @@ object BindingAdapters {
         tag?.let {
             if (visible == false) isRefreshing = false
         }
+    }
+
+    @BindingAdapter("text")
+    @JvmStatic
+    fun TextView.setText(msg: String?) {
+        msg?.let {
+            text = msg
+        }
+    }
+
+    @BindingAdapter("isHidden")
+    @JvmStatic
+    fun View.setHide(isHidden: Boolean) {
+        visibility = if (isHidden) View.GONE else View.VISIBLE
     }
 
 }

@@ -52,7 +52,7 @@ class MyApp : MultiDexApplication() {
             workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
             singleOf(::SaveReminderViewModel)
-            singleOf(::MainViewModel)
+            viewModelOf(::MainViewModel)
             single { RemindersRepository(get(), Dispatchers.IO, get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
             single<ReminderDataSource> { get<RemindersRepository>() }

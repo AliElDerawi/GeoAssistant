@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
@@ -32,7 +33,7 @@ class ReminderListFragment : BaseFragment() {
 
     // Use Koin to retrieve the ViewModel instance
     override val mViewModel: RemindersListViewModel by viewModel()
-    private val mSharedViewModel: MainViewModel by inject()
+    private val mSharedViewModel: MainViewModel by activityViewModels()
     private val mSaveReminderViewModel: SaveReminderViewModel by inject()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity

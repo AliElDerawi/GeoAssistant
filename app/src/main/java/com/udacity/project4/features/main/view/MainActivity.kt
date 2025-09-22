@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
         enableEdgeToEdge()
         mBinding =
-            DataBindingUtil.setContentView<ActivityMainBinding?>(this, R.layout.activity_main)
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
                 .apply {
                     viewModel = mMainViewModel
                     lifecycleOwner = this@MainActivity

@@ -95,7 +95,7 @@ class AppNavigationTest : AutoCloseKoinTest() {
             single { SaveReminderViewModel(get(), get(),get()) }
             single { RemindersRepository(get(),Dispatchers.Unconfined,get()) }
             single { LocalDB.createRemindersDao(appContext) }
-            single { MainViewModel(get()) }
+            viewModelOf( ::MainViewModel )
             single<ReminderDataSource> { get<RemindersRepository>() }
             single { LocationServices.getFusedLocationProviderClient(appContext) }
             single { LocationServices.getGeofencingClient(appContext) }

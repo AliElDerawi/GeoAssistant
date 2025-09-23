@@ -14,12 +14,12 @@ plugins {
 
 android {
     namespace 'com.udacity.project4'
-    compileSdk 35
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "com.udacity.project4"
         minSdk 24
-        targetSdk 35
+        targetSdk 36
         versionCode 1
         versionName "1.0"
 

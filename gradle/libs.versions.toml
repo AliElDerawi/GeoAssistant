@@ -42,7 +42,7 @@ ksp = '2.2.20-2.0.2'
 googleServicesVersion = "4.4.3"
 truthVersion = "1.7.0"
 gradlePluginSecretVersion = '2.0.1'
-workVersion = "2.10.0"
+workVersion = "2.10.4"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "androidXTestCoreVersion" }

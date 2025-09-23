@@ -283,7 +283,7 @@ object AppSharedMethods {
                 Timber.e("Style parsing failed.")
             }
         } catch (e: Resources.NotFoundException) {
-            Timber.e("Can't find style. Error: ", e)
+            Timber.e("Can't find style. Error: $e")
         }
     }
 

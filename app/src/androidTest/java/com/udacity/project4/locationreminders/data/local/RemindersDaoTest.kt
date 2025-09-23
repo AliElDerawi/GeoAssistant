@@ -3,26 +3,23 @@ package com.udacity.project4.locationreminders.data.local
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.SmallTest;
-import com.google.firebase.auth.FirebaseUser
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.util.getOrAwaitValue
 import com.udacity.project4.utils.AppSharedMethods
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
-
-import kotlinx.coroutines.ExperimentalCoroutinesApi;
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.koin.core.context.stopKoin
 import org.koin.test.AutoCloseKoinTest
 import org.robolectric.annotation.Config

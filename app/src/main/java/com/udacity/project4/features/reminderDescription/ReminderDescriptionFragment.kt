@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
 import com.udacity.project4.databinding.FragmentReminderDescriptionBinding
@@ -18,7 +19,7 @@ import org.koin.android.ext.android.inject
  */
 class ReminderDescriptionFragment : BaseFragment() {
 
-    override val mViewModel: MainViewModel by inject()
+    override val mViewModel: MainViewModel by activityViewModels()
     private lateinit var mBinding: FragmentReminderDescriptionBinding
     private lateinit var mActivity: FragmentActivity
 

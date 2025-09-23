@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -27,7 +28,7 @@ class AuthenticationFragment : BaseFragment() {
 
     override val mViewModel: AuthenticationViewModel by viewModel()
     private lateinit var mBinding: FragmentAuthenticationBinding
-    private val mSharedViewModel: MainViewModel by inject()
+    private val mSharedViewModel: MainViewModel by activityViewModels()
     private lateinit var mActivity: FragmentActivity
 
     override fun onAttach(context: Context) {

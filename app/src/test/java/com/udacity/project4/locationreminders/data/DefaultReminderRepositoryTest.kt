@@ -1,20 +1,15 @@
 package com.udacity.project4.locationreminders.data
 
-import android.app.Application
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
-import org.hamcrest.core.IsNot
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

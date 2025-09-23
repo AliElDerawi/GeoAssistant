@@ -97,7 +97,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
             workerOf(::GeofenceTransitionsWorker)
             workerOf(::FetchAddressWorker)
             single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
-            single { MainViewModel(get()) }
+            viewModelOf( ::MainViewModel )
             single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
             single { LocalDB.createRemindersDao(appContext) }
             single { FakeTestRepository() }

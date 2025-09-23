@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -40,7 +41,7 @@ class SaveReminderFragment : BaseFragment() {
 
     // Get the view model this time as a single to be shared with the another fragment
     override val mViewModel: SaveReminderViewModel by inject()
-    private val mSharedViewModel: MainViewModel by inject()
+    private val mSharedViewModel: MainViewModel by activityViewModels()
     private lateinit var mBinding: FragmentSaveReminderBinding
     private lateinit var mActivity: FragmentActivity
 

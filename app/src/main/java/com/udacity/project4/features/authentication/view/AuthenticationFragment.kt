@@ -11,6 +11,8 @@ import androidx.fragment.app.activityViewModels
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
@@ -20,7 +22,6 @@ import com.udacity.project4.features.authentication.viewModel.AuthenticationView
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.Constants
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -58,9 +59,16 @@ class AuthenticationFragment : BaseFragment() {
     private fun initViewModelObserver() {
         mViewModel.completeLoginSingleLiveEvent.observe(viewLifecycleOwner) { redirect ->
             if (redirect) {
+                val enableCredentials =  if (GoogleApiAvailability.getInstance()
+                        .isGooglePlayServicesAvailable(mActivity) == ConnectionResult.SUCCESS) {
+                   true
+                } else {
+                    false
+                }
                 val signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setLogo(R.drawable.ic_app_logo)
+                    .setCredentialManagerEnabled(enableCredentials)
                     .setTheme(R.style.Theme_FirebaseAuthUI_EdgeToEdge) // Use the custom theme
                     .setAvailableProviders(Constants.FIREBASE_LOGIN_PROVIDER)
                     .build()

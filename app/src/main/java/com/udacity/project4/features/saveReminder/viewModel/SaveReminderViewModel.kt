@@ -247,7 +247,7 @@ class SaveReminderViewModel(
                 mGeofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
                         showToastInt.value = R.string.msg_geofences_added
-                        Timber.d("Add Geofence", geofence.requestId)
+                        Timber.d("Add Geofence: $geofence.requestId")
                         navigationCommand.value = NavigationCommand.Back
                     }
                     addOnFailureListener {

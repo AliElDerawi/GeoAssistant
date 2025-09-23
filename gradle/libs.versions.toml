@@ -2,7 +2,7 @@
 androidXTestCoreVersion = "1.7.0"
 androidXTestExtKotlinRunnerVersion = "1.3.0"
 androidXTestRulesVersion = "1.7.0"
-archLifecycleKtxVersion = "2.8.7"
+archLifecycleKtxVersion = "2.9.4"
 junitVersion = '4.13.2'
 espressoVersion = '3.7.0'
 junitTestVersion = '1.3.0'
@@ -18,7 +18,7 @@ firebaseUiAuthVersion = "9.0.0"
 kotlinVersion = '2.2.20'
 glideVersion = '5.0.5'
 koinVersion = '4.1.1'
-coreVersion = '1.16.0'
+coreVersion = '1.17.0'
 appCompatVersion = '1.7.1'
 constraintLayoutVersion = '2.2.1'
 lifecycleViewmodelKtxVersion = "2.9.4"

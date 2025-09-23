@@ -76,12 +76,10 @@ This project demonstrates:
    <p><strong>Dynamic Location Address Geocoding Screen</strong><br>Geocodes locations in the background using WorkManager and Google Geocoder.</p>
  </td>
 </tr>
-</tr>
  <td align="center" colspan="2" style="width: 50%;">
    <img src="./images/create_geofence_workflow.gif" height="666" alt="Create Geofence Workflow Screen"/>
    <p><strong>Create Geofence Workflow Screen</strong><br>Shows geofence creation and notification handling following MVVM and clean architecture principles.</p>
  </td>
-</tr>                 
 </table>
 </div>
 

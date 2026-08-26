@@ -10,7 +10,6 @@ import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
 import com.udacity.project4.databinding.FragmentReminderDescriptionBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
-import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragmentArgs
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 

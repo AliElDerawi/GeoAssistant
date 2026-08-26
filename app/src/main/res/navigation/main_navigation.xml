@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/reminderDescriptionFragment"
-        android:name="com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment"
+        android:name="com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment"
         android:label="@string/text_geofence_detail"
         tools:layout="@layout/fragment_reminder_description">
         <argument

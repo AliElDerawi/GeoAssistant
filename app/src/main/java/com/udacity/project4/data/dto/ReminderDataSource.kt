@@ -11,5 +11,5 @@ interface ReminderDataSource {
     suspend fun saveReminder(reminder: ReminderDTO)
     suspend fun getReminder(id: String): Result<Flow<ReminderDTO?>>
     suspend fun deleteAllReminders()
-    suspend fun getLastUserLocation(): Result<Flow<Location?>>
+    suspend fun getCurrentUserLocation(): Result<Location>
 }

@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.location.Location
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -39,6 +38,7 @@ import timber.log.Timber
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
 import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
+import kotlinx.coroutines.flow.first
 
 class SaveReminderViewModel(
     private val mApp: Application,
@@ -59,7 +59,9 @@ class SaveReminderViewModel(
         get() = _reminderSelectedLocationStrStateFlow
 
     val isCreateReminderEnabledStateFlow: StateFlow<Boolean> = combine(
-        _reminderTitleStateFlow, _reminderDescriptionStateFlow, _reminderSelectedLocationStrStateFlow
+        _reminderTitleStateFlow,
+        _reminderDescriptionStateFlow,
+        _reminderSelectedLocationStrStateFlow
     ) { title, description, location ->
         !title.isNullOrEmpty() && !description.isNullOrEmpty() && !location.isNullOrEmpty()
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
@@ -135,9 +137,11 @@ class SaveReminderViewModel(
             _reminderDescriptionStateFlow.value.isNullOrEmpty() -> showToastInt.postValue(
                 R.string.msg_please_enter_description
             )
+
             _reminderSelectedLocationStrStateFlow.value.isNullOrEmpty() -> showToastInt.postValue(
                 R.string.msg_select_location
             )
+
             else -> _saveReminderSingleLiveEvent.postValue(true)
         }
     }
@@ -159,7 +163,8 @@ class SaveReminderViewModel(
         _selectedLocationLatLngStateFlow.value = latLng
         startFetchAddressWorker(
             LatLng(
-                selectedLocationLatLngStateFlow.value!!.latitude, selectedLocationLatLngStateFlow.value!!.longitude
+                selectedLocationLatLngStateFlow.value!!.latitude,
+                selectedLocationLatLngStateFlow.value!!.longitude
             ),
         )
     }
@@ -183,7 +188,10 @@ class SaveReminderViewModel(
     /**
      * Save the reminder to the data source
      */
-    fun saveReminder(reminderData: ReminderDataItem , userId : String? = AppSharedMethods.getCurrentUserId()) {
+    fun saveReminder(
+        reminderData: ReminderDataItem,
+        userId: String? = AppSharedMethods.getCurrentUserId()
+    ) {
         showLoading.postValue(true)
         viewModelScope.launch {
             mRemindersLocalRepository.saveReminder(
@@ -236,7 +244,7 @@ class SaveReminderViewModel(
         ).setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER).build()
 
-        Timber.d("Geofence created: ${geofence.requestId} " +"reminderId: ${reminderDataItem.id}")
+        Timber.d("Geofence created: ${geofence.requestId} " + "reminderId: ${reminderDataItem.id}")
 
         val geofencingRequest =
             GeofencingRequest.Builder().setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
@@ -285,14 +293,13 @@ class SaveReminderViewModel(
         }
     }
 
-    fun getLastUserLocation() {
+    fun getCurrentUserLocation() {
+        if (lastUserLocationStateFlow.value != null) return
         if (isForegroundPermissionGranted(mApp)) {
             viewModelScope.launch(Dispatchers.IO) {
-                mRemindersLocalRepository.getLastUserLocation().let {
+                mRemindersLocalRepository.getCurrentUserLocation().let {
                     if (it is Result.Success) {
-                        it.data.collect { location ->
-                            _lastUserLocationStateFlow.value = location
-                        }
+                        _lastUserLocationStateFlow.value = it.data
                     } else {
                         _lastUserLocationStateFlow.value = null
                     }

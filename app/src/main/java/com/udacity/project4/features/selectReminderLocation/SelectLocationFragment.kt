@@ -222,7 +222,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         initMenu()
         updateLocationUI()
         initViewModelObserver()
-        mViewModel.getLastUserLocation()
+        mViewModel.getCurrentUserLocation()
 
 //      TODO : Comment: Logic if we need to update the location name on camera move
 //        mGoogleMap.setOnCameraIdleListener {
@@ -335,7 +335,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 it,
                 Constants.CURRENT_LOCATION_ZOOM
             )
-        } ?: mViewModel.getLastUserLocation()
+        } ?: mViewModel.getCurrentUserLocation()
     }
 
     override fun onReceiveResult(

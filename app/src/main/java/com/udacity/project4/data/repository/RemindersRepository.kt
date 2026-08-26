@@ -2,6 +2,8 @@ package com.udacity.project4.data.repository
 
 import android.location.Location
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDataSource
@@ -68,7 +70,8 @@ class RemindersRepository(
         return wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 try {
-                    val reminder = remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
+                    val reminder =
+                        remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
                     reminder.first()?.let {
                         Result.Success(reminder)
                     } ?: Result.Error(
@@ -93,12 +96,21 @@ class RemindersRepository(
         }
     }
 
-    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
+    override suspend fun getCurrentUserLocation(): Result<Location> {
         return wrapEspressoIdlingResource {
-            withContext(ioDispatcher){
+            withContext(ioDispatcher) {
                 try {
-                    val location = fusedLocationProviderClient.lastLocation.await()
-                    Result.Success(flow { emit(location) })
+                    val cancellationTokenSource = CancellationTokenSource()
+
+                    val location = fusedLocationProviderClient.getCurrentLocation(
+                        Priority.PRIORITY_HIGH_ACCURACY,
+                        cancellationTokenSource.token
+                    ).await()
+
+                    location?.let {
+                        Result.Success(it)
+                    } ?: Result.Error("No Location detected")
+
                 } catch (e: SecurityException) {
                     ensureActive()
                     Timber.e(e)
@@ -111,3 +123,4 @@ class RemindersRepository(
         }
     }
 }
+

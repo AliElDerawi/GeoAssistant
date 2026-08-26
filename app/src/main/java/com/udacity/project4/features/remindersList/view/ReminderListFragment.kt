@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
@@ -26,15 +25,14 @@ import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewMode
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setup
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
 
-    // Use Koin to retrieve the ViewModel instance
     override val mViewModel: RemindersListViewModel by viewModel()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
-    private val mSaveReminderViewModel: SaveReminderViewModel by inject()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
+    private val mSaveReminderViewModel: SaveReminderViewModel by activityViewModel()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
 
@@ -55,7 +53,7 @@ class ReminderListFragment : BaseFragment() {
         }
         mSharedViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.app_name))
+            setToolbarTitle(mActivity.getString(R.string.app_name))
         }
         mSaveReminderViewModel.onClear()
         setDisplayHomeAsUpEnabled(false)

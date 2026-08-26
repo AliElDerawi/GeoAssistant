@@ -48,11 +48,11 @@ class MyApp : MultiDexApplication() {
             //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
             viewModelOf(::RemindersListViewModel)
             viewModelOf(::AuthenticationViewModel)
+            viewModelOf(::SaveReminderViewModel)
+            viewModelOf(::MainViewModel)
             workerOf(::GeofenceTransitionsWorker)
             workerOf(::FetchAddressWorker)
             //Declare singleton definitions to be later injected using by inject()
-            singleOf(::SaveReminderViewModel)
-            viewModelOf(::MainViewModel)
             single { RemindersRepository(get(), Dispatchers.IO, get()) }
             single { LocalDB.createRemindersDao(this@MyApp) }
             single<ReminderDataSource> { get<RemindersRepository>() }

@@ -35,12 +35,12 @@ class FakeTestRepository : ReminderDataSource {
         runBlocking { refreshReminders() }
     }
 
-    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO>> {
+    override suspend fun getReminder(id: String): Result<ReminderDTO> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
         reminders[id]?.let {
-            return Result.Success(flowOf(it))
+            return Result.Success(it)
         }
         return Result.Error("Reminder not found!")
     }
@@ -49,8 +49,8 @@ class FakeTestRepository : ReminderDataSource {
         reminders.clear()
     }
 
-    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
-        return Result.Success(flowOf(null))
+    override suspend fun getCurrentUserLocation(): Result<Location> {
+        return Result.Error(null)
     }
 
     fun addReminders(vararg tasks: ReminderDTO) {

@@ -1,4 +1,4 @@
-package com.udacity.project4.locationreminders.reminderDescription
+package com.udacity.project4.features.reminderDescription
 
 import android.content.Context
 import android.os.Bundle
@@ -6,20 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
 import com.udacity.project4.databinding.FragmentReminderDescriptionBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 /**
  * Activity that displays the reminder details after the user clicks on the notification
  */
 class ReminderDescriptionFragment : BaseFragment() {
 
-    override val mViewModel: MainViewModel by activityViewModels()
+    override val mViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentReminderDescriptionBinding
     private lateinit var mActivity: FragmentActivity
 
@@ -47,7 +46,7 @@ class ReminderDescriptionFragment : BaseFragment() {
         }
         mViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.text_geofence_detail))
+            setToolbarTitle(mActivity.getString(R.string.text_geofence_detail))
         }
         setDisplayHomeAsUpEnabled(true)
         return mBinding.root

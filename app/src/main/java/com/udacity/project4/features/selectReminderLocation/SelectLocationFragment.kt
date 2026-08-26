@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -48,14 +47,14 @@ import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.util.UUID
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultIntentReceiver.Receiver {
 
-    // Use Koin to get the view model of the SaveReminder
-    override val mViewModel: SaveReminderViewModel by inject()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    override val mViewModel: SaveReminderViewModel by activityViewModel()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private val mResultReceiver: MyResultIntentReceiver by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding
     private lateinit var mActivity: FragmentActivity
@@ -223,7 +222,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         initMenu()
         updateLocationUI()
         initViewModelObserver()
-        mViewModel.getLastUserLocation()
+        mViewModel.getCurrentUserLocation()
 
 //      TODO : Comment: Logic if we need to update the location name on camera move
 //        mGoogleMap.setOnCameraIdleListener {
@@ -336,7 +335,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 it,
                 Constants.CURRENT_LOCATION_ZOOM
             )
-        } ?: mViewModel.getLastUserLocation()
+        } ?: mViewModel.getCurrentUserLocation()
     }
 
     override fun onReceiveResult(

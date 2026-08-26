@@ -31,13 +31,13 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         reminders.add(reminder)
     }
 
-    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO>> {
+    override suspend fun getReminder(id: String): Result<ReminderDTO> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
         val reminder = reminders.find { it.id == id }
         return if (reminder != null) {
-            Result.Success(flowOf(reminder))
+            Result.Success(reminder)
         } else {
             Result.Error("Reminder not found!")
         }

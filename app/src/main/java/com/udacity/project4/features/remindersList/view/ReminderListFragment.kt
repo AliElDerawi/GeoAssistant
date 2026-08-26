@@ -53,7 +53,7 @@ class ReminderListFragment : BaseFragment() {
         }
         mSharedViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.app_name))
+            setToolbarTitle(mActivity.getString(R.string.app_name))
         }
         mSaveReminderViewModel.onClear()
         setDisplayHomeAsUpEnabled(false)

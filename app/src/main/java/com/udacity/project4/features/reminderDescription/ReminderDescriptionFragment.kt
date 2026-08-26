@@ -47,7 +47,7 @@ class ReminderDescriptionFragment : BaseFragment() {
         }
         mViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.text_geofence_detail))
+            setToolbarTitle(mActivity.getString(R.string.text_geofence_detail))
         }
         setDisplayHomeAsUpEnabled(true)
         return mBinding.root

@@ -13,7 +13,7 @@ import timber.log.Timber
 import java.util.Locale
 
 class FetchAddressWorker(
-    context: Context,
+    val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
 
@@ -44,7 +44,7 @@ class FetchAddressWorker(
                 Result.success()
             }
         } catch (e: Exception) {
-            val errorMessage = applicationContext.getString(R.string.msg_address_location_network_issue)
+            val errorMessage = context.getString(R.string.msg_address_location_network_issue)
             receiver.send(Constants.FAILURE_RESULT, createResultBundle(errorMessage))
             Result.failure()
         }

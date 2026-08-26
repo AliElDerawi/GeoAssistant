@@ -167,7 +167,7 @@ class SaveReminderViewModel(
     @TargetApi(Build.VERSION_CODES.Q)
     fun createGeofenceAfterGrantPermission() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
-            showToast.postValue(mApp.getString(R.string.msg_enable_background_location_permission))
+            showToast.postValue(getLocalizedContext().getString(R.string.msg_enable_background_location_permission))
             return
         }
         NotificationUtils.createChannel(mApp)
@@ -274,13 +274,13 @@ class SaveReminderViewModel(
         }
         mGeofencingClient.removeGeofences(geofencePendingIntent).run {
             addOnSuccessListener {
-                Timber.d(mApp.getString(R.string.msg_geofences_removed))
+                Timber.d(getLocalizedContext().getString(R.string.msg_geofences_removed))
 //                if (BuildConfig.DEBUG) {
 //                    showToastInt.value = R.string.msg_geofences_removed
 //                }
             }
             addOnFailureListener {
-                Timber.d(mApp.getString(R.string.msg_geofences_not_removed))
+                Timber.d(getLocalizedContext().getString(R.string.msg_geofences_not_removed))
             }
         }
     }

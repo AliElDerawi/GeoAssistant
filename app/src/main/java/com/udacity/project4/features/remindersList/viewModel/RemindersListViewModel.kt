@@ -64,7 +64,7 @@ class RemindersListViewModel(
 
                 is Result.Error ->
                     showSnackBar.postValue(
-                        result.message ?: mApp.getString(R.string.msg_error_fetching_reminders)
+                        result.message ?: getLocalizedContext().getString(R.string.msg_error_fetching_reminders)
                     )
             }
             //check if no data has to be shown

@@ -12,7 +12,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -40,7 +39,7 @@ import timber.log.Timber
 class SaveReminderFragment : BaseFragment() {
 
     override val mViewModel: SaveReminderViewModel by activityViewModel()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentSaveReminderBinding
     private lateinit var mActivity: FragmentActivity
 

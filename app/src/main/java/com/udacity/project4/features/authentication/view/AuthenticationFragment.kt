@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -22,6 +21,7 @@ import com.udacity.project4.features.authentication.viewModel.AuthenticationView
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.Constants
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -29,7 +29,7 @@ class AuthenticationFragment : BaseFragment() {
 
     override val mViewModel: AuthenticationViewModel by viewModel()
     private lateinit var mBinding: FragmentAuthenticationBinding
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mActivity: FragmentActivity
 
     override fun onAttach(context: Context) {

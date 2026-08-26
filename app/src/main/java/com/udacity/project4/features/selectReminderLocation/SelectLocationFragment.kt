@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -55,7 +54,7 @@ import java.util.UUID
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultIntentReceiver.Receiver {
 
     override val mViewModel: SaveReminderViewModel by activityViewModel()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private val mResultReceiver: MyResultIntentReceiver by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding
     private lateinit var mActivity: FragmentActivity

@@ -13,7 +13,7 @@ import com.udacity.project4.R
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.ActivityMainBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
-import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
+import com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.applyWindowsPadding
 import com.udacity.project4.utils.AppSharedMethods.getCompatColor

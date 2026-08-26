@@ -34,13 +34,12 @@ import com.udacity.project4.utils.AppSharedMethods.setStatusStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class SaveReminderFragment : BaseFragment() {
 
-    // Get the view model this time as a single to be shared with the another fragment
-    override val mViewModel: SaveReminderViewModel by inject()
+    override val mViewModel: SaveReminderViewModel by activityViewModel()
     private val mSharedViewModel: MainViewModel by activityViewModels()
     private lateinit var mBinding: FragmentSaveReminderBinding
     private lateinit var mActivity: FragmentActivity

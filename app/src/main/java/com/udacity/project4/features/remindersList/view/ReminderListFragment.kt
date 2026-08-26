@@ -26,15 +26,14 @@ import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewMode
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setup
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
 
-    // Use Koin to retrieve the ViewModel instance
     override val mViewModel: RemindersListViewModel by viewModel()
     private val mSharedViewModel: MainViewModel by activityViewModels()
-    private val mSaveReminderViewModel: SaveReminderViewModel by inject()
+    private val mSaveReminderViewModel: SaveReminderViewModel by activityViewModel()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
 

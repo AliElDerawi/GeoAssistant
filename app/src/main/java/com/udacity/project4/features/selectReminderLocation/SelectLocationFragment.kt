@@ -48,13 +48,13 @@ import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.util.UUID
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultIntentReceiver.Receiver {
 
-    // Use Koin to get the view model of the SaveReminder
-    override val mViewModel: SaveReminderViewModel by inject()
+    override val mViewModel: SaveReminderViewModel by activityViewModel()
     private val mSharedViewModel: MainViewModel by activityViewModels()
     private val mResultReceiver: MyResultIntentReceiver by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding

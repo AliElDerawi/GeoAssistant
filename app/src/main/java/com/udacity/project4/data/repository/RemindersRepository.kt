@@ -6,8 +6,8 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
-import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.local.RemindersDao
 import com.udacity.project4.utils.AppSharedMethods
@@ -16,8 +16,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -66,20 +64,19 @@ class RemindersRepository(
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO?>> {
+    override suspend fun getReminder(id: String): Result<ReminderDTO> {
         return wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 try {
-                    val reminder =
-                        remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
-                    reminder.first()?.let {
-                        Result.Success(reminder)
-                    } ?: Result.Error(
-                        MyApp.getInstance().getString(R.string.text_error_reminder_not_found)
-                    )
+
+                    val reminder = remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
+                    reminder?.let {
+                        Result.Success(it)
+                    } ?: Result.Error(MyApp.getInstance().getString(R.string.text_error_reminder_not_found))
+
                 } catch (ex: Exception) {
                     ensureActive()
-                    Result.Error(ex.localizedMessage)
+                    Result.Error(ex.localizedMessage ?: "Unknown error")
                 }
             }
         }

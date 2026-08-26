@@ -11,8 +11,6 @@ import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.utils.Constants.EXTRA_ACTION_GEOFENCE_EVENT
 import com.udacity.project4.utils.Constants.EXTRA_FENCE_ID
 import com.udacity.project4.utils.NotificationUtils.sendNotificationAboutEnteredGeofence
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 
@@ -37,6 +35,7 @@ class GeofenceTransitionsWorker(
                         sendNotification(fenceId)
                         Result.success()
                     }
+
                     else -> {
                         Timber.e("Invalid geofence transition type")
                         Result.failure()
@@ -53,10 +52,10 @@ class GeofenceTransitionsWorker(
     }
 
     private suspend fun sendNotification(fenceId: String) {
-        val resultFlow = remindersLocalRepository.getReminder(fenceId)
-        if (resultFlow is Success<Flow<ReminderDTO?>>) {
+        val result = remindersLocalRepository.getReminder(fenceId)
+        if (result is Success<ReminderDTO>) {
             Timber.d("sendNotification:success")
-            resultFlow.data.first()?.let { reminder ->
+            result.data.let { reminder ->
                 Timber.d("sendNotification:success:reminder: $reminder")
                 //send a notification to the user with the reminder details
                 sendNotificationAboutEnteredGeofence(
@@ -68,6 +67,8 @@ class GeofenceTransitionsWorker(
                     )
                 )
             }
+        } else if (result is com.udacity.project4.data.dto.Result.Error) {
+            Timber.e("sendNotification:failed - ${result.message}")
         }
     }
 }

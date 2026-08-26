@@ -49,8 +49,8 @@ class FakeTestRepository : ReminderDataSource {
         reminders.clear()
     }
 
-    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
-        return Result.Success(flowOf(null))
+    override suspend fun getCurrentUserLocation(): Result<Location> {
+        return Result.Error(null)
     }
 
     fun addReminders(vararg tasks: ReminderDTO) {

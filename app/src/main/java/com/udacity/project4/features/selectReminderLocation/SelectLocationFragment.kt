@@ -32,7 +32,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
-import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
@@ -121,7 +120,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             }
             saveLocationSingleLiveEvent.observe(viewLifecycleOwner) {
                 if (it) {
-                    onLocationSelected()
+                    mViewModel.onLocationSelected()
                 }
             }
             lifecycleScope.launch {
@@ -134,7 +133,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                                     it.longitude
                                 )
                             )
-                            Timber.d("getLastUserLocation:mLastKnownLocation: $mViewModel.selectedLocationLatLng.value!!")
+                            Timber.d("getLastUserLocation:mLastKnownLocation: ${selectedLocationLatLngStateFlow.value}")
                             mGoogleMap.moveCameraToLocation(
                                 selectedLocationLatLngStateFlow.value!!,
                                 Constants.CURRENT_LOCATION_ZOOM
@@ -143,21 +142,13 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                             Timber.d("getLastUserLocation:currentLocation NULL")
                             setDefaultLocation()
                             if (!mActivity.isLocationEnabled()) {
-                                showToast.value =
-                                    mActivity.getString(R.string.msg_enable_gps)
+                                sendToast(R.string.msg_enable_gps)
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun onLocationSelected() {
-        // TODO - Completed: When the user confirms on the selected location,
-        //  send back the selected location details to the view model
-        //  and navigate back to the previous fragment to save the reminder and add the geofence
-        mViewModel.navigationCommand.value = NavigationCommand.Back
     }
 
     private fun initMenu() {
@@ -193,8 +184,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 Timber.d("Location Permission granted")
                 checkDeviceLocationSettings()
             } else {
-                mViewModel.showToast.value =
-                    mActivity.getString(R.string.msg_foreground_location_services)
+                mViewModel.sendToast(R.string.msg_foreground_location_services)
                 initMap()
             }
         }

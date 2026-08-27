@@ -77,30 +77,11 @@ class AuthenticationFragment : BaseFragment() {
         }
     }
 
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
-        if (result.resultCode == RESULT_OK) {
-            // Successfully signed in
-            FirebaseAuth.getInstance().currentUser?.let { user ->
-                Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
-                setLoginStatus(true, user.uid)
-                mViewModel.navigationCommand.value = NavigationCommand.To(
-                    AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
-                )
-            } ?: Timber.d("onSignInResult: User is null")
-
-        } else {
-            // Sign in failed.
-            response?.error?.let { error ->
-                Timber.d("onSignInResult:error $error")
-            }
-        }
-    }
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
     ) { res ->
-        this.onSignInResult(res)
+        mViewModel.onSignInResult(res)
     }
 
 }

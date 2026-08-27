@@ -130,11 +130,9 @@ class SaveReminderFragment : BaseFragment() {
                 if (AppSharedMethods.shouldShowBackgroundLocationRequestPermission(mActivity)) {
                     Timber.d("Background Permission needed request again only once")
                     requestBackgroundPermission()
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 } else {
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 }
             }
         }
@@ -148,11 +146,9 @@ class SaveReminderFragment : BaseFragment() {
                 if (AppSharedMethods.shouldShowForegroundLocationRequestPermission(mActivity)) {
                     Timber.d("Foreground Permission needed request again only once")
                     requestForegroundPermission()
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 } else {
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 }
             }
         }
@@ -164,8 +160,7 @@ class SaveReminderFragment : BaseFragment() {
                 mViewModel.createGeofenceAfterGrantPermission()
             } else {
                 Timber.d("Post Permission denied")
-                mViewModel.showToast.value =
-                    mActivity.getString(R.string.msg_cant_post_notification)
+                mViewModel.sendToast(R.string.msg_cant_post_notification)
             }
         }
 
@@ -222,8 +217,7 @@ class SaveReminderFragment : BaseFragment() {
         ).setAction(android.R.string.ok) {
             checkDeviceLocationSettings()
         }.setAction(android.R.string.cancel) {
-            mViewModel.showToast.value =
-                getString(R.string.msg_location_required_for_create_geofence_error)
+            mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
         }.show()
     }
 

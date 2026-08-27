@@ -2,6 +2,7 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -24,15 +25,15 @@ fun <T:Any> RecyclerView.setup(
     }
 }
 
-fun Fragment.setTitle(title: String) {
-    if (activity is AppCompatActivity) {
-        (activity as AppCompatActivity).supportActionBar?.title = title
+fun Activity.setTitle(title: String) {
+    if (this is AppCompatActivity) {
+        supportActionBar?.title = title
     }
 }
 
-fun Fragment.setDisplayHomeAsUpEnabled(bool: Boolean) {
-    if (activity is AppCompatActivity) {
-        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(
+fun Activity.setDisplayHomeAsUpEnabled(bool: Boolean) {
+    if (this is AppCompatActivity) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(
             bool
         )
     }

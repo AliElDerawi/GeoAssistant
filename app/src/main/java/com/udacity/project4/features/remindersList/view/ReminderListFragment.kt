@@ -55,7 +55,7 @@ class ReminderListFragment : BaseFragment() {
             setToolbarTitle(mActivity.getString(R.string.app_name))
         }
         mSaveReminderViewModel.onClear()
-        setDisplayHomeAsUpEnabled(false)
+        mActivity.setDisplayHomeAsUpEnabled(false)
         initViewModelObservers()
         return mBinding.root
     }

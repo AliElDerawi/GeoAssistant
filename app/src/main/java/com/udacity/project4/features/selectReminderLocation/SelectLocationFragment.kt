@@ -82,7 +82,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.text_select_location))
         }
-        setDisplayHomeAsUpEnabled(true)
+        mActivity.setDisplayHomeAsUpEnabled(true)
         return mBinding.root
     }
 

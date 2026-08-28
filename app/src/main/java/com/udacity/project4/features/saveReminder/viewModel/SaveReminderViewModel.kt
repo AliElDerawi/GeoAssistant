@@ -96,20 +96,18 @@ class SaveReminderViewModel(
     val currentMapStyleStateFlow: StateFlow<Int>
         get() = _currentMapStyleStateFlow
 
-    /**
-     * Clear the live data objects to start fresh next time the view model gets called
-     */
+
     fun onClear() {
         _reminderTitleStateFlow.value = null
         _reminderDescriptionStateFlow.value = null
         _reminderSelectedLocationStrStateFlow.value = null
-
-        _selectedPOIMutableStateFlow.value = (null)
-
+        _selectedPOIMutableStateFlow.value = null
     }
+
 
     override fun onCleared() {
         super.onCleared()
+        onClear()
         Timber.d("onCleared called")
     }
 
@@ -183,12 +181,16 @@ class SaveReminderViewModel(
             }
             return
         }
+        val currentPOI = selectedPOIStateFlow.value ?: return
+
         NotificationUtils.createChannel(mApp)
         val title = reminderTitleStateFlow.value
         val description = reminderDescriptionStateFlow.value
         val location = reminderSelectedLocationStrStateFlow.value
-        val latitude = selectedPOIStateFlow.value!!.latLng.latitude
-        val longitude = selectedPOIStateFlow.value!!.latLng.longitude
+
+        val latitude = currentPOI.latLng.latitude
+        val longitude = currentPOI.latLng.longitude
+
         val reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
         saveReminder(reminderDataItem)
     }

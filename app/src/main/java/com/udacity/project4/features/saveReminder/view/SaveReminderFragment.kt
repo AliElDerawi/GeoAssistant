@@ -36,12 +36,13 @@ import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class SaveReminderFragment : BaseFragment() {
 
-    override val mViewModel: SaveReminderViewModel by activityViewModel()
+    override val mViewModel: SaveReminderViewModel by koinNavGraphViewModel(R.id.save_reminder_graph)
     private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentSaveReminderBinding
     private lateinit var mActivity: FragmentActivity
@@ -52,6 +53,12 @@ class SaveReminderFragment : BaseFragment() {
             mActivity = context
         }
     }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

@@ -70,7 +70,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
                 reminder.id,
             ),testUserID
         )
-        val value = saveReminderViewModel.createGeofenceChannel.getOrAwaitValue()
+        val value = saveReminderViewModel.createGeofenceStateFlow.getOrAwaitValue()
         assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
         assertThat(value!!.title, `is`(reminder.title))
     }

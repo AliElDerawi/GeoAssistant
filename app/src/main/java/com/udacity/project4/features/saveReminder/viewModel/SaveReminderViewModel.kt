@@ -80,9 +80,9 @@ class SaveReminderViewModel(
     val saveReminderChannel: Channel<Boolean>
         get() = _saveReminderChannel
 
-    private var _createGeofenceChannel = Channel<ReminderDataItem?>(Channel.BUFFERED)
-    val createGeofenceChannel: Channel<ReminderDataItem?>
-        get() = _createGeofenceChannel
+    private var _createGeofenceStateFlow = MutableStateFlow<ReminderDataItem?>(null)
+    val createGeofenceStateFlow: StateFlow<ReminderDataItem?>
+        get() = _createGeofenceStateFlow
 
     private var _lastUserLocationStateFlow = MutableStateFlow<Location?>(null)
     val lastUserLocationStateFlow: StateFlow<Location?>
@@ -217,7 +217,7 @@ class SaveReminderViewModel(
             )
             showLoading.value = false
             showToastInt.send(R.string.msg_reminder_saved)
-            _createGeofenceChannel.send(reminderData)
+            _createGeofenceStateFlow.value = reminderData
             continueSaveReminder(reminderData)
         }
     }

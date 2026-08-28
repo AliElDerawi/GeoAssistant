@@ -86,11 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModelObservers() {
-        with(mMainViewModel) {
-            showUpButtonLiveData.observe(this@MainActivity) {
-                supportActionBar?.setDisplayHomeAsUpEnabled(it)
-            }
-        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

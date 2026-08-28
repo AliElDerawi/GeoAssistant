@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
@@ -32,6 +34,7 @@ import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.setStatusStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
@@ -59,9 +62,9 @@ class SaveReminderFragment : BaseFragment() {
         }
         mSharedViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.app_name))
+            setToolbarTitle(mActivity.getString(R.string.app_name))
         }
-        setDisplayHomeAsUpEnabled(true)
+        mActivity.setDisplayHomeAsUpEnabled(true)
         return mBinding.root
     }
 
@@ -78,30 +81,41 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
         with(mViewModel) {
-            saveReminderSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mActivity)) {
-                        Timber.d("Foreground and Background Permission granted")
-                        if (mActivity.isLocationEnabled()) {
-                            handleNotificationPermission()
-                        } else {
-                            checkDeviceLocationSettings()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                    launch {
+                        saveReminderChannel.receiveAsFlow().collect { saveReminder ->
+                            if (saveReminder) {
+                                if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(
+                                        mActivity
+                                    )
+                                ) {
+                                    Timber.d("Foreground and Background Permission granted")
+                                    if (mActivity.isLocationEnabled()) {
+                                        handleNotificationPermission()
+                                    } else {
+                                        checkDeviceLocationSettings()
+                                    }
+                                } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
+                                    Timber.d("Foreground Permission needed request again only once")
+                                    requestForegroundPermission()
+                                } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
+                                    Timber.d("Background Permission needed request again only once")
+                                    requestBackgroundPermission()
+                                }
+                            }
                         }
-                    } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
-                        Timber.d("Foreground Permission needed request again only once")
-                        requestForegroundPermission()
-                    } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
-                        Timber.d("Background Permission needed request again only once")
-                        requestBackgroundPermission()
+                    }
+
+                    launch {
+                        isCreateReminderEnabledStateFlow.collect { isEnabled ->
+                            mBinding.saveReminder.setStatusStyle(isEnabled)
+                        }
                     }
                 }
-            }
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    isCreateReminderEnabledStateFlow.collect { isEnabled ->
-                        mBinding.saveReminder.setStatusStyle(isEnabled)
-                    }
-                }
+
             }
         }
     }
@@ -118,7 +132,19 @@ class SaveReminderFragment : BaseFragment() {
     }
 
     private fun requestBackgroundPermission() {
-        requestBackgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MaterialAlertDialogBuilder(mActivity)
+                .setTitle(mActivity.getString(R.string.title_background_location_permission)) // أضف النصوص في ملف strings.xml
+                .setMessage(mActivity.getString(R.string.desc_background_location_permission))
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    requestBackgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                }
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
+                    mViewModel.sendToast(R.string.msg_background_location_required)
+                }
+                .show()
+        }
     }
 
     private val requestBackgroundPermissionLauncher =
@@ -130,11 +156,9 @@ class SaveReminderFragment : BaseFragment() {
                 if (AppSharedMethods.shouldShowBackgroundLocationRequestPermission(mActivity)) {
                     Timber.d("Background Permission needed request again only once")
                     requestBackgroundPermission()
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 } else {
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 }
             }
         }
@@ -148,11 +172,9 @@ class SaveReminderFragment : BaseFragment() {
                 if (AppSharedMethods.shouldShowForegroundLocationRequestPermission(mActivity)) {
                     Timber.d("Foreground Permission needed request again only once")
                     requestForegroundPermission()
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 } else {
-                    mViewModel.showToast.value =
-                        mActivity.getString(R.string.msg_location_required_for_create_geofence_error)
+                    mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
                 }
             }
         }
@@ -164,8 +186,7 @@ class SaveReminderFragment : BaseFragment() {
                 mViewModel.createGeofenceAfterGrantPermission()
             } else {
                 Timber.d("Post Permission denied")
-                mViewModel.showToast.value =
-                    mActivity.getString(R.string.msg_cant_post_notification)
+                mViewModel.sendToast(R.string.msg_cant_post_notification)
             }
         }
 
@@ -222,8 +243,7 @@ class SaveReminderFragment : BaseFragment() {
         ).setAction(android.R.string.ok) {
             checkDeviceLocationSettings()
         }.setAction(android.R.string.cancel) {
-            mViewModel.showToast.value =
-                getString(R.string.msg_location_required_for_create_geofence_error)
+            mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
         }.show()
     }
 

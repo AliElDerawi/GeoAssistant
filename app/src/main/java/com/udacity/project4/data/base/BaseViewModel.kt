@@ -4,24 +4,22 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import com.udacity.project4.utils.AppSharedData
-import com.udacity.project4.utils.AppSharedMethods.getSharedPreference
-import com.udacity.project4.utils.SingleLiveEvent
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 /**
  * Base class for View Models to declare the common LiveData objects in one place
  */
 abstract class BaseViewModel(val app: Application) : AndroidViewModel(app) {
-    val navigationCommand: SingleLiveEvent<NavigationCommand> = SingleLiveEvent()
-    val showErrorMessage: SingleLiveEvent<String> = SingleLiveEvent()
-    val showSnackBar: SingleLiveEvent<String> = SingleLiveEvent()
-    val showSnackBarInt: SingleLiveEvent<Int> = SingleLiveEvent()
-    val showToast: SingleLiveEvent<String> = SingleLiveEvent()
-    val showToastInt: SingleLiveEvent<Int> = SingleLiveEvent()
-    val showLoading: SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val showNoData: MutableLiveData<Boolean> = MutableLiveData()
+    val navigationCommand: Channel<NavigationCommand> = Channel(Channel.BUFFERED)
+    val showErrorMessage: Channel<String> = Channel()
+    val showSnackBar: Channel<String> = Channel()
+    val showSnackBarInt: Channel<Int> = Channel()
+    val showToast: Channel<String> = Channel()
+    val showToastInt: Channel<Int> = Channel()
+    val showLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showNoData: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 
     fun getLocalizedContext(): Context {

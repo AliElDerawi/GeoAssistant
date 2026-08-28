@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
-import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
@@ -56,7 +55,7 @@ class ReminderListFragment : BaseFragment() {
             setToolbarTitle(mActivity.getString(R.string.app_name))
         }
         mSaveReminderViewModel.onClear()
-        setDisplayHomeAsUpEnabled(false)
+        mActivity.setDisplayHomeAsUpEnabled(false)
         initViewModelObservers()
         return mBinding.root
     }
@@ -70,9 +69,6 @@ class ReminderListFragment : BaseFragment() {
 
     private fun initListener() {
         with(mBinding) {
-            addReminderFAB.setOnClickListener {
-                navigateToAddReminder()
-            }
             refreshLayout.setOnRefreshListener {
                 mViewModel.loadReminders()
             }
@@ -80,28 +76,12 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun initViewModelObservers() {
-        mViewModel.addReminderSingleLiveEvent.observe(viewLifecycleOwner) {
-            if (it) {
-                navigateToAddReminder()
-            }
-        }
-    }
 
-    private fun navigateToAddReminder() {
-        // Use the navigationCommand live data to navigate between the fragments
-        mViewModel.navigationCommand.value = NavigationCommand.To(
-            ReminderListFragmentDirections.toSaveReminder()
-        )
     }
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter(ReminderDataItem.getReminderDataDiffCallback()) {
-            mViewModel.navigationCommand.value =
-                NavigationCommand.To(
-                    ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
-                        it
-                    )
-                )
+            mViewModel.navigateToReminderDescription(it)
         }
         // Setup the recycler view using the extension function
         mBinding.remindersRecyclerView.setup(adapter)
@@ -125,9 +105,7 @@ class ReminderListFragment : BaseFragment() {
                         .signOut(mActivity)
                         .addOnCompleteListener {
                             setLoginStatus(false)
-                            mViewModel.navigationCommand.value = NavigationCommand.To(
-                                ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
-                            )
+                            mViewModel.navigateToLoginScreen()
                         }
                 }
                 return true

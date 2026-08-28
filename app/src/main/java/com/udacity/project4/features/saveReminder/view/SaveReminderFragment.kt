@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.IntentSender
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
@@ -130,7 +132,19 @@ class SaveReminderFragment : BaseFragment() {
     }
 
     private fun requestBackgroundPermission() {
-        requestBackgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MaterialAlertDialogBuilder(mActivity)
+                .setTitle(mActivity.getString(R.string.title_background_location_permission)) // أضف النصوص في ملف strings.xml
+                .setMessage(mActivity.getString(R.string.desc_background_location_permission))
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    requestBackgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                }
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
+                    mViewModel.sendToast(R.string.msg_background_location_required)
+                }
+                .show()
+        }
     }
 
     private val requestBackgroundPermissionLauncher =

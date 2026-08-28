@@ -65,5 +65,8 @@
 
     <!-- Reminder Detail Strings -->
     <string name="text_geofence_detail">Geofence Detail</string>
+    <string name="title_background_location_permission">Background Location is required</string>
+    <string name="desc_background_location_permission">Background location is required to discover when you\'ve entered a geofence</string>
+    <string name="msg_background_location_required">Background location is required</string>
 
 </resources>

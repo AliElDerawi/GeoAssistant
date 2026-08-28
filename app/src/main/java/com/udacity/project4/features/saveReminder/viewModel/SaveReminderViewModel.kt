@@ -8,8 +8,6 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
@@ -27,7 +25,6 @@ import com.udacity.project4.utils.AppSharedMethods
 import com.udacity.project4.utils.AppSharedMethods.isForegroundPermissionGranted
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.NotificationUtils
-import com.udacity.project4.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,6 +36,7 @@ import timber.log.Timber
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
 import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
+import kotlinx.coroutines.channels.Channel
 
 class SaveReminderViewModel(
     private val mApp: Application,
@@ -66,25 +64,25 @@ class SaveReminderViewModel(
         !title.isNullOrEmpty() && !description.isNullOrEmpty() && !location.isNullOrEmpty()
     }.stateIn(viewModelScope, SharingStarted.Lazily, false)
 
-    private var _selectedPOILiveData = MutableLiveData<PointOfInterest?>()
-    val selectedPOILiveData: LiveData<PointOfInterest?>
-        get() = _selectedPOILiveData
+    private var _selectedPOIMutableStateFlow = MutableStateFlow<PointOfInterest?>(null)
+    val selectedPOIStateFlow: StateFlow<PointOfInterest?>
+        get() = _selectedPOIMutableStateFlow
 
-    private var _moveMapSingleLiveEvent = SingleLiveEvent<Boolean>()
-    val moveMapSingleLiveEvent: LiveData<Boolean>
-        get() = _moveMapSingleLiveEvent
+    private var _moveMapChannel = Channel<Boolean>(Channel.BUFFERED)
+    val moveMapSingleChannel: Channel<Boolean>
+        get() = _moveMapChannel
 
-    private var _saveLocationSingleLiveEvent = SingleLiveEvent<Boolean>()
-    val saveLocationSingleLiveEvent: LiveData<Boolean>
-        get() = _saveLocationSingleLiveEvent
+    private var _saveLocationChannel = Channel<Boolean>(Channel.BUFFERED)
+    val saveLocationChannel: Channel<Boolean>
+        get() = _saveLocationChannel
 
-    private var _saveReminderSingleLiveEvent = SingleLiveEvent<Boolean>()
-    val saveReminderSingleLiveEvent: LiveData<Boolean>
-        get() = _saveReminderSingleLiveEvent
+    private var _saveReminderChannel = Channel<Boolean>(Channel.BUFFERED)
+    val saveReminderChannel: Channel<Boolean>
+        get() = _saveReminderChannel
 
-    private var _createGeofenceSingleLiveEvent = SingleLiveEvent<ReminderDataItem?>()
-    val createGeofenceSingleLiveEvent: LiveData<ReminderDataItem?>
-        get() = _createGeofenceSingleLiveEvent
+    private var _createGeofenceChannel = Channel<ReminderDataItem?>(Channel.BUFFERED)
+    val createGeofenceChannel: Channel<ReminderDataItem?>
+        get() = _createGeofenceChannel
 
     private var _lastUserLocationStateFlow = MutableStateFlow<Location?>(null)
     val lastUserLocationStateFlow: StateFlow<Location?>
@@ -105,7 +103,9 @@ class SaveReminderViewModel(
         _reminderTitleStateFlow.value = null
         _reminderDescriptionStateFlow.value = null
         _reminderSelectedLocationStrStateFlow.value = null
-        _selectedPOILiveData.value = null
+
+        _selectedPOIMutableStateFlow.value = (null)
+
     }
 
     override fun onCleared() {
@@ -142,12 +142,18 @@ class SaveReminderViewModel(
                 R.string.msg_select_location
             )
 
-            else -> _saveReminderSingleLiveEvent.postValue(true)
+            else -> {
+                viewModelScope.launch {
+                    _saveReminderChannel.send(true)
+                }
+            }
+
         }
     }
 
     fun setSelectedPOIAndShowName(pointOfInterest: PointOfInterest) {
-        _selectedPOILiveData.value = pointOfInterest
+        _selectedPOIMutableStateFlow.value = pointOfInterest
+
         startFetchAddressWorker(
             LatLng(
                 pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude
@@ -156,7 +162,7 @@ class SaveReminderViewModel(
     }
 
     fun setSelectedPOI(pointOfInterest: PointOfInterest) {
-        _selectedPOILiveData.value = pointOfInterest
+        _selectedPOIMutableStateFlow.value = pointOfInterest
     }
 
     fun setSelectedLocationLatLngAndShowName(latLng: LatLng) {
@@ -181,8 +187,8 @@ class SaveReminderViewModel(
         val title = reminderTitleStateFlow.value
         val description = reminderDescriptionStateFlow.value
         val location = reminderSelectedLocationStrStateFlow.value
-        val latitude = selectedPOILiveData.value!!.latLng.latitude
-        val longitude = selectedPOILiveData.value!!.latLng.longitude
+        val latitude = selectedPOIStateFlow.value!!.latLng.latitude
+        val longitude = selectedPOIStateFlow.value!!.latLng.longitude
         val reminderDataItem = ReminderDataItem(title, description, location, latitude, longitude)
         saveReminder(reminderDataItem)
     }
@@ -209,7 +215,7 @@ class SaveReminderViewModel(
             )
             showLoading.value = false
             showToastInt.send(R.string.msg_reminder_saved)
-            _createGeofenceSingleLiveEvent.value = (reminderData)
+            _createGeofenceChannel.send(reminderData)
             continueSaveReminder(reminderData)
         }
     }
@@ -219,13 +225,17 @@ class SaveReminderViewModel(
      */
 
     fun navigateToLastMarkedLocation() {
-        _moveMapSingleLiveEvent.value = true
+        viewModelScope.launch {
+            _moveMapChannel.send(true)
+        }
     }
 
     fun saveLocation() {
-        selectedPOILiveData.value?.let {
-            _reminderSelectedLocationStrStateFlow.value = selectedPOILiveData.value!!.name
-            _saveLocationSingleLiveEvent.value = true
+        selectedPOIStateFlow.value?.let {
+            _reminderSelectedLocationStrStateFlow.value = selectedPOIStateFlow.value!!.name
+            viewModelScope.launch {
+                _saveLocationChannel.send(true)
+            }
         } ?: viewModelScope.launch {
             showSnackBarInt.send(R.string.msg_select_location)
         }

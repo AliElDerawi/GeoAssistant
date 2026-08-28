@@ -32,6 +32,7 @@ import com.udacity.project4.utils.AppSharedMethods.isLocationEnabled
 import com.udacity.project4.utils.AppSharedMethods.setStatusStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
@@ -78,30 +79,41 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
         with(mViewModel) {
-            saveReminderSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mActivity)) {
-                        Timber.d("Foreground and Background Permission granted")
-                        if (mActivity.isLocationEnabled()) {
-                            handleNotificationPermission()
-                        } else {
-                            checkDeviceLocationSettings()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                    launch {
+                        saveReminderChannel.receiveAsFlow().collect { saveReminder ->
+                            if (saveReminder) {
+                                if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(
+                                        mActivity
+                                    )
+                                ) {
+                                    Timber.d("Foreground and Background Permission granted")
+                                    if (mActivity.isLocationEnabled()) {
+                                        handleNotificationPermission()
+                                    } else {
+                                        checkDeviceLocationSettings()
+                                    }
+                                } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
+                                    Timber.d("Foreground Permission needed request again only once")
+                                    requestForegroundPermission()
+                                } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
+                                    Timber.d("Background Permission needed request again only once")
+                                    requestBackgroundPermission()
+                                }
+                            }
                         }
-                    } else if (!AppSharedMethods.isForegroundPermissionGranted(mActivity)) {
-                        Timber.d("Foreground Permission needed request again only once")
-                        requestForegroundPermission()
-                    } else if (!AppSharedMethods.isBackgroundPermissionGranted(mActivity)) {
-                        Timber.d("Background Permission needed request again only once")
-                        requestBackgroundPermission()
+                    }
+
+                    launch {
+                        isCreateReminderEnabledStateFlow.collect { isEnabled ->
+                            mBinding.saveReminder.setStatusStyle(isEnabled)
+                        }
                     }
                 }
-            }
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    isCreateReminderEnabledStateFlow.collect { isEnabled ->
-                        mBinding.saveReminder.setStatusStyle(isEnabled)
-                    }
-                }
+
             }
         }
     }

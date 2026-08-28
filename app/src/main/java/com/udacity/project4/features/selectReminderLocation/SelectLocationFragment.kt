@@ -44,6 +44,7 @@ import com.udacity.project4.utils.AppSharedMethods.setCustomMapStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -105,47 +106,60 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
     private fun initViewModelObserver() {
         with(mViewModel) {
-            selectedPOILiveData.observe(viewLifecycleOwner) {
-                it?.let {
-                    mGoogleMap.clear()
-                    val poiMarker = mGoogleMap.addMarkerWithName(it.latLng, it.name)
-                    setSelectedLocationLatLngAndShowName(it.latLng)
-                    poiMarker?.showInfoWindow()
-                }
-            }
-            moveMapSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    updateLocation()
-                }
-            }
-            saveLocationSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    mViewModel.onLocationSelected()
-                }
-            }
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    lastUserLocationStateFlow.collect { location ->
-                        location?.let {
-                            setSelectedLocationLatLngAndShowName(
-                                LatLng(
-                                    it.latitude,
-                                    it.longitude
-                                )
-                            )
-                            Timber.d("getLastUserLocation:mLastKnownLocation: ${selectedLocationLatLngStateFlow.value}")
-                            mGoogleMap.moveCameraToLocation(
-                                selectedLocationLatLngStateFlow.value!!,
-                                Constants.CURRENT_LOCATION_ZOOM
-                            )
-                        } ?: run {
-                            Timber.d("getLastUserLocation:currentLocation NULL")
-                            setDefaultLocation()
-                            if (!mActivity.isLocationEnabled()) {
-                                sendToast(R.string.msg_enable_gps)
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                    launch {
+                        selectedPOIStateFlow.collect {
+                            it?.let {
+                                mGoogleMap.clear()
+                                val poiMarker = mGoogleMap.addMarkerWithName(it.latLng, it.name)
+                                setSelectedLocationLatLngAndShowName(it.latLng)
+                                poiMarker?.showInfoWindow()
                             }
                         }
                     }
+
+                    launch {
+                        moveMapSingleChannel.receiveAsFlow().collect {
+                            if (it) {
+                                updateLocation()
+                            }
+                        }
+                    }
+
+                    launch {
+                        saveLocationChannel.receiveAsFlow().collect {
+                            if (it) {
+                                mViewModel.onLocationSelected()
+                            }
+                        }
+                    }
+
+                    launch {
+                        lastUserLocationStateFlow.collect { location ->
+                            location?.let {
+                                setSelectedLocationLatLngAndShowName(
+                                    LatLng(
+                                        it.latitude,
+                                        it.longitude
+                                    )
+                                )
+                                Timber.d("getLastUserLocation:mLastKnownLocation: ${selectedLocationLatLngStateFlow.value}")
+                                mGoogleMap.moveCameraToLocation(
+                                    selectedLocationLatLngStateFlow.value!!,
+                                    Constants.CURRENT_LOCATION_ZOOM
+                                )
+                            } ?: run {
+                                Timber.d("getLastUserLocation:currentLocation NULL")
+                                setDefaultLocation()
+                                if (!mActivity.isLocationEnabled()) {
+                                    sendToast(R.string.msg_enable_gps)
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -344,12 +358,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                     ?: mActivity.getString(R.string.msg_address_location_network_issue)
         }
         with(mViewModel) {
-            if (resultCode == Constants.SUCCESS_RESULT && selectedPOILiveData.value != null && selectedPOILiveData.value!!.name.isEmpty()) {
+            if (resultCode == Constants.SUCCESS_RESULT && selectedPOIStateFlow.value != null && selectedPOIStateFlow.value!!.name.isEmpty()) {
                 Timber.d("onReceiveResult:called:updateName")
                 setSelectedPOI(
                     PointOfInterest(
-                        selectedPOILiveData.value!!.latLng,
-                        selectedPOILiveData.value!!.placeId,
+                        selectedPOIStateFlow.value!!.latLng,
+                        selectedPOIStateFlow.value!!.placeId,
                         mAddressOutput.toString()
                     )
                 )

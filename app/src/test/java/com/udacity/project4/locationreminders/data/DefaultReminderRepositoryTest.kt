@@ -4,9 +4,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.locationreminders.util.MainCoroutinesRules
-import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsEqual
@@ -51,7 +51,7 @@ class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
         // When reminders are requested from the reminders repository
         val reminderFlow = tasksRepository.getReminders() as Result.Success
         // Then reminders are loaded from the local data source
-        assertThat(reminderFlow.data.getOrAwaitValue(), IsEqual(oldReminders))
+        assertThat(reminderFlow.data.first(), IsEqual(oldReminders))
     }
 
     @Test
@@ -60,6 +60,6 @@ class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
         tasksRepository.addReminders(*newReminder.toTypedArray())
         val reminderFlow = tasksRepository.getReminders() as Result.Success
         // Then reminders are loaded from the local data source
-        assertThat(reminderFlow.data.getOrAwaitValue(), IsEqual(allReminders))
+        assertThat(reminderFlow.data.first(), IsEqual(allReminders))
     }
 }

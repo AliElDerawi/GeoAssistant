@@ -47,13 +47,14 @@ import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.util.UUID
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultIntentReceiver.Receiver {
 
-    override val mViewModel: SaveReminderViewModel by activityViewModel()
+    override val mViewModel: SaveReminderViewModel by koinNavGraphViewModel(R.id.save_reminder_graph)
     private val mSharedViewModel: MainViewModel by activityViewModel()
     private val mResultReceiver: MyResultIntentReceiver by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding
@@ -84,6 +85,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             setToolbarTitle(mActivity.getString(R.string.text_select_location))
         }
         mActivity.setDisplayHomeAsUpEnabled(true)
+
         return mBinding.root
     }
 

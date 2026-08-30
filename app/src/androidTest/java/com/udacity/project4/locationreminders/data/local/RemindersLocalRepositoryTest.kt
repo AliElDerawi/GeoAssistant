@@ -17,6 +17,7 @@ import com.udacity.project4.util.getOrAwaitValue
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -104,7 +105,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
         val result = localDataSource.getReminders()
         result as Result.Success
         // THEN - The loaded data contains the expected values
-        assertThat(result.data.getOrAwaitValue(), `is`(emptyList()))
+        assertThat(result.data.first(), `is`(emptyList()))
     }
 
 }

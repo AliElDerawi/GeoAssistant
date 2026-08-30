@@ -31,7 +31,6 @@ class ReminderListFragment : BaseFragment() {
 
     override val mViewModel: RemindersListViewModel by viewModel()
     private val mSharedViewModel: MainViewModel by activityViewModel()
-    private val mSaveReminderViewModel: SaveReminderViewModel by activityViewModel()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
 
@@ -54,7 +53,6 @@ class ReminderListFragment : BaseFragment() {
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.app_name))
         }
-        mSaveReminderViewModel.onClear()
         mActivity.setDisplayHomeAsUpEnabled(false)
         initViewModelObservers()
         return mBinding.root

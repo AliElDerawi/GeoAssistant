@@ -15,7 +15,7 @@ dexMakerVersion = "2.28.6"
 firebaseAuthKtxVersion = "23.2.1"
 firebaseUiAuthVersion = "9.1.1"
 kotlinVersion = '2.4.10'
-glideVersion = '5.0.5'
+glideVersion = '5.0.9'
 koinVersion = '4.2.2'
 coreVersion = '1.19.0'
 appCompatVersion = '1.8.0'
@@ -76,8 +76,8 @@ koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glideVersion" }
-glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glideVersion" }
+#glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glideVersion" }
+#glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glideVersion" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
 koin-compat = { group = "io.insert-koin", name = "koin-android-compat", version.ref = "koinVersion" }

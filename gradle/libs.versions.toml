@@ -15,7 +15,6 @@ dexMakerVersion = "2.28.6"
 firebaseAuthKtxVersion = "23.2.1"
 firebaseUiAuthVersion = "9.1.1"
 kotlinVersion = '2.4.10'
-glideVersion = '5.0.9'
 koinVersion = '4.2.2'
 coreVersion = '1.19.0'
 appCompatVersion = '1.8.0'
@@ -31,7 +30,6 @@ safeArgsVersion = '2.10.0'
 recyclerViewVersion = '1.4.0'
 recyclerViewSelectionVersion = '1.2.0'
 gradleToolsVersion = "9.3.2"
-multidexVersion = '2.0.1'
 swipeRefreshVersion = "1.2.0"
 timberVersion = '5.0.1'
 securityCryptoVersion = '1.1.0'
@@ -76,8 +74,6 @@ koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
-#glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glideVersion" }
-#glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glideVersion" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinVersion" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinVersion" }
 koin-compat = { group = "io.insert-koin", name = "koin-android-compat", version.ref = "koinVersion" }
@@ -93,7 +89,6 @@ play-services-location = { module = "com.google.android.gms:play-services-locati
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 recyclerView = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerViewVersion" }
 recyclerViewSelection = { group = "androidx.recyclerview", name = "recyclerview-selection", version.ref = "recyclerViewSelectionVersion" }
-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidexVersion" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectricVersion" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timberVersion" }
 security-crypto-ktx = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCryptoVersion" }

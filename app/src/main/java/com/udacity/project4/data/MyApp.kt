@@ -1,8 +1,8 @@
 package com.udacity.project4.data
 
+import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.multidex.MultiDexApplication
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
@@ -18,12 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 
-class MyApp : MultiDexApplication() {
+class MyApp : Application() {
 
     companion object {
         @Volatile

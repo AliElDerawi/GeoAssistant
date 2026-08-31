@@ -133,7 +133,6 @@ dependencies {
     implementation libs.play.services.auth
 
     implementation libs.timber
-    implementation libs.multidex
 
     // Dependencies for local unit tests
     testImplementation libs.junit

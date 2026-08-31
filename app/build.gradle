@@ -3,9 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.safe.args)
     alias(libs.plugins.gradle.plugin.secret)
     alias(libs.plugins.ksp)
@@ -24,6 +23,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "MAPS_API_KEY", "\"${System.getenv("MAPS_API_KEY") ?: "default_maps_api_key"}\""
+
+        manifestPlaceholders = [MAPS_API_KEY: System.getenv("MAPS_API_KEY") ?: "default_maps_api_key"]
     }
 
     buildTypes {
@@ -69,11 +72,6 @@ android {
         ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
     }
 
-    defaultConfig {
-        // Read the MAPS_API_KEY from environment variables or provide a default value
-        buildConfigField "String", "MAPS_API_KEY", "\"${System.getenv("MAPS_API_KEY") ?: "default_maps_api_key"}\""
-    }
-
 }
 
 kotlin {
@@ -91,6 +89,8 @@ dependencies {
     implementation libs.material
     implementation libs.constraintLayout
     implementation libs.androidx.core.ktx
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
 
     // Architecture Components & Navigation dependencies
     implementation libs.androidx.lifecycle.extensions
@@ -141,7 +141,9 @@ dependencies {
     // Dependencies for local unit tests
     testImplementation libs.junit
     testImplementation libs.androidx.core.testing
-    testImplementation libs.kotlinx.coroutines.android
+
+
+    // Testing dependencies
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.robolectric
     testImplementation libs.truth

@@ -39,6 +39,7 @@ class DefaultReminderRepositoryTest : AutoCloseKoinTest() {
 
     @Before
     fun createRepository() {
+        // This function make the code require AndroidJUnit4
         AppSharedMethods.setLoginStatus(true, testUserID,null)
         tasksRemoteDataSource = FakeDataSource(allReminders.toMutableList())
         tasksLocalDataSource = FakeDataSource(oldReminders.toMutableList())

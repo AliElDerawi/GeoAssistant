@@ -1,8 +1,8 @@
 package com.udacity.project4.utils
 
-import androidx.multidex.BuildConfig
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.model.LatLng
+import com.udacity.project4.BuildConfig
 import java.util.concurrent.TimeUnit
 
 object Constants {

@@ -6,6 +6,7 @@ import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.Result
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
@@ -13,7 +14,7 @@ class FakeTestRepository : ReminderDataSource {
 
     var reminders: LinkedHashMap<String, ReminderDTO> = LinkedHashMap()
     private var shouldReturnError = false
-    private val observableTasks = MutableLiveData<Result<Flow<List<ReminderDTO>>>>()
+    private val observableTasks = MutableStateFlow<Result<Flow<List<ReminderDTO>>>>(Result.Success(flowOf(reminders.values.toList())))
 
     fun setReturnError(value: Boolean) {
         shouldReturnError = value
@@ -27,12 +28,12 @@ class FakeTestRepository : ReminderDataSource {
     }
 
     suspend fun refreshReminders() {
-        observableTasks.postValue(getReminders())
+        observableTasks.value = getReminders()
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
         reminders[reminder.id] = reminder
-        runBlocking { refreshReminders() }
+        refreshReminders()
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {

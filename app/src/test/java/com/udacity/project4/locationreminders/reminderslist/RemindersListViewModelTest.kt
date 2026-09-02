@@ -57,7 +57,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     fun loadReminders_checkError() = runTest  {
         reminderLocalRepository.setReturnError(true)
         remindersListViewModel.loadReminders()
-        val snackBarMessage = remindersListViewModel.showSnackBar.receive()
+        val snackBarMessage = remindersListViewModel.showSnackBarChannel.receive()
         assertThat(snackBarMessage, `is`("Test Exception"))
     }
 
@@ -90,10 +90,10 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
 //        mainCoroutineRule.pauseDispatcher()
         remindersListViewModel.loadReminders()
         // Then progress indicator is shown.
-        assertThat(remindersListViewModel.showLoading.value, `is`(true))
+        assertThat(remindersListViewModel.showLoadingMutableStateFlow.value, `is`(true))
         advanceUntilIdle()
         // Then progress indicator is hidden.
-        assertThat(remindersListViewModel.showLoading.value, `is`(false))
+        assertThat(remindersListViewModel.showLoadingMutableStateFlow.value, `is`(false))
     }
 
 }

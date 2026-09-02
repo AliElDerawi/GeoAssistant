@@ -15,7 +15,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        refreshing="@{viewModel.showLoading.booleanValue()}"
+        refreshing="@{viewModel.showLoadingMutableStateFlow.booleanValue()}"
         tools:context=".remindersList.view.ReminderListFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/text_no_data"
-                android:fadeVisible="@{viewModel.showNoData.booleanValue()}"
+                android:fadeVisible="@{viewModel.showNoDataMutableStateFlow.booleanValue()}"
                 android:gravity="center"
                 android:text="@string/text_no_data"
                 android:textSize="@dimen/text_size_large"
@@ -52,7 +52,7 @@
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fadeVisible="@{viewModel.showLoading.booleanValue()}"
+                android:fadeVisible="@{viewModel.showLoadingMutableStateFlow.booleanValue()}"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

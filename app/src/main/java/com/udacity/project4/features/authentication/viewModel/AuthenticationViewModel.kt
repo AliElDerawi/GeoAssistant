@@ -33,7 +33,7 @@ class AuthenticationViewModel(app: Application) : BaseViewModel(app) {
                 Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
                 setLoginStatus(true, user.uid)
                 viewModelScope.launch {
-                    navigationCommand.send(NavigationCommand.To(
+                    navigationCommandChannel.send(NavigationCommand.To(
                         AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
                     ))
                 }

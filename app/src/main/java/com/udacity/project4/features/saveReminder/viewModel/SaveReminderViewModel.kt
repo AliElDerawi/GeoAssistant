@@ -177,7 +177,7 @@ class SaveReminderViewModel(
     fun createGeofenceAfterGrantPermission() {
         if (!AppSharedMethods.isForegroundAndBackgroundPermissionGranted(mApp)) {
             viewModelScope.launch {
-                showToast.send(getLocalizedContext().getString(R.string.msg_enable_background_location_permission))
+                showToastChannel.send(getLocalizedContext().getString(R.string.msg_enable_background_location_permission))
             }
             return
         }
@@ -203,7 +203,7 @@ class SaveReminderViewModel(
         userId: String? = AppSharedMethods.getCurrentUserId()
     ) {
         viewModelScope.launch {
-            showLoading.value = true
+            showLoadingMutableStateFlow.value = true
             mRemindersLocalRepository.saveReminder(
                 ReminderDTO(
                     reminderData.title,
@@ -215,8 +215,8 @@ class SaveReminderViewModel(
                     reminderData.id,
                 )
             )
-            showLoading.value = false
-            showToastInt.send(R.string.msg_reminder_saved)
+            showLoadingMutableStateFlow.value = false
+            showToastIntChannel.send(R.string.msg_reminder_saved)
             _createGeofenceStateFlow.value = reminderData
             continueSaveReminder(reminderData)
         }
@@ -239,7 +239,7 @@ class SaveReminderViewModel(
                 _saveLocationChannel.send(true)
             }
         } ?: viewModelScope.launch {
-            showSnackBarInt.send(R.string.msg_select_location)
+            showSnackBarIntChannel.send(R.string.msg_select_location)
         }
     }
 
@@ -273,7 +273,7 @@ class SaveReminderViewModel(
                         sendToast(R.string.msg_geofences_added)
                         Timber.d("Add Geofence: $geofence.requestId")
                         viewModelScope.launch {
-                            navigationCommand.send(NavigationCommand.Back)
+                            navigationCommandChannel.send(NavigationCommand.Back)
                         }
                     }
                     addOnFailureListener {
@@ -289,7 +289,7 @@ class SaveReminderViewModel(
 
     fun selectLocationClick() {
         viewModelScope.launch {
-            navigationCommand.send(
+            navigationCommandChannel.send(
                 NavigationCommand.To(
                     SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment()
                 )
@@ -299,13 +299,13 @@ class SaveReminderViewModel(
 
     fun onLocationSelected() {
         viewModelScope.launch {
-            navigationCommand.send(NavigationCommand.Back)
+            navigationCommandChannel.send(NavigationCommand.Back)
         }
     }
 
     fun sendToast(@StringRes messageResId: Int) {
         viewModelScope.launch {
-            showToastInt.send(messageResId)
+            showToastIntChannel.send(messageResId)
         }
     }
 

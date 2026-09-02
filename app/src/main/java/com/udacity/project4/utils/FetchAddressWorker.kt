@@ -3,14 +3,18 @@ package com.udacity.project4.utils
 import android.content.Context
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.udacity.project4.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
-import java.util.Locale
+import kotlin.coroutines.resume
 
 class FetchAddressWorker(
     val context: Context,
@@ -22,11 +26,14 @@ class FetchAddressWorker(
     override suspend fun doWork(): Result {
         val latitude = inputData.getDouble(Constants.EXTRA_LATITUDE, 0.0)
         val longitude = inputData.getDouble(Constants.EXTRA_LONGITUDE, 0.0)
-        val geocoder = Geocoder(applicationContext, Locale(AppSharedMethods.getCurrentLocale(applicationContext).language))
+
+        val geocoder = Geocoder(applicationContext, AppSharedMethods.getCurrentLocale(applicationContext))
 
         return try {
             Timber.d("FetchAddressWorker:doWork:called")
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+
+            val addresses = geocoder.getAddressSuspend(latitude, longitude)
+
             addresses.takeIf { it.isNullOrEmpty() }?.let {
                 val errorMessage = AppSharedMethods.setFormattedAddress(latitude, longitude)
                 receiver.send(Constants.FAILURE_RESULT, createResultBundle(errorMessage))
@@ -38,7 +45,7 @@ class FetchAddressWorker(
                         add(address.getAddressLine(i))
                     }
                 }
-                val addressResult = TextUtils.join(System.getProperty("line.separator").toString(), addressFragments)
+                val addressResult = TextUtils.join(System.lineSeparator(), addressFragments)
                 receiver.send(Constants.SUCCESS_RESULT, createResultBundle(addressResult))
                 Timber.d("FetchAddressWorker:doWork:success")
                 Result.success()
@@ -53,6 +60,32 @@ class FetchAddressWorker(
     private fun createResultBundle(message: String): Bundle {
         return Bundle().apply {
             putString(Constants.EXTRA_RESULT_DATA_KEY, message)
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    suspend fun Geocoder.getAddressSuspend(latitude: Double, longitude: Double): List<Address>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            suspendCancellableCoroutine { continuation ->
+                getFromLocation(latitude, longitude, 1, object : Geocoder.GeocodeListener {
+                    override fun onGeocode(addresses: MutableList<Address>) {
+                        if (continuation.isActive) continuation.resume(addresses)
+                    }
+
+                    override fun onError(errorMessage: String?) {
+                        if (continuation.isActive) continuation.resume(null)
+                    }
+                })
+            }
+        } else {
+            withContext(Dispatchers.IO) {
+                try {
+                    getFromLocation(latitude, longitude, 1)
+                } catch (e: Exception) {
+                    null
+                }
+            }
         }
     }
 }

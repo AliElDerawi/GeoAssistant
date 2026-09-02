@@ -14,9 +14,9 @@ jobs:
       MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
 
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Step 2: Grant execute permission for Gradlew
       - name: Grant execute permission for Gradlew
@@ -32,20 +32,21 @@ jobs:
            GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
 
-      # Step 5: Set up JDK 17
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
+      # Step 5: Set up JDK 21 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
+          cache: 'gradle' 
 
-     # Step 6: Set up Android SDK
+     # Step 6: Set up Android SDK 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
-    # Step 7: Cache Gradle dependencies
-      - name: Cache Gradle and Android SDK
-        uses: actions/cache@v3
+    # Step 7: Cache Android SDK 
+      - name: Cache Android SDK
+        uses: actions/cache@v4
         with:
             path: ~/.android
             key: android-sdk-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
@@ -63,9 +64,3 @@ jobs:
       # Step 10: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
-
-
-      # Step 11: Run Instrumentation Tests (Optional)
-      # Uncomment this step if you have instrumentation tests configured
-      # - name: Run Instrumented Tests
-      #   run: ./gradlew connectedAndroidTest

@@ -1,12 +1,11 @@
 package com.udacity.project4.locationreminders.data
 
 import android.location.Location
-import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.MutableStateFlow
 
 //Use FakeDataSource that acts as a test double to the LocalDataSource
 class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) :
@@ -24,20 +23,20 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
-        return Result.Success(flowOf(ArrayList(reminders)))
+        return Result.Success(MutableStateFlow(ArrayList(reminders)))
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
         reminders.add(reminder)
     }
 
-    override suspend fun getReminder(id: String): Result<Flow<ReminderDTO>> {
+    override suspend fun getReminder(id: String): Result<ReminderDTO> {
         if (shouldReturnError) {
             return Result.Error("Test Exception")
         }
         val reminder = reminders.find { it.id == id }
         return if (reminder != null) {
-            Result.Success(flowOf(reminder))
+            Result.Success(reminder)
         } else {
             Result.Error("Reminder not found!")
         }
@@ -47,15 +46,15 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         reminders.clear()
     }
 
-    override suspend fun getLastUserLocation(): Result<Flow<Location?>> {
-        return Result.Success(flowOf(null))
+    override suspend fun getCurrentUserLocation(): Result<Location> {
+        return Result.Error(null)
     }
 
     fun addReminders(vararg tasks: ReminderDTO) {
         for (task in tasks) {
             reminders.add(task)
         }
-        runBlocking { getReminders() }
+//        runBlocking { getReminders() }
     }
 
 }

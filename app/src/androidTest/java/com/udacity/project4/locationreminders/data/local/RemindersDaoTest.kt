@@ -11,6 +11,7 @@ import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.util.getOrAwaitValue
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
@@ -69,7 +70,6 @@ class RemindersDaoTest : AutoCloseKoinTest() {
         // WHEN - Get the reminder by id from the database
         val loaded =
             database.reminderDao().getReminderById(reminderDataItem.id, testUserID)
-                .getOrAwaitValue()
         // THEN - The loaded data contains the expected values
         assertThat<ReminderDTO>(loaded as ReminderDTO, notNullValue())
         assertThat(loaded.id, `is`(reminderDataItem.id))
@@ -82,7 +82,7 @@ class RemindersDaoTest : AutoCloseKoinTest() {
         // WHEN - Get all reminders from the new database
         val loaded = database.reminderDao().getReminders(testUserID)
         // THEN - The loaded data contains the expected values
-        assertThat<List<ReminderDTO>>(loaded.getOrAwaitValue(), `is`(listOf()))
+        assertThat<List<ReminderDTO>>(loaded.first(), `is`(listOf()))
     }
 
     @Test
@@ -104,7 +104,7 @@ class RemindersDaoTest : AutoCloseKoinTest() {
         database.reminderDao().deleteAllReminders()
         val loaded = database.reminderDao().getReminders(testUserID)
         // THEN - The loaded data contains the expected values
-        assertThat<List<ReminderDTO>>(loaded.getOrAwaitValue(), `is`(listOf()))
+        assertThat<List<ReminderDTO>>(loaded.first(), `is`(listOf()))
     }
 
 }

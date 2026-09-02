@@ -1,16 +1,15 @@
 package com.udacity.project4.features.remindersList.viewModel
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseViewModel
-import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.data.dto.ReminderDTO
+import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.utils.SingleLiveEvent
-import kotlinx.coroutines.Dispatchers
+import com.udacity.project4.features.remindersList.view.ReminderListFragmentDirections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,10 +24,6 @@ class RemindersListViewModel(
     val remindersListStateFlow: StateFlow<List<ReminderDataItem>>
         get() = _remindersListStateFlow
 
-    private var _addReminderSingleLiveEvent = SingleLiveEvent<Boolean>()
-    val addReminderSingleLiveEvent: LiveData<Boolean>
-        get() = _addReminderSingleLiveEvent
-
     init {
         loadReminders()
     }
@@ -38,11 +33,12 @@ class RemindersListViewModel(
      * or show error if any
      */
     fun loadReminders() {
-        showLoading.postValue(true)
+
+        showLoading.value = true
         viewModelScope.launch() {
             //interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
-            showLoading.postValue(false)
+            showLoading.value = false
             when (result) {
                 is Result.Success<*> -> {
                     result as Result.Success<Flow<List<ReminderDTO>>>
@@ -63,9 +59,12 @@ class RemindersListViewModel(
                 }
 
                 is Result.Error ->
-                    showSnackBar.postValue(
-                        result.message ?: mApp.getString(R.string.msg_error_fetching_reminders)
-                    )
+                    viewModelScope.launch {
+                        showSnackBar.send(
+                            result.message
+                                ?: getLocalizedContext().getString(R.string.msg_error_fetching_reminders)
+                        )
+                    }
             }
             //check if no data has to be shown
             invalidateShowNoData()
@@ -76,10 +75,43 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.postValue(remindersListStateFlow.value.isEmpty())
+        showNoData.value = remindersListStateFlow.value.isEmpty()
     }
 
     fun addReminderClick() {
-        _addReminderSingleLiveEvent.value = true
+        navigateToAddReminderScreen()
     }
+
+    private fun navigateToAddReminderScreen() {
+        viewModelScope.launch {
+            navigationCommand.send(
+                NavigationCommand.To(
+                    ReminderListFragmentDirections.toSaveReminder()
+                )
+            )
+        }
+    }
+
+    fun navigateToReminderDescription(reminderDataItem: ReminderDataItem) {
+        viewModelScope.launch {
+            navigationCommand.send(
+                NavigationCommand.To(
+                    ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
+                        reminderDataItem
+                    )
+                )
+            )
+        }
+    }
+
+    fun navigateToLoginScreen() {
+        viewModelScope.launch {
+            navigationCommand.send(
+                NavigationCommand.To(
+                    ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
+                )
+            )
+        }
+    }
+
 }

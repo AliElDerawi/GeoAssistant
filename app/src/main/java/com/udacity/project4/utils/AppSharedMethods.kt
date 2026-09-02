@@ -111,25 +111,24 @@ object AppSharedMethods {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.Q)
-    fun isForegroundAndBackgroundPermissionGranted(mActivity: Activity): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
-            mActivity.applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED)
+    fun isForegroundPermissionGranted(context: Context): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    fun isForegroundPermissionGranted(mActivity: Activity): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED)
+    fun isBackgroundPermissionGranted(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
     }
 
-    fun isForegroundPermissionGranted(mActivity: Application): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            mActivity.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED)
+    fun isForegroundAndBackgroundPermissionGranted(context: Context): Boolean {
+        return isForegroundPermissionGranted(context) && isBackgroundPermissionGranted(context)
     }
 
     @TargetApi(Build.VERSION_CODES.Q)

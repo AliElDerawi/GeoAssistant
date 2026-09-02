@@ -5,14 +5,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.gms.location.LocationServices
-import com.udacity.project4.locationreminders.util.MainCoroutinesRules
-import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.data.dto.ReminderDTO
-import com.udacity.project4.locationreminders.util.getOrAwaitValue
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
+import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.utils.AppSharedMethods
-
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
@@ -59,6 +57,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun saveNewReminder_checkReminderValue() = runTest {
+
         val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0, testUserID)
         saveReminderViewModel.saveReminder(
             ReminderDataItem(
@@ -70,7 +69,10 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
                 reminder.id,
             ),testUserID
         )
-        val value = saveReminderViewModel.createGeofenceSingleLiveEvent.getOrAwaitValue()
+
+//        advanceUntilIdle()
+
+        val value = saveReminderViewModel.createGeofenceStateFlow.value
         assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
         assertThat(value!!.title, `is`(reminder.title))
     }

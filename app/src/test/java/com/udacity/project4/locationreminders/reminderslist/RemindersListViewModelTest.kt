@@ -3,11 +3,10 @@ package com.udacity.project4.locationreminders.reminderslist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.udacity.project4.locationreminders.util.MainCoroutinesRules
-import com.udacity.project4.locationreminders.data.FakeDataSource
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.features.remindersList.viewModel.RemindersListViewModel
-import com.udacity.project4.locationreminders.util.getOrAwaitValue
+import com.udacity.project4.locationreminders.data.FakeDataSource
+import com.udacity.project4.locationreminders.util.MainCoroutinesRules
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,16 +54,17 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun loadReminders_checkError() {
+    fun loadReminders_checkError() = runTest  {
         reminderLocalRepository.setReturnError(true)
         remindersListViewModel.loadReminders()
-        assertThat(remindersListViewModel.showSnackBar.getOrAwaitValue(), `is`("Test Exception"))
+        val snackBarMessage = remindersListViewModel.showSnackBar.receive()
+        assertThat(snackBarMessage, `is`("Test Exception"))
     }
 
     @Test
     fun loadReminders_checkEmptyList() = runTest {
         remindersListViewModel.loadReminders()
-        assertThat(remindersListViewModel.remindersListStateFlow.getOrAwaitValue(), `is`(emptyList()))
+        assertThat(remindersListViewModel.remindersListStateFlow.value, `is`(emptyList()))
     }
 
     @Test
@@ -86,14 +86,14 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     @Test
     fun loadTasks_loading() = runTest {
         // Load the task in the view model.
-        Dispatchers.setMain(StandardTestDispatcher())
+        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
 //        mainCoroutineRule.pauseDispatcher()
         remindersListViewModel.loadReminders()
         // Then progress indicator is shown.
-        assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(true))
+        assertThat(remindersListViewModel.showLoading.value, `is`(true))
         advanceUntilIdle()
         // Then progress indicator is hidden.
-        assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
+        assertThat(remindersListViewModel.showLoading.value, `is`(false))
     }
 
 }

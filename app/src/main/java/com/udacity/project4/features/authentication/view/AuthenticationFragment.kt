@@ -1,35 +1,35 @@
 package com.udacity.project4.features.authentication.view
 
-import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
-import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentAuthenticationBinding
 import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.features.main.viewModel.MainViewModel
-import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.Constants
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class AuthenticationFragment : BaseFragment() {
 
     override val mViewModel: AuthenticationViewModel by viewModel()
     private lateinit var mBinding: FragmentAuthenticationBinding
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mActivity: FragmentActivity
 
     override fun onAttach(context: Context) {
@@ -57,50 +57,35 @@ class AuthenticationFragment : BaseFragment() {
     }
 
     private fun initViewModelObserver() {
-        mViewModel.completeLoginSingleLiveEvent.observe(viewLifecycleOwner) { redirect ->
-            if (redirect) {
-                val enableCredentials =  if (GoogleApiAvailability.getInstance()
-                        .isGooglePlayServicesAvailable(mActivity) == ConnectionResult.SUCCESS) {
-                   true
-                } else {
-                    false
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mViewModel.completeLoginChannel.receiveAsFlow().collect { redirect ->
+                    if (redirect) {
+
+                        val enableCredentials = GoogleApiAvailability.getInstance()
+                            .isGooglePlayServicesAvailable(mActivity) == ConnectionResult.SUCCESS
+
+                        val signInIntent = AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setLogo(R.drawable.ic_app_logo)
+                            .setCredentialManagerEnabled(enableCredentials)
+                            .setTheme(R.style.Theme_FirebaseAuthUI_EdgeToEdge) // Use the custom theme
+                            .setAvailableProviders(Constants.FIREBASE_LOGIN_PROVIDER)
+                            .build()
+
+                        signInLauncher.launch(signInIntent)
+                    }
                 }
-                val signInIntent = AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setLogo(R.drawable.ic_app_logo)
-                    .setCredentialManagerEnabled(enableCredentials)
-                    .setTheme(R.style.Theme_FirebaseAuthUI_EdgeToEdge) // Use the custom theme
-                    .setAvailableProviders(Constants.FIREBASE_LOGIN_PROVIDER)
-                    .build()
-                signInLauncher.launch(signInIntent)
             }
         }
     }
 
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
-        if (result.resultCode == RESULT_OK) {
-            // Successfully signed in
-            FirebaseAuth.getInstance().currentUser?.let { user ->
-                Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
-                setLoginStatus(true, user.uid)
-                mViewModel.navigationCommand.value = NavigationCommand.To(
-                    AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
-                )
-            } ?: Timber.d("onSignInResult: User is null")
-
-        } else {
-            // Sign in failed.
-            response?.error?.let { error ->
-                Timber.d("onSignInResult:error $error")
-            }
-        }
-    }
 
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract(),
     ) { res ->
-        this.onSignInResult(res)
+        mViewModel.onSignInResult(res)
     }
 
 }

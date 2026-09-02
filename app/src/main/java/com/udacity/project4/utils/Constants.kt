@@ -1,8 +1,8 @@
 package com.udacity.project4.utils
 
-import androidx.multidex.BuildConfig
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.maps.model.LatLng
+import com.udacity.project4.BuildConfig
 import java.util.concurrent.TimeUnit
 
 object Constants {
@@ -18,7 +18,7 @@ object Constants {
 
     var CURRENT_LOCATION_ZOOM = 15f
     var DEFAULT_LOCATION_ZOOM = 7f
-    val MY_DEFAULT_LOCATION = LatLng(26.4207, 50.0888)
+    val MY_DEFAULT_LOCATION = LatLng(52.5200, 13.4050)
     const val MIN_LOCATION_UPDATE_INTERVAL = 1 * 60 * 1000L
     const val MAX_LOCATION_UPDATE_INTERVAL = 2 * 60 * 1000L
 

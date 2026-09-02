@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_reminders">
         <action
             android:id="@+id/to_save_reminder"
-            app:destination="@id/saveReminderFragment"
+            app:destination="@id/save_reminder_graph"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
@@ -30,28 +30,35 @@
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
-    <fragment
-        android:id="@+id/saveReminderFragment"
-        android:name="com.udacity.project4.features.saveReminder.view.SaveReminderFragment"
-        android:label="@string/text_add_reminder"
-        tools:layout="@layout/fragment_save_reminder">
-        <action
-            android:id="@+id/action_saveReminderFragment_to_reminderListFragment"
-            app:destination="@id/reminderListFragment" />
-        <action
-            android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
-            app:destination="@id/selectLocationFragment"
-            app:enterAnim="@anim/fui_slide_in_right"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/fade_out" />
-    </fragment>
+    <navigation
+        android:id="@+id/save_reminder_graph"
+        app:startDestination="@id/saveReminderFragment">
 
-    <fragment
-        android:id="@+id/selectLocationFragment"
-        android:name="com.udacity.project4.features.selectReminderLocation.SelectLocationFragment"
-        android:label="@string/text_select_location"
-        tools:layout="@layout/fragment_select_location" />
+        <fragment
+            android:id="@+id/saveReminderFragment"
+            android:name="com.udacity.project4.features.saveReminder.view.SaveReminderFragment"
+            android:label="@string/text_add_reminder"
+            tools:layout="@layout/fragment_save_reminder">
+            <action
+                android:id="@+id/action_saveReminderFragment_to_reminderListFragment"
+                app:destination="@id/reminderListFragment" />
+            <action
+                android:id="@+id/action_saveReminderFragment_to_selectLocationFragment"
+                app:destination="@id/selectLocationFragment"
+                app:enterAnim="@anim/fui_slide_in_right"
+                app:exitAnim="@android:anim/fade_out"
+                app:popEnterAnim="@android:anim/slide_in_left"
+                app:popExitAnim="@android:anim/fade_out" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/selectLocationFragment"
+            android:name="com.udacity.project4.features.selectReminderLocation.SelectLocationFragment"
+            android:label="@string/text_select_location"
+            tools:layout="@layout/fragment_select_location" />
+
+    </navigation>
+
 
     <fragment
         android:id="@+id/authenticationFragment"
@@ -71,7 +78,7 @@
 
     <fragment
         android:id="@+id/reminderDescriptionFragment"
-        android:name="com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment"
+        android:name="com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment"
         android:label="@string/text_geofence_detail"
         tools:layout="@layout/fragment_reminder_description">
         <argument

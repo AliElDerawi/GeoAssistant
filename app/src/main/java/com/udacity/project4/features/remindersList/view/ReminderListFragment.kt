@@ -11,12 +11,10 @@ import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
-import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
@@ -26,15 +24,13 @@ import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewMode
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setup
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
 
-    // Use Koin to retrieve the ViewModel instance
     override val mViewModel: RemindersListViewModel by viewModel()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
-    private val mSaveReminderViewModel: SaveReminderViewModel by inject()
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentRemindersBinding
     private lateinit var mActivity: FragmentActivity
 
@@ -55,10 +51,9 @@ class ReminderListFragment : BaseFragment() {
         }
         mSharedViewModel.apply {
             setHideToolbar(false)
-            setToolbarTitle(getString(R.string.app_name))
+            setToolbarTitle(mActivity.getString(R.string.app_name))
         }
-        mSaveReminderViewModel.onClear()
-        setDisplayHomeAsUpEnabled(false)
+        mActivity.setDisplayHomeAsUpEnabled(false)
         initViewModelObservers()
         return mBinding.root
     }
@@ -72,9 +67,6 @@ class ReminderListFragment : BaseFragment() {
 
     private fun initListener() {
         with(mBinding) {
-            addReminderFAB.setOnClickListener {
-                navigateToAddReminder()
-            }
             refreshLayout.setOnRefreshListener {
                 mViewModel.loadReminders()
             }
@@ -82,28 +74,12 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun initViewModelObservers() {
-        mViewModel.addReminderSingleLiveEvent.observe(viewLifecycleOwner) {
-            if (it) {
-                navigateToAddReminder()
-            }
-        }
-    }
 
-    private fun navigateToAddReminder() {
-        // Use the navigationCommand live data to navigate between the fragments
-        mViewModel.navigationCommand.value = NavigationCommand.To(
-            ReminderListFragmentDirections.toSaveReminder()
-        )
     }
 
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter(ReminderDataItem.getReminderDataDiffCallback()) {
-            mViewModel.navigationCommand.value =
-                NavigationCommand.To(
-                    ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
-                        it
-                    )
-                )
+            mViewModel.navigateToReminderDescription(it)
         }
         // Setup the recycler view using the extension function
         mBinding.remindersRecyclerView.setup(adapter)
@@ -127,9 +103,7 @@ class ReminderListFragment : BaseFragment() {
                         .signOut(mActivity)
                         .addOnCompleteListener {
                             setLoginStatus(false)
-                            mViewModel.navigationCommand.value = NavigationCommand.To(
-                                ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
-                            )
+                            mViewModel.navigateToLoginScreen()
                         }
                 }
                 return true

@@ -13,7 +13,7 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.locationreminders.reminderDescription.ReminderDescriptionFragment
+import com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.features.main.view.MainActivity
 import com.udacity.project4.utils.AppSharedMethods.createIntent
 import com.udacity.project4.utils.AppSharedMethods.notificationManager

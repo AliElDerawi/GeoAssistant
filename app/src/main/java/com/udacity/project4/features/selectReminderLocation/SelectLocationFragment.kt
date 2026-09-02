@@ -17,7 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,7 +32,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 import com.udacity.project4.R
 import com.udacity.project4.data.base.BaseFragment
-import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
@@ -46,16 +44,18 @@ import com.udacity.project4.utils.AppSharedMethods.setCustomMapStyle
 import com.udacity.project4.utils.Constants
 import com.udacity.project4.utils.MyResultIntentReceiver
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.androidx.navigation.koinNavGraphViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 import java.util.UUID
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultIntentReceiver.Receiver {
 
-    // Use Koin to get the view model of the SaveReminder
-    override val mViewModel: SaveReminderViewModel by inject()
-    private val mSharedViewModel: MainViewModel by activityViewModels()
+    override val mViewModel: SaveReminderViewModel by koinNavGraphViewModel(R.id.save_reminder_graph)
+    private val mSharedViewModel: MainViewModel by activityViewModel()
     private val mResultReceiver: MyResultIntentReceiver by inject()
     private lateinit var mBinding: FragmentSelectLocationBinding
     private lateinit var mActivity: FragmentActivity
@@ -84,7 +84,8 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.text_select_location))
         }
-        setDisplayHomeAsUpEnabled(true)
+        mActivity.setDisplayHomeAsUpEnabled(true)
+
         return mBinding.root
     }
 
@@ -107,58 +108,63 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
 
     private fun initViewModelObserver() {
         with(mViewModel) {
-            selectedPOILiveData.observe(viewLifecycleOwner) {
-                it?.let {
-                    mGoogleMap.clear()
-                    val poiMarker = mGoogleMap.addMarkerWithName(it.latLng, it.name)
-                    setSelectedLocationLatLngAndShowName(it.latLng)
-                    poiMarker?.showInfoWindow()
-                }
-            }
-            moveMapSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    updateLocation()
-                }
-            }
-            saveLocationSingleLiveEvent.observe(viewLifecycleOwner) {
-                if (it) {
-                    onLocationSelected()
-                }
-            }
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    lastUserLocationStateFlow.collect { location ->
-                        location?.let {
-                            setSelectedLocationLatLngAndShowName(
-                                LatLng(
-                                    it.latitude,
-                                    it.longitude
-                                )
-                            )
-                            Timber.d("getLastUserLocation:mLastKnownLocation: $mViewModel.selectedLocationLatLng.value!!")
-                            mGoogleMap.moveCameraToLocation(
-                                selectedLocationLatLngStateFlow.value!!,
-                                Constants.CURRENT_LOCATION_ZOOM
-                            )
-                        } ?: run {
-                            Timber.d("getLastUserLocation:currentLocation NULL")
-                            setDefaultLocation()
-                            if (!mActivity.isLocationEnabled()) {
-                                showToast.value =
-                                    mActivity.getString(R.string.msg_enable_gps)
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                    launch {
+                        selectedPOIStateFlow.collect {
+                            it?.let {
+                                mGoogleMap.clear()
+                                val poiMarker = mGoogleMap.addMarkerWithName(it.latLng, it.name)
+                                setSelectedLocationLatLngAndShowName(it.latLng)
+                                poiMarker?.showInfoWindow()
                             }
                         }
                     }
+
+                    launch {
+                        moveMapSingleChannel.receiveAsFlow().collect {
+                            if (it) {
+                                updateLocation()
+                            }
+                        }
+                    }
+
+                    launch {
+                        saveLocationChannel.receiveAsFlow().collect {
+                            if (it) {
+                                mViewModel.onLocationSelected()
+                            }
+                        }
+                    }
+
+                    launch {
+                        lastUserLocationStateFlow.collect { location ->
+                            location?.let {
+                                setSelectedLocationLatLngAndShowName(
+                                    LatLng(
+                                        it.latitude,
+                                        it.longitude
+                                    )
+                                )
+                                Timber.d("getLastUserLocation:mLastKnownLocation: ${selectedLocationLatLngStateFlow.value}")
+                                mGoogleMap.moveCameraToLocation(
+                                    selectedLocationLatLngStateFlow.value!!,
+                                    Constants.CURRENT_LOCATION_ZOOM
+                                )
+                            } ?: run {
+                                Timber.d("getLastUserLocation:currentLocation NULL")
+                                setDefaultLocation()
+                                if (!mActivity.isLocationEnabled()) {
+                                    sendToast(R.string.msg_enable_gps)
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
-    }
-
-    private fun onLocationSelected() {
-        // TODO - Completed: When the user confirms on the selected location,
-        //  send back the selected location details to the view model
-        //  and navigate back to the previous fragment to save the reminder and add the geofence
-        mViewModel.navigationCommand.value = NavigationCommand.Back
     }
 
     private fun initMenu() {
@@ -194,8 +200,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 Timber.d("Location Permission granted")
                 checkDeviceLocationSettings()
             } else {
-                mViewModel.showToast.value =
-                    mActivity.getString(R.string.msg_foreground_location_services)
+                mViewModel.sendToast(R.string.msg_foreground_location_services)
                 initMap()
             }
         }
@@ -223,7 +228,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
         initMenu()
         updateLocationUI()
         initViewModelObserver()
-        mViewModel.getLastUserLocation()
+        mViewModel.getCurrentUserLocation()
 
 //      TODO : Comment: Logic if we need to update the location name on camera move
 //        mGoogleMap.setOnCameraIdleListener {
@@ -336,7 +341,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                 it,
                 Constants.CURRENT_LOCATION_ZOOM
             )
-        } ?: mViewModel.getLastUserLocation()
+        } ?: mViewModel.getCurrentUserLocation()
     }
 
     override fun onReceiveResult(
@@ -355,12 +360,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, MyResultInten
                     ?: mActivity.getString(R.string.msg_address_location_network_issue)
         }
         with(mViewModel) {
-            if (resultCode == Constants.SUCCESS_RESULT && selectedPOILiveData.value != null && selectedPOILiveData.value!!.name.isEmpty()) {
+            if (resultCode == Constants.SUCCESS_RESULT && selectedPOIStateFlow.value != null && selectedPOIStateFlow.value!!.name.isEmpty()) {
                 Timber.d("onReceiveResult:called:updateName")
                 setSelectedPOI(
                     PointOfInterest(
-                        selectedPOILiveData.value!!.latLng,
-                        selectedPOILiveData.value!!.placeId,
+                        selectedPOIStateFlow.value!!.latLng,
+                        selectedPOIStateFlow.value!!.placeId,
                         mAddressOutput.toString()
                     )
                 )

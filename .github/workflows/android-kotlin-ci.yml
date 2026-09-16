@@ -30,15 +30,15 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Step 5: Inject API Keys securely
-      - name: Create local properties
-        run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.defaults.properties
+      # Step 5: Create dummy local.defaults.properties (طريقتك المقتبسة)
+      - name: Create dummy local.defaults.properties
+        run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
 
-      # Step 6: Decode and Create google-services.json
+      # Step 6: Create google-services.json (طريقتك المقتبسة لفك التشفير)
       - name: Create Google Services JSON File
         env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" | base64 -di > app/google-services.json
 
       # Step 7: Build the project
       - name: Build with Gradle
@@ -51,7 +51,6 @@ jobs:
       # Step 9: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
-
 
       # Step 10: Run Instrumentation Tests (Optional)
       # Uncomment this step if you have instrumentation tests configured

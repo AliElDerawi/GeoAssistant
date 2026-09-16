@@ -38,29 +38,19 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '21'
-          cache: 'gradle' 
 
-     # Step 6: Set up Android SDK 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # Step 6: Setup Gradle 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    # Step 7: Cache Android SDK 
-      - name: Cache Android SDK
-        uses: actions/cache@v4
-        with:
-            path: ~/.android
-            key: android-sdk-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            restore-keys: |
-              android-sdk-${{ runner.os }}-
-
-      # Step 8: Build with Gradle
+      # Step 7: Build with Gradle
       - name: Build with Gradle
         run: ./gradlew assembleDebug
 
-      # Step 9: Run Kotlin Lint
-      - name: Run Kotlin Lint
+      # Step 8: Run Android Lint
+      - name: Run Android Lint
         run: ./gradlew lintDebug
 
-      # Step 10: Run Unit Tests
+      # Step 9: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest

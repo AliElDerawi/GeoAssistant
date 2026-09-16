@@ -2,70 +2,58 @@ name: Kotlin Android CI Workflow
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
-
     steps:
-      # Step 1: Checkout the code
+      # Step 1: Checkout the code (Updated to v4)
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Grant execute permission for Gradlew
+      # Step 2: Set up JDK 21 (Updated to v4 & Zulu distribution)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      # Step 3: Setup Gradle and Cache (Official GitHub Action for Gradle)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Step 4: Grant execute permission for Gradlew
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
-      # Step 3: Create dummy local.defaults.properties
-      - name: Create dummy local.defaults.properties
-        run: echo "MAPS_API_KEY=dummy_value" > local.defaults.properties
+      # Step 5: Inject API Keys securely
+      - name: Create local properties
+        run: echo "MAPS_API_KEY=${{ secrets.MAPS_API_KEY }}" > local.defaults.properties
 
-      # Step 4: Create google-services.json
+      # Step 6: Decode and Create google-services.json
       - name: Create Google Services JSON File
         env:
-           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo $GOOGLE_SERVICES_JSON | base64 -di > app/google-services.json
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
 
-      # Step 5: Set up JDK 17
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-     # Step 6: Set up Android SDK
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-
-    # Step 7: Cache Gradle dependencies
-      - name: Cache Gradle and Android SDK
-        uses: actions/cache@v3
-        with:
-            path: ~/.android
-            key: android-sdk-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            restore-keys: |
-              android-sdk-${{ runner.os }}-
-
-      # Step 8: Build with Gradle
+      # Step 7: Build the project
       - name: Build with Gradle
         run: ./gradlew assembleDebug
 
-      # Step 9: Run Kotlin Lint
+      # Step 8: Run Lint checks
       - name: Run Kotlin Lint
         run: ./gradlew lintDebug
 
-      # Step 10: Run Unit Tests
+      # Step 9: Run Unit Tests
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
 
 
-      # Step 11: Run Instrumentation Tests (Optional)
+      # Step 10: Run Instrumentation Tests (Optional)
       # Uncomment this step if you have instrumentation tests configured
       # - name: Run Instrumented Tests
       #   run: ./gradlew connectedAndroidTest

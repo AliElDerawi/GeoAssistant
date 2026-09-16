@@ -18,9 +18,8 @@ import kotlin.coroutines.resume
 
 class FetchAddressWorker(
     val context: Context,
-    params: WorkerParameters
+    params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
-
     private val receiver: MyResultIntentReceiver by inject(MyResultIntentReceiver::class.java)
 
     override suspend fun doWork(): Result {
@@ -40,11 +39,12 @@ class FetchAddressWorker(
                 Result.failure()
             } ?: run {
                 val address = addresses!![0]
-                val addressFragments = ArrayList<String?>().apply {
-                    for (i in 0..address.maxAddressLineIndex) {
-                        add(address.getAddressLine(i))
+                val addressFragments =
+                    ArrayList<String?>().apply {
+                        for (i in 0..address.maxAddressLineIndex) {
+                            add(address.getAddressLine(i))
+                        }
                     }
-                }
                 val addressResult = TextUtils.join(System.lineSeparator(), addressFragments)
                 receiver.send(Constants.SUCCESS_RESULT, createResultBundle(addressResult))
                 Timber.d("FetchAddressWorker:doWork:success")
@@ -57,26 +57,32 @@ class FetchAddressWorker(
         }
     }
 
-    private fun createResultBundle(message: String): Bundle {
-        return Bundle().apply {
+    private fun createResultBundle(message: String): Bundle =
+        Bundle().apply {
             putString(Constants.EXTRA_RESULT_DATA_KEY, message)
         }
-    }
 
     @Suppress("DEPRECATION")
-    suspend fun Geocoder.getAddressSuspend(latitude: Double, longitude: Double): List<Address>? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-
+    suspend fun Geocoder.getAddressSuspend(
+        latitude: Double,
+        longitude: Double,
+    ): List<Address>? =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             suspendCancellableCoroutine { continuation ->
-                getFromLocation(latitude, longitude, 1, object : Geocoder.GeocodeListener {
-                    override fun onGeocode(addresses: MutableList<Address>) {
-                        if (continuation.isActive) continuation.resume(addresses)
-                    }
+                getFromLocation(
+                    latitude,
+                    longitude,
+                    1,
+                    object : Geocoder.GeocodeListener {
+                        override fun onGeocode(addresses: MutableList<Address>) {
+                            if (continuation.isActive) continuation.resume(addresses)
+                        }
 
-                    override fun onError(errorMessage: String?) {
-                        if (continuation.isActive) continuation.resume(null)
-                    }
-                })
+                        override fun onError(errorMessage: String?) {
+                            if (continuation.isActive) continuation.resume(null)
+                        }
+                    },
+                )
             }
         } else {
             withContext(Dispatchers.IO) {
@@ -87,5 +93,4 @@ class FetchAddressWorker(
                 }
             }
         }
-    }
 }

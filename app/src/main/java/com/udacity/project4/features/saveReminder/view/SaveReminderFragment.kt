@@ -41,7 +41,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import timber.log.Timber
 
 class SaveReminderFragment : BaseFragment() {
-
     override val mViewModel: SaveReminderViewModel by koinNavGraphViewModel(R.id.save_reminder_graph)
     private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentSaveReminderBinding
@@ -54,19 +53,20 @@ class SaveReminderFragment : BaseFragment() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        mBinding = FragmentSaveReminderBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = mViewModel
-        }
+        mBinding =
+            FragmentSaveReminderBinding.inflate(inflater, container, false).apply {
+                lifecycleOwner = viewLifecycleOwner
+                viewModel = mViewModel
+            }
         mSharedViewModel.apply {
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.app_name))
@@ -75,7 +75,10 @@ class SaveReminderFragment : BaseFragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         initViewModelObservers()
@@ -88,15 +91,13 @@ class SaveReminderFragment : BaseFragment() {
 
     private fun initViewModelObservers() {
         with(mViewModel) {
-
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                     launch {
                         saveReminderChannel.receiveAsFlow().collect { saveReminder ->
                             if (saveReminder) {
                                 if (AppSharedMethods.isForegroundAndBackgroundPermissionGranted(
-                                        mActivity
+                                        mActivity,
                                     )
                                 ) {
                                     Timber.d("Foreground and Background Permission granted")
@@ -122,7 +123,6 @@ class SaveReminderFragment : BaseFragment() {
                         }
                     }
                 }
-
             }
         }
     }
@@ -145,12 +145,10 @@ class SaveReminderFragment : BaseFragment() {
                 .setMessage(mActivity.getString(R.string.desc_background_location_permission))
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     requestBackgroundPermissionLauncher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                }
-                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                }.setNegativeButton(android.R.string.cancel) { dialog, _ ->
                     dialog.dismiss()
                     mViewModel.sendToast(R.string.msg_background_location_required)
-                }
-                .show()
+                }.show()
         }
     }
 
@@ -198,9 +196,13 @@ class SaveReminderFragment : BaseFragment() {
         }
 
     private fun checkDeviceLocationSettings() {
-        val locationRequest = LocationRequest.Builder(
-            Priority.PRIORITY_LOW_POWER, Constants.MAX_LOCATION_UPDATE_INTERVAL
-        ).setMinUpdateIntervalMillis(Constants.MIN_LOCATION_UPDATE_INTERVAL).build()
+        val locationRequest =
+            LocationRequest
+                .Builder(
+                    Priority.PRIORITY_LOW_POWER,
+                    Constants.MAX_LOCATION_UPDATE_INTERVAL,
+                ).setMinUpdateIntervalMillis(Constants.MIN_LOCATION_UPDATE_INTERVAL)
+                .build()
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
         val settingsClient = LocationServices.getSettingsClient(requireContext())
         val locationSettingsResponseTask = settingsClient.checkLocationSettings(builder.build())
@@ -232,7 +234,7 @@ class SaveReminderFragment : BaseFragment() {
 
     private val resolutionForResultLauncher: ActivityResultLauncher<IntentSenderRequest> =
         registerForActivityResult(
-            ActivityResultContracts.StartIntentSenderForResult()
+            ActivityResultContracts.StartIntentSenderForResult(),
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 // Location settings are satisfied; handle accordingly
@@ -244,14 +246,15 @@ class SaveReminderFragment : BaseFragment() {
         }
 
     private fun showEnableLocationSnackBar() {
-        mActivity.getSnackBar(
-            mActivity.getString(R.string.msg_location_required_for_create_geofence_error),
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction(android.R.string.ok) {
-            checkDeviceLocationSettings()
-        }.setAction(android.R.string.cancel) {
-            mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
-        }.show()
+        mActivity
+            .getSnackBar(
+                mActivity.getString(R.string.msg_location_required_for_create_geofence_error),
+                Snackbar.LENGTH_INDEFINITE,
+            ).setAction(android.R.string.ok) {
+                checkDeviceLocationSettings()
+            }.setAction(android.R.string.cancel) {
+                mViewModel.sendToast(R.string.msg_location_required_for_create_geofence_error)
+            }.show()
     }
 
     private fun handleNotificationPermission() {
@@ -263,5 +266,4 @@ class SaveReminderFragment : BaseFragment() {
             mViewModel.createGeofenceAfterGrantPermission()
         }
     }
-
 }

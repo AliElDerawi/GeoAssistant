@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class RemindersListViewModel(
     private val mApp: Application,
-    private val mReminderDataSource: ReminderDataSource
+    private val mReminderDataSource: ReminderDataSource,
 ) : BaseViewModel(mApp) {
     // list that holds the reminder data to be displayed on the UI
     private var _remindersListStateFlow = MutableStateFlow<List<ReminderDataItem>>(listOf())
@@ -33,27 +33,27 @@ class RemindersListViewModel(
      * or show error if any
      */
     fun loadReminders() {
-
         showLoading.value = true
-        viewModelScope.launch() {
-            //interacting with the dataSource has to be through a coroutine
+        viewModelScope.launch {
+            // interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
             showLoading.value = false
             when (result) {
                 is Result.Success<*> -> {
                     result as Result.Success<Flow<List<ReminderDTO>>>
                     result.data.collect { reminderDTOList ->
-                        val dataList = reminderDTOList.map { reminder ->
-                            // Map each ReminderDTO to ReminderDataItem
-                            ReminderDataItem(
-                                reminder.title,
-                                reminder.description,
-                                reminder.location,
-                                reminder.latitude,
-                                reminder.longitude,
-                                reminder.id
-                            )
-                        }
+                        val dataList =
+                            reminderDTOList.map { reminder ->
+                                // Map each ReminderDTO to ReminderDataItem
+                                ReminderDataItem(
+                                    reminder.title,
+                                    reminder.description,
+                                    reminder.location,
+                                    reminder.latitude,
+                                    reminder.longitude,
+                                    reminder.id,
+                                )
+                            }
                         _remindersListStateFlow.value = (dataList)
                     }
                 }
@@ -62,11 +62,11 @@ class RemindersListViewModel(
                     viewModelScope.launch {
                         showSnackBar.send(
                             result.message
-                                ?: getLocalizedContext().getString(R.string.msg_error_fetching_reminders)
+                                ?: getLocalizedContext().getString(R.string.msg_error_fetching_reminders),
                         )
                     }
             }
-            //check if no data has to be shown
+            // check if no data has to be shown
             invalidateShowNoData()
         }
     }
@@ -86,8 +86,8 @@ class RemindersListViewModel(
         viewModelScope.launch {
             navigationCommand.send(
                 NavigationCommand.To(
-                    ReminderListFragmentDirections.toSaveReminder()
-                )
+                    ReminderListFragmentDirections.toSaveReminder(),
+                ),
             )
         }
     }
@@ -97,9 +97,9 @@ class RemindersListViewModel(
             navigationCommand.send(
                 NavigationCommand.To(
                     ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
-                        reminderDataItem
-                    )
-                )
+                        reminderDataItem,
+                    ),
+                ),
             )
         }
     }
@@ -108,10 +108,9 @@ class RemindersListViewModel(
         viewModelScope.launch {
             navigationCommand.send(
                 NavigationCommand.To(
-                    ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment()
-                )
+                    ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment(),
+                ),
             )
         }
     }
-
 }

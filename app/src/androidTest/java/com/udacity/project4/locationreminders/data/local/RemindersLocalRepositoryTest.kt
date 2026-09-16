@@ -9,11 +9,10 @@ import androidx.test.filters.MediumTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.R
 import com.udacity.project4.data.dto.ReminderDTO
-import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.data.dto.Result
 import com.udacity.project4.data.local.RemindersDatabase
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.util.getOrAwaitValue
+import com.udacity.project4.data.repository.RemindersRepository
 import com.udacity.project4.utils.AppSharedMethods
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,13 +33,13 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34])
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
-//Medium Test to test the repository
+// Medium Test to test the repository
 @MediumTest
 class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
-
-//    TODO - Completed: Add testing implementation to the RemindersLocalRepository.kt
+    //    TODO - Completed: Add testing implementation to the RemindersLocalRepository.kt
     private lateinit var database: RemindersDatabase
     private lateinit var localDataSource: RemindersRepository
+
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -49,63 +48,72 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
 
     @Before
     fun init() {
-        stopKoin()//stop the original app koin
+        stopKoin() // stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
         AppSharedMethods.setLoginStatus(true, testUserID)
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(), RemindersDatabase::class.java
-        ).allowMainThreadQueries().build()
+        database =
+            Room
+                .inMemoryDatabaseBuilder(
+                    ApplicationProvider.getApplicationContext(),
+                    RemindersDatabase::class.java,
+                ).allowMainThreadQueries()
+                .build()
         //
-        localDataSource = RemindersRepository(
-            database.reminderDao(), Dispatchers.Unconfined, LocationServices.getFusedLocationProviderClient(appContext)
-        )
+        localDataSource =
+            RemindersRepository(
+                database.reminderDao(),
+                Dispatchers.Unconfined,
+                LocationServices.getFusedLocationProviderClient(appContext),
+            )
     }
 
     @After
     fun closeDb() = database.close()
 
     @Test
-    fun insertReminderAndGetById_checkSuccess() = runTest {
-        // GIVEN - insert a reminder
-        val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0,testUserID)
-        localDataSource.saveReminder(
-            ReminderDTO(
-                reminderDataItem.title,
-                reminderDataItem.description,
-                reminderDataItem.location,
-                reminderDataItem.latitude,
-                reminderDataItem.longitude,
-                testUserID,
-                reminderDataItem.id
+    fun insertReminderAndGetById_checkSuccess() =
+        runTest {
+            // GIVEN - insert a reminder
+            val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0, testUserID)
+            localDataSource.saveReminder(
+                ReminderDTO(
+                    reminderDataItem.title,
+                    reminderDataItem.description,
+                    reminderDataItem.location,
+                    reminderDataItem.latitude,
+                    reminderDataItem.longitude,
+                    testUserID,
+                    reminderDataItem.id,
+                ),
             )
-        )
-        // WHEN - Get the task by id from the database
-        val result = (localDataSource.getReminder(reminderDataItem.id) as Result.Success<ReminderDTO>).data
-        // THEN - The loaded data contains the expected values
-        assertThat<ReminderDTO>(result, CoreMatchers.notNullValue())
-        assertThat(result.id, `is`(reminderDataItem.id))
-        assertThat(result.title, `is`(reminderDataItem.title))
-        assertThat(result.description, `is`(reminderDataItem.description))
-    }
+            // WHEN - Get the task by id from the database
+            val result = (localDataSource.getReminder(reminderDataItem.id) as Result.Success<ReminderDTO>).data
+            // THEN - The loaded data contains the expected values
+            assertThat<ReminderDTO>(result, CoreMatchers.notNullValue())
+            assertThat(result.id, `is`(reminderDataItem.id))
+            assertThat(result.title, `is`(reminderDataItem.title))
+            assertThat(result.description, `is`(reminderDataItem.description))
+        }
 
     @Test
-    fun getReminderById_checkNotFound() = runTest {
-        // GIVEN - insert a reminder
-        // WHEN - Get the task by id from the database
-        val result = localDataSource.getReminder("-1")
-        result as Result.Error
-        // THEN - The loaded data contains the expected values
-        assertThat(result.message, `is`(appContext.getString(R.string.text_error_reminder_not_found)))
-    }
+    fun getReminderById_checkNotFound() =
+        runTest {
+            // GIVEN - insert a reminder
+            // WHEN - Get the task by id from the database
+            val result = localDataSource.getReminder("-1")
+            result as Result.Error
+            // THEN - The loaded data contains the expected values
+            assertThat(result.message, `is`(appContext.getString(R.string.text_error_reminder_not_found)))
+        }
 
     @Test
-    fun getReminders_checkEmptyListError() = runTest {
-        // GIVEN - insert a reminder
-        // WHEN - Get the task by id from the database
-        val result = localDataSource.getReminders()
-        result as Result.Success
-        // THEN - The loaded data contains the expected values
-        assertThat(result.data.first(), `is`(emptyList()))
-    }
-
+    fun getReminders_checkEmptyListError() =
+        runTest {
+            // GIVEN - insert a reminder
+            // WHEN - Get the task by id from the database
+            val result = localDataSource.getReminders()
+            result as Result.Success
+            // THEN - The loaded data contains the expected values
+            assertThat(result.data.first(), `is`(emptyList()))
+        }
 }

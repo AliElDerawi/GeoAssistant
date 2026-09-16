@@ -16,8 +16,8 @@ object Constants {
     const val EXTRA_LATITUDE = "$PACKAGE_NAME.EXTRA_LATITUDE"
     const val EXTRA_LONGITUDE = "$PACKAGE_NAME.EXTRA_LONGITUDE"
 
-    var CURRENT_LOCATION_ZOOM = 15f
-    var DEFAULT_LOCATION_ZOOM = 7f
+    const val CURRENT_LOCATION_ZOOM = 15f
+    const val DEFAULT_LOCATION_ZOOM = 7f
     val MY_DEFAULT_LOCATION = LatLng(52.5200, 13.4050)
     const val MIN_LOCATION_UPDATE_INTERVAL = 1 * 60 * 1000L
     const val MAX_LOCATION_UPDATE_INTERVAL = 2 * 60 * 1000L
@@ -25,8 +25,9 @@ object Constants {
     const val GEOFENCE_RADIUS_IN_METERS = 1500f
     val GEOFENCE_EXPIRATION_IN_MILLISECONDS: Long = TimeUnit.HOURS.toMillis(12)
 
-    val FIREBASE_LOGIN_PROVIDER = arrayListOf(
-        AuthUI.IdpConfig.EmailBuilder().build(),
-        AuthUI.IdpConfig.GoogleBuilder().build()
-    )
+    val FIREBASE_LOGIN_PROVIDER =
+        arrayListOf(
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.GoogleBuilder().build(),
+        )
 }

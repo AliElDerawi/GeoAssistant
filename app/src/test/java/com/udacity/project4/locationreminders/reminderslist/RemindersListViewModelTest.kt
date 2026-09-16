@@ -27,13 +27,14 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest : AutoCloseKoinTest() {
-
-    //TODO - Completed: provide testing to the RemindersListViewModel and its live data objects
+    // TODO - Completed: provide testing to the RemindersListViewModel and its live data objects
 
     private lateinit var remindersListViewModel: RemindersListViewModel
     private lateinit var reminderLocalRepository: FakeDataSource
+
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+
     @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutinesRules()
@@ -41,59 +42,62 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
 
     @Before
     fun setupViewModel() {
-        AppSharedMethods.setLoginStatus(true, testUserID,null)
-        //Get our real repository
+        AppSharedMethods.setLoginStatus(true, testUserID, null)
+        // Get our real repository
         reminderLocalRepository = FakeDataSource()
-        //clear the data to start fresh
+        // clear the data to start fresh
         // TODO  : Comment, if we didn't inject application instance here, we can remove @RunWith(AndroidJUnit4::class) annotation
         remindersListViewModel =
             RemindersListViewModel(
                 ApplicationProvider.getApplicationContext(),
-                reminderLocalRepository
+                reminderLocalRepository,
             )
     }
 
     @Test
-    fun loadReminders_checkError() = runTest  {
-        reminderLocalRepository.setReturnError(true)
-        remindersListViewModel.loadReminders()
-        val snackBarMessage = remindersListViewModel.showSnackBar.receive()
-        assertThat(snackBarMessage, `is`("Test Exception"))
-    }
+    fun loadReminders_checkError() =
+        runTest {
+            reminderLocalRepository.setReturnError(true)
+            remindersListViewModel.loadReminders()
+            val snackBarMessage = remindersListViewModel.showSnackBar.receive()
+            assertThat(snackBarMessage, `is`("Test Exception"))
+        }
 
     @Test
-    fun loadReminders_checkEmptyList() = runTest {
-        remindersListViewModel.loadReminders()
-        assertThat(remindersListViewModel.remindersListStateFlow.value, `is`(emptyList()))
-    }
+    fun loadReminders_checkEmptyList() =
+        runTest {
+            remindersListViewModel.loadReminders()
+            assertThat(remindersListViewModel.remindersListStateFlow.value, `is`(emptyList()))
+        }
 
     @Test
-    fun loadReminder_reminderNotFound() = runTest {
-        val reminder = reminderLocalRepository.getReminder("-1")
-        reminder as Result.Error
-        assertThat(reminder.message, `is`("Reminder not found!"))
-    }
+    fun loadReminder_reminderNotFound() =
+        runTest {
+            val reminder = reminderLocalRepository.getReminder("-1")
+            reminder as Result.Error
+            assertThat(reminder.message, `is`("Reminder not found!"))
+        }
 
     @Test
-    fun loadReminder_reminderException() = runTest {
-        reminderLocalRepository.setReturnError(true)
-        val reminder = reminderLocalRepository.getReminder("1")
-        reminder as Result.Error
-        assertThat(reminder.message, `is`("Test Exception"))
-    }
-
+    fun loadReminder_reminderException() =
+        runTest {
+            reminderLocalRepository.setReturnError(true)
+            val reminder = reminderLocalRepository.getReminder("1")
+            reminder as Result.Error
+            assertThat(reminder.message, `is`("Test Exception"))
+        }
 
     @Test
-    fun loadTasks_loading() = runTest {
-        // Load the task in the view model.
-        Dispatchers.setMain(StandardTestDispatcher(testScheduler))
+    fun loadTasks_loading() =
+        runTest {
+            // Load the task in the view model.
+            Dispatchers.setMain(StandardTestDispatcher(testScheduler))
 //        mainCoroutineRule.pauseDispatcher()
-        remindersListViewModel.loadReminders()
-        // Then progress indicator is shown.
-        assertThat(remindersListViewModel.showLoading.value, `is`(true))
-        advanceUntilIdle()
-        // Then progress indicator is hidden.
-        assertThat(remindersListViewModel.showLoading.value, `is`(false))
-    }
-
+            remindersListViewModel.loadReminders()
+            // Then progress indicator is shown.
+            assertThat(remindersListViewModel.showLoading.value, `is`(true))
+            advanceUntilIdle()
+            // Then progress indicator is hidden.
+            assertThat(remindersListViewModel.showLoading.value, `is`(false))
+        }
 }

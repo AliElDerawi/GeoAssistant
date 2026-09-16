@@ -30,15 +30,14 @@ import timber.log.Timber
 class RemindersRepository(
     private val remindersDao: RemindersDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val fusedLocationProviderClient: FusedLocationProviderClient
+    private val fusedLocationProviderClient: FusedLocationProviderClient,
 ) : ReminderDataSource {
-
     /**
      * Get the reminders list from the local db
      * @return Result the holds a Success with all the reminders or an Error object with the error message
      */
-    override fun getReminders(): Result<Flow<List<ReminderDTO>>> {
-        return wrapEspressoIdlingResource {
+    override fun getReminders(): Result<Flow<List<ReminderDTO>>> =
+        wrapEspressoIdlingResource {
             try {
                 val reminders = remindersDao.getReminders(AppSharedMethods.getCurrentUserId())
                 Result.Success(reminders)
@@ -46,7 +45,6 @@ class RemindersRepository(
                 Result.Error(ex.localizedMessage)
             }
         }
-    }
 
     /**
      * Insert a reminder in the db.
@@ -64,23 +62,20 @@ class RemindersRepository(
      * @param id to be used to get the reminder
      * @return Result the holds a Success object with the Reminder or an Error object with the error message
      */
-    override suspend fun getReminder(id: String): Result<ReminderDTO> {
-        return wrapEspressoIdlingResource {
+    override suspend fun getReminder(id: String): Result<ReminderDTO> =
+        wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 try {
-
                     val reminder = remindersDao.getReminderById(id, AppSharedMethods.getCurrentUserId())
                     reminder?.let {
                         Result.Success(it)
                     } ?: Result.Error(MyApp.getInstance().getString(R.string.text_error_reminder_not_found))
-
                 } catch (ex: Exception) {
                     ensureActive()
                     Result.Error(ex.localizedMessage ?: "Unknown error")
                 }
             }
         }
-    }
 
     /**
      * Deletes all the reminders in the db
@@ -93,21 +88,22 @@ class RemindersRepository(
         }
     }
 
-    override suspend fun getCurrentUserLocation(): Result<Location> {
-        return wrapEspressoIdlingResource {
+    override suspend fun getCurrentUserLocation(): Result<Location> =
+        wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 try {
                     val cancellationTokenSource = CancellationTokenSource()
 
-                    val location = fusedLocationProviderClient.getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        cancellationTokenSource.token
-                    ).await()
+                    val location =
+                        fusedLocationProviderClient
+                            .getCurrentLocation(
+                                Priority.PRIORITY_HIGH_ACCURACY,
+                                cancellationTokenSource.token,
+                            ).await()
 
                     location?.let {
                         Result.Success(it)
                     } ?: Result.Error("No Location detected")
-
                 } catch (e: SecurityException) {
                     ensureActive()
                     Timber.e(e)
@@ -118,6 +114,4 @@ class RemindersRepository(
                 }
             }
         }
-    }
 }
-

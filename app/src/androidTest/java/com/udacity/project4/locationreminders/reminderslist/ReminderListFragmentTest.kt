@@ -59,11 +59,10 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34])
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-//UI Testing
+// UI Testing
 @LargeTest
 class ReminderListFragmentTest : AutoCloseKoinTest() {
-
-//    TODO - Completed: test the navigation of the fragments.
+    //    TODO - Completed: test the navigation of the fragments.
 //    TODO - Completed: test the displayed data on the UI.
 //    TODO - Completed: add testing for the error messages.
 
@@ -89,32 +88,32 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
     @Before
     fun init() {
-        stopKoin()//stop the original app koin
+        stopKoin() // stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
-        val myModule = module {
-            viewModelOf(::RemindersListViewModel)
-            viewModelOf(::AuthenticationViewModel)
-            workerOf(::GeofenceTransitionsWorker)
-            workerOf(::FetchAddressWorker)
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
-            viewModelOf( ::MainViewModel )
-            single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
-            single { LocalDB.createRemindersDao(appContext) }
-            single { FakeTestRepository() }
-            single<ReminderDataSource> { get<FakeTestRepository>() }
-            single { LocationServices.getFusedLocationProviderClient(appContext) }
-            single { LocationServices.getGeofencingClient(appContext) }
-            single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
-
-        }
-        //declare a new koin module
+        val myModule =
+            module {
+                viewModelOf(::RemindersListViewModel)
+                viewModelOf(::AuthenticationViewModel)
+                workerOf(::GeofenceTransitionsWorker)
+                workerOf(::FetchAddressWorker)
+                single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
+                viewModelOf(::MainViewModel)
+                single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
+                single { LocalDB.createRemindersDao(appContext) }
+                single { FakeTestRepository() }
+                single<ReminderDataSource> { get<FakeTestRepository>() }
+                single { LocationServices.getFusedLocationProviderClient(appContext) }
+                single { LocationServices.getGeofencingClient(appContext) }
+                single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
+            }
+        // declare a new koin module
         startKoin {
             modules(listOf(myModule))
             androidContext(appContext)
         }
-        //Get our real repository
+        // Get our real repository
         reminderFakeRepository = get()
-        //clear the data to start fresh
+        // clear the data to start fresh
         remindersListViewModel = get()
     }
 
@@ -126,49 +125,50 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         dataBindingIdlingResource.monitorActivity(scenario)
         val navController = mock(NavController::class.java)
         scenario.onActivity { activity ->
-            val navHostFragment = activity.supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val navHostFragment =
+                activity.supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
             Navigation.setViewNavController(navHostFragment.requireView(), navController)
         }
         // WHEN - Click on the first list item]
         onView(withId(R.id.addReminderFAB)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         onView(withId(R.id.addReminderFAB)).perform(
-            click()
+            click(),
         )
         onView(withId(R.id.saveReminder)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         scenario.close()
     }
 
     @Test
-    fun errorLoadingReminder_checkErrorMessage() = runTest {
-
+    fun errorLoadingReminder_checkErrorMessage() =
+        runTest {
 //        Dispatchers.setMain(StandardTestDispatcher())
-        reminderFakeRepository.setReturnError(true)
-        remindersListViewModel.loadReminders()
-        // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(scenario)
-        val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
-        onView(withText("Test Exception")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            reminderFakeRepository.setReturnError(true)
+            remindersListViewModel.loadReminders()
+            // GIVEN - On the home screen
+            val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(scenario)
+            val navController = mock(NavController::class.java)
+            scenario.onFragment {
+                Navigation.setViewNavController(it.view!!, navController)
+            }
+            onView(withText("Test Exception")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 //        advanceUntilIdle()
-        scenario.close()
-    }
+            scenario.close()
+        }
 
     @Test
-    fun errorLoadingReminder_checkEmptyList() = runTest {
-        remindersListViewModel.loadReminders()
-        // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(scenario)
-        val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+    fun errorLoadingReminder_checkEmptyList() =
+        runTest {
+            remindersListViewModel.loadReminders()
+            // GIVEN - On the home screen
+            val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(scenario)
+            val navController = mock(NavController::class.java)
+            scenario.onFragment {
+                Navigation.setViewNavController(it.view!!, navController)
+            }
+            onView(withId(R.id.noDataTextView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            scenario.close()
         }
-        onView(withId(R.id.noDataTextView)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        scenario.close()
-    }
-
 }

@@ -40,6 +40,8 @@ googleServicesVersion = "4.5.0"
 truthVersion = "1.7.0"
 gradlePluginSecretVersion = '2.0.1'
 workVersion = "2.11.2"
+ktlintPlugin = "14.2.0"
+detektPlugin = "1.23.8"
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "androidXTestCoreVersion" }
@@ -98,6 +100,7 @@ truth = { module = "androidx.test.ext:truth", version.ref = "truthVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesVersion" }
 andoidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workVersion" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradleToolsVersion" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
@@ -107,5 +110,8 @@ safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "safeArg
 gradle-plugin-secret = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "gradlePluginSecretVersion" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintPlugin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detektPlugin" }
+
 
 

@@ -13,8 +13,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class AuthenticationViewModel(app: Application) : BaseViewModel(app) {
-
+class AuthenticationViewModel(
+    app: Application,
+) : BaseViewModel(app) {
     private var _completeLoginChannel = Channel<Boolean>(Channel.BUFFERED)
     val completeLoginChannel: Channel<Boolean>
         get() = _completeLoginChannel
@@ -33,12 +34,13 @@ class AuthenticationViewModel(app: Application) : BaseViewModel(app) {
                 Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
                 setLoginStatus(true, user.uid)
                 viewModelScope.launch {
-                    navigationCommand.send(NavigationCommand.To(
-                        AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
-                    ))
+                    navigationCommand.send(
+                        NavigationCommand.To(
+                            AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment(),
+                        ),
+                    )
                 }
             } ?: Timber.d("onSignInResult: User is null")
-
         } else {
             // Sign in failed.
             response?.error?.let { error ->
@@ -46,5 +48,4 @@ class AuthenticationViewModel(app: Application) : BaseViewModel(app) {
             }
         }
     }
-
 }

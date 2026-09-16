@@ -35,9 +35,11 @@ import java.util.UUID
 class DataBindingIdlingResource : IdlingResource {
     // list of registered callbacks
     private val idlingCallbacks = mutableListOf<IdlingResource.ResourceCallback>()
+
     // give it a unique id to workaround an espresso bug where you cannot register/unregister
     // an idling resource w/ the same name.
     private val id = UUID.randomUUID().toString()
+
     // holds whether isIdle is called and the result was false. We track this to avoid calling
     // onTransitionToIdle callbacks if Espresso never thought we were idle in the first place.
     private var wasNotIdle = false
@@ -73,16 +75,19 @@ class DataBindingIdlingResource : IdlingResource {
      * Find all binding classes in all currently available fragments.
      */
     private fun getBindings(): List<ViewDataBinding> {
-        val fragments = (activity as? FragmentActivity)
-            ?.supportFragmentManager
-            ?.fragments
+        val fragments =
+            (activity as? FragmentActivity)
+                ?.supportFragmentManager
+                ?.fragments
 
         val bindings =
             fragments?.mapNotNull {
                 it.view?.getBinding()
             } ?: emptyList()
-        val childrenBindings = fragments?.flatMap { it.childFragmentManager.fragments }
-            ?.mapNotNull { it.view?.getBinding() } ?: emptyList()
+        val childrenBindings =
+            fragments
+                ?.flatMap { it.childFragmentManager.fragments }
+                ?.mapNotNull { it.view?.getBinding() } ?: emptyList()
 
         return bindings + childrenBindings
     }
@@ -93,9 +98,7 @@ private fun View.getBinding(): ViewDataBinding? = DataBindingUtil.getBinding(thi
 /**
  * Sets the activity from an [ActivityScenario] to be used from [DataBindingIdlingResource].
  */
-fun DataBindingIdlingResource.monitorActivity(
-    activityScenario: ActivityScenario<out FragmentActivity>
-) {
+fun DataBindingIdlingResource.monitorActivity(activityScenario: ActivityScenario<out FragmentActivity>) {
     activityScenario.onActivity {
         this.activity = it
     }

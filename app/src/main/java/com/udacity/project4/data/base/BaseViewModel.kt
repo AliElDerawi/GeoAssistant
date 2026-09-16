@@ -11,7 +11,9 @@ import java.util.Locale
 /**
  * Base class for View Models to declare the common LiveData objects in one place
  */
-abstract class BaseViewModel(val app: Application) : AndroidViewModel(app) {
+abstract class BaseViewModel(
+    val app: Application,
+) : AndroidViewModel(app) {
     val navigationCommand: Channel<NavigationCommand> = Channel(Channel.BUFFERED)
     val showErrorMessage: Channel<String> = Channel(Channel.BUFFERED)
     val showSnackBar: Channel<String> = Channel(Channel.BUFFERED)
@@ -21,9 +23,7 @@ abstract class BaseViewModel(val app: Application) : AndroidViewModel(app) {
     val showLoading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showNoData: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-
     fun getLocalizedContext(): Context {
-
         val config = Configuration(app.resources.configuration)
         config.setLocale(Locale.ENGLISH)
         config.setLayoutDirection(Locale.ENGLISH)

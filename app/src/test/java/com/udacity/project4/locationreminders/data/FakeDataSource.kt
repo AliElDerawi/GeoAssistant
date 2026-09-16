@@ -7,11 +7,11 @@ import com.udacity.project4.data.dto.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-//Use FakeDataSource that acts as a test double to the LocalDataSource
-class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) :
-    ReminderDataSource {
-
-//    TODO - Completed: Create a fake data source to act as a double to the real data source
+// Use FakeDataSource that acts as a test double to the LocalDataSource
+class FakeDataSource(
+    var reminders: MutableList<ReminderDTO> = mutableListOf(),
+) : ReminderDataSource {
+    //    TODO - Completed: Create a fake data source to act as a double to the real data source
 
     private var shouldReturnError = false
 
@@ -46,9 +46,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         reminders.clear()
     }
 
-    override suspend fun getCurrentUserLocation(): Result<Location> {
-        return Result.Error(null)
-    }
+    override suspend fun getCurrentUserLocation(): Result<Location> = Result.Error(null)
 
     fun addReminders(vararg tasks: ReminderDTO) {
         for (task in tasks) {
@@ -56,5 +54,4 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         }
 //        runBlocking { getReminders() }
     }
-
 }

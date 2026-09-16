@@ -17,7 +17,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
  * Activity that displays the reminder details after the user clicks on the notification
  */
 class ReminderDescriptionFragment : BaseFragment() {
-
     override val mViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentReminderDescriptionBinding
     private lateinit var mActivity: FragmentActivity
@@ -30,20 +29,24 @@ class ReminderDescriptionFragment : BaseFragment() {
     }
 
     companion object {
-        const val EXTRA_ReminderDataItem = "reminderDataItem"
+        const val EXTRA_REMINDER_DATA_ITEM = "reminderDataItem"
         // Receive the reminder object after the user clicks on the notification
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // TODO - Completed: Add the implementation of the reminder details
-        mBinding = FragmentReminderDescriptionBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            reminderDataItem = arguments?.let {
-                ReminderDescriptionFragmentArgs.fromBundle(it).reminderDataItem
+        mBinding =
+            FragmentReminderDescriptionBinding.inflate(inflater, container, false).apply {
+                lifecycleOwner = viewLifecycleOwner
+                reminderDataItem =
+                    arguments?.let {
+                        ReminderDescriptionFragmentArgs.fromBundle(it).reminderDataItem
+                    }
             }
-        }
         mViewModel.apply {
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.text_geofence_detail))
@@ -52,8 +55,10 @@ class ReminderDescriptionFragment : BaseFragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
     }
-
 }

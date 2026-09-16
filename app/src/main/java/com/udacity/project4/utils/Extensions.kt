@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,9 +15,7 @@ import com.udacity.project4.utils.AppSharedMethods.isLogin
 /**
  * Extension function to setup the RecyclerView.
  */
-fun <T:Any> RecyclerView.setup(
-    adapter: BaseRecyclerViewAdapter<T>
-) {
+fun <T : Any> RecyclerView.setup(adapter: BaseRecyclerViewAdapter<T>) {
     this.apply {
         layoutManager = LinearLayoutManager(this.context)
         this.adapter = adapter
@@ -34,7 +31,7 @@ fun Activity.setTitle(title: String) {
 fun Activity.setDisplayHomeAsUpEnabled(bool: Boolean) {
     if (this is AppCompatActivity) {
         supportActionBar?.setDisplayHomeAsUpEnabled(
-            bool
+            bool,
         )
     }
 }
@@ -45,30 +42,35 @@ fun Activity.setDisplayHomeAsUpEnabled(bool: Boolean) {
 fun View.fadeIn() {
     this.visibility = View.VISIBLE
     this.alpha = 0f
-    this.animate().alpha(1f).setListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            this@fadeIn.alpha = 1f
-        }
-    })
+    this.animate().alpha(1f).setListener(
+        object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                this@fadeIn.alpha = 1f
+            }
+        },
+    )
 }
 
 /**
  * Animate changing the view visibility.
  */
 fun View.fadeOut() {
-    this.animate().alpha(0f).setListener(object : AnimatorListenerAdapter() {
-        override fun onAnimationEnd(animation: Animator) {
-            this@fadeOut.alpha = 1f
-            this@fadeOut.visibility = View.GONE
-        }
-    })
+    this.animate().alpha(0f).setListener(
+        object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                this@fadeOut.alpha = 1f
+                this@fadeOut.visibility = View.GONE
+            }
+        },
+    )
 }
 
-fun NavController.validateStartDestination(){
+fun NavController.validateStartDestination() {
     val startDestination =
         if (isLogin()) R.id.reminderListFragment else R.id.authenticationFragment
-    val navGraph = navInflater.inflate(R.navigation.main_navigation).apply {
-        setStartDestination(startDestination)
-    }
+    val navGraph =
+        navInflater.inflate(R.navigation.main_navigation).apply {
+            setStartDestination(startDestination)
+        }
     graph = navGraph
 }

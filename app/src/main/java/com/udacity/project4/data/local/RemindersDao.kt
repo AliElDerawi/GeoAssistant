@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface RemindersDao {
-
     /**
      * @return all reminders.
      */
@@ -24,7 +23,10 @@ interface RemindersDao {
      * @return the reminder object with the reminderId
      */
     @Query("SELECT * FROM reminders where entry_id = :reminderId and userId = :userId")
-    fun getReminderById(reminderId: String, userId: String): ReminderDTO?
+    fun getReminderById(
+        reminderId: String,
+        userId: String,
+    ): ReminderDTO?
 
     /**
      * Insert a reminder in the database. If the reminder already exists, replace it.

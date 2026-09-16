@@ -1,10 +1,11 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package com.udacity.project4.data.dto
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.UUID
 
 /**
  * Immutable model class for a Reminder. In order to compile with Room
@@ -25,5 +26,5 @@ data class ReminderDTO(
     @ColumnInfo(name = "latitude") var latitude: Double?,
     @ColumnInfo(name = "longitude") var longitude: Double?,
     @ColumnInfo(name = "userId") var userId: String = "",
-    @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString()
+    @PrimaryKey @ColumnInfo(name = "entry_id") val id: String = UUID.randomUUID().toString(),
 )

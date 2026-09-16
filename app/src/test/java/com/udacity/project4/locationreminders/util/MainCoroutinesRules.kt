@@ -13,9 +13,8 @@ import org.junit.runner.Description
 
 @ExperimentalCoroutinesApi
 class MainCoroutinesRules(
-    private val dispatcher: CoroutineDispatcher = UnconfinedTestDispatcher()
+    private val dispatcher: CoroutineDispatcher = UnconfinedTestDispatcher(),
 ) : TestWatcher() {
-
     private val testScope = TestScope(dispatcher)
 
     override fun starting(description: Description?) {
@@ -28,6 +27,5 @@ class MainCoroutinesRules(
         Dispatchers.resetMain()
     }
 
-    fun runBlockingTest(block: suspend TestScope.() -> Unit) =
-        testScope.runTest { block() }
+    fun runBlockingTest(block: suspend TestScope.() -> Unit) = testScope.runTest { block() }
 }

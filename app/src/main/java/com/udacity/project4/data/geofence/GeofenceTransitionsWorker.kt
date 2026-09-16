@@ -18,7 +18,6 @@ class GeofenceTransitionsWorker(
     context: Context,
     params: WorkerParameters,
 ) : CoroutineWorker(context, params) {
-
     private val remindersLocalRepository: ReminderDataSource by inject(ReminderDataSource::class.java)
 
     override suspend fun doWork(): Result {
@@ -57,14 +56,17 @@ class GeofenceTransitionsWorker(
             Timber.d("sendNotification:success")
             result.data.let { reminder ->
                 Timber.d("sendNotification:success:reminder: $reminder")
-                //send a notification to the user with the reminder details
+                // send a notification to the user with the reminder details
                 sendNotificationAboutEnteredGeofence(
-                    applicationContext, ReminderDataItem(
-                        reminder.title, reminder.description,
+                    applicationContext,
+                    ReminderDataItem(
+                        reminder.title,
+                        reminder.description,
                         reminder.location,
-                        reminder.latitude, reminder.longitude,
-                        reminder.id
-                    )
+                        reminder.latitude,
+                        reminder.longitude,
+                        reminder.id,
+                    ),
                 )
             }
         } else if (result is com.udacity.project4.data.dto.Result.Error) {

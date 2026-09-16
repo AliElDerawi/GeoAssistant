@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.utils.AppSharedMethods.showSnackBar
 import com.udacity.project4.utils.AppSharedMethods.showToast
-import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -22,7 +21,6 @@ import kotlinx.coroutines.launch
  * Base Fragment to observe on the common LiveData objects
  */
 abstract class BaseFragment : Fragment() {
-
     /**
      * Every fragment has to have an instance of a view model that extends from the BaseViewModel
      */
@@ -36,7 +34,10 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         initViewModelObservers()
     }
@@ -44,10 +45,7 @@ abstract class BaseFragment : Fragment() {
     private fun initViewModelObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 with(mViewModel) {
-
-
                     launch {
                         showErrorMessage.receiveAsFlow().collect { message ->
                             showToast(message, Toast.LENGTH_LONG)
@@ -82,11 +80,11 @@ abstract class BaseFragment : Fragment() {
                             when (command) {
                                 is NavigationCommand.To -> findNavController().navigate(command.directions)
                                 is NavigationCommand.Back -> findNavController().popBackStack()
-                                is NavigationCommand.BackTo -> findNavController().popBackStack(
-                                    command.destinationId,
-                                    false
-                                )
-
+                                is NavigationCommand.BackTo ->
+                                    findNavController().popBackStack(
+                                        command.destinationId,
+                                        false,
+                                    )
                             }
                         }
                     }

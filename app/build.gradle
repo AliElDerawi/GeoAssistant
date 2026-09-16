@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.gradle.plugin.secret)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -78,6 +80,16 @@ kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
     }
+}
+
+ktlint {
+    android.set(true)
+    outputToConsole.set(true)
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    autoCorrect = true
 }
 
 dependencies {

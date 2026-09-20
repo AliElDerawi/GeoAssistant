@@ -1,6 +1,5 @@
 package com.udacity.project4.data.base
 
-import android.R.id.message
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -47,44 +46,51 @@ abstract class BaseFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 with(mViewModel) {
                     launch {
-                        showErrorMessage.receiveAsFlow().collect { message ->
+                        showErrorMessageChannel.receiveAsFlow().collect { message ->
                             showToast(message, Toast.LENGTH_LONG)
                         }
                     }
 
                     launch {
-                        showToast.receiveAsFlow().collect { message ->
+                        showToastChannel.receiveAsFlow().collect { message ->
                             showToast(message, Toast.LENGTH_LONG)
                         }
                     }
 
                     launch {
-                        showToastInt.receiveAsFlow().collect { message ->
+                        showToastIntChannel.receiveAsFlow().collect { message ->
                             mActivity.showToast(message, Toast.LENGTH_LONG)
                         }
                     }
                     launch {
-                        showSnackBar.receiveAsFlow().collect { message ->
+                        showSnackBarChannel.receiveAsFlow().collect { message ->
                             mActivity.showSnackBar(message, Snackbar.LENGTH_LONG)
                         }
                     }
 
                     launch {
-                        showSnackBarInt.receiveAsFlow().collect { message ->
+                        showSnackBarIntChannel.receiveAsFlow().collect { message ->
                             mActivity.showSnackBar(message, Snackbar.LENGTH_LONG)
                         }
                     }
 
                     launch {
-                        navigationCommand.receiveAsFlow().collect { command ->
+                        navigationCommandChannel.receiveAsFlow().collect { command ->
                             when (command) {
-                                is NavigationCommand.To -> findNavController().navigate(command.directions)
-                                is NavigationCommand.Back -> findNavController().popBackStack()
-                                is NavigationCommand.BackTo ->
+                                is NavigationCommand.To -> {
+                                    findNavController().navigate(command.directions)
+                                }
+
+                                is NavigationCommand.Back -> {
+                                    findNavController().popBackStack()
+                                }
+
+                                is NavigationCommand.BackTo -> {
                                     findNavController().popBackStack(
                                         command.destinationId,
                                         false,
                                     )
+                                }
                             }
                         }
                     }

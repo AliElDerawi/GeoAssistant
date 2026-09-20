@@ -33,11 +33,11 @@ class RemindersListViewModel(
      * or show error if any
      */
     fun loadReminders() {
-        showLoading.value = true
+        _showLoadingStateFlow.value = true
         viewModelScope.launch {
             // interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
-            showLoading.value = false
+            _showLoadingStateFlow.value = false
             when (result) {
                 is Result.Success<*> -> {
                     result as Result.Success<Flow<List<ReminderDTO>>>
@@ -58,13 +58,14 @@ class RemindersListViewModel(
                     }
                 }
 
-                is Result.Error ->
+                is Result.Error -> {
                     viewModelScope.launch {
-                        showSnackBar.send(
+                        showSnackBarChannel.send(
                             result.message
                                 ?: getLocalizedContext().getString(R.string.msg_error_fetching_reminders),
                         )
                     }
+                }
             }
             // check if no data has to be shown
             invalidateShowNoData()
@@ -75,7 +76,7 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        showNoData.value = remindersListStateFlow.value.isEmpty()
+        _showNoDataStateFlow.value = remindersListStateFlow.value.isEmpty()
     }
 
     fun addReminderClick() {
@@ -84,7 +85,7 @@ class RemindersListViewModel(
 
     private fun navigateToAddReminderScreen() {
         viewModelScope.launch {
-            navigationCommand.send(
+            navigationCommandChannel.send(
                 NavigationCommand.To(
                     ReminderListFragmentDirections.toSaveReminder(),
                 ),
@@ -94,7 +95,7 @@ class RemindersListViewModel(
 
     fun navigateToReminderDescription(reminderDataItem: ReminderDataItem) {
         viewModelScope.launch {
-            navigationCommand.send(
+            navigationCommandChannel.send(
                 NavigationCommand.To(
                     ReminderListFragmentDirections.actionReminderListFragmentToReminderDescriptionFragment(
                         reminderDataItem,
@@ -106,7 +107,7 @@ class RemindersListViewModel(
 
     fun navigateToLoginScreen() {
         viewModelScope.launch {
-            navigationCommand.send(
+            navigationCommandChannel.send(
                 NavigationCommand.To(
                     ReminderListFragmentDirections.actionReminderListFragmentToAuthenticationFragment(),
                 ),

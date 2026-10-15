@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
 import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
 import kotlinx.coroutines.channels.Channel
@@ -41,6 +42,7 @@ import kotlinx.coroutines.channels.Channel
 class SaveReminderViewModel(
     private val mApp: Application,
     private val mRemindersLocalRepository: ReminderDataSource,
+    private val mUserDataSource: UserDataSource,
     private val mGeofencingClient: GeofencingClient
 ) : BaseViewModel(mApp) {
 
@@ -331,7 +333,7 @@ class SaveReminderViewModel(
         if (lastUserLocationStateFlow.value != null) return
         if (isForegroundPermissionGranted(mApp)) {
             viewModelScope.launch(Dispatchers.IO) {
-                mRemindersLocalRepository.getCurrentUserLocation().let {
+                mUserDataSource.getCurrentUserLocation().let {
                     if (it is Result.Success) {
                         _lastUserLocationStateFlow.value = it.data
                     } else {

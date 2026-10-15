@@ -29,8 +29,7 @@ import timber.log.Timber
  */
 class RemindersRepository(
     private val remindersDao: RemindersDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val fusedLocationProviderClient: FusedLocationProviderClient
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ReminderDataSource {
 
     /**
@@ -89,33 +88,6 @@ class RemindersRepository(
         wrapEspressoIdlingResource {
             withContext(ioDispatcher) {
                 remindersDao.deleteAllReminders()
-            }
-        }
-    }
-
-    override suspend fun getCurrentUserLocation(): Result<Location> {
-        return wrapEspressoIdlingResource {
-            withContext(ioDispatcher) {
-                try {
-                    val cancellationTokenSource = CancellationTokenSource()
-
-                    val location = fusedLocationProviderClient.getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
-                        cancellationTokenSource.token
-                    ).await()
-
-                    location?.let {
-                        Result.Success(it)
-                    } ?: Result.Error("No Location detected")
-
-                } catch (e: SecurityException) {
-                    ensureActive()
-                    Timber.e(e)
-                    Result.Error(e.localizedMessage)
-                } catch (e: Exception) {
-                    ensureActive()
-                    Result.Error(e.localizedMessage)
-                }
             }
         }
     }

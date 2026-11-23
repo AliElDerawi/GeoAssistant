@@ -10,10 +10,9 @@ import java.util.concurrent.TimeUnit
 suspend fun <T> Flow<T>.getOrAwaitValue(
     time: Long = 2,
     timeUnit: TimeUnit = TimeUnit.SECONDS,
-    afterCollect: () -> Unit = {}
-): T {
-    return withTimeout(timeUnit.toMillis(time)) {
-        afterCollect()  // Perform any action before collecting the first value
-        this@getOrAwaitValue.first()  // Collect the first value from the Flow
+    afterCollect: () -> Unit = {},
+): T =
+    withTimeout(timeUnit.toMillis(time)) {
+        afterCollect() // Perform any action before collecting the first value
+        this@getOrAwaitValue.first() // Collect the first value from the Flow
     }
-}

@@ -9,7 +9,9 @@ sealed class NavigationCommand {
     /**
      * navigate to a direction
      */
-    data class To(val directions: NavDirections) : NavigationCommand()
+    data class To(
+        val directions: NavDirections,
+    ) : NavigationCommand()
 
     /**
      * navigate back to the previous fragment
@@ -19,5 +21,7 @@ sealed class NavigationCommand {
     /**
      * navigate back to a destination in the back stack
      */
-    data class BackTo(val destinationId: Int) : NavigationCommand()
+    data class BackTo(
+        val destinationId: Int,
+    ) : NavigationCommand()
 }

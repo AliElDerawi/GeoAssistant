@@ -27,8 +27,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class SaveReminderViewModelTest : AutoCloseKoinTest() {
-
-    //TODO  - Completed: provide testing to the SaveReminderView and its live data objects
+    // TODO  - Completed: provide testing to the SaveReminderView and its live data objects
     private lateinit var saveReminderViewModel: SaveReminderViewModel
     private lateinit var reminderLocalRepository: FakeDataSource
     private lateinit var appContext: Application
@@ -43,38 +42,39 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
     @Before
     fun setupViewModel() {
-        //Get our real repository
+        // Get our real repository
         appContext = ApplicationProvider.getApplicationContext()
         AppSharedMethods.setLoginStatus(true, testUserID, null)
         reminderLocalRepository = FakeDataSource()
-        //clear the data to start fresh
+        // clear the data to start fresh
         saveReminderViewModel =
             SaveReminderViewModel(
-                ApplicationProvider.getApplicationContext(), reminderLocalRepository,
-                LocationServices.getGeofencingClient(appContext)
+                ApplicationProvider.getApplicationContext(),
+                reminderLocalRepository,
+                LocationServices.getGeofencingClient(appContext),
             )
     }
 
     @Test
-    fun saveNewReminder_checkReminderValue() = runTest {
-
-        val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0, testUserID)
-        saveReminderViewModel.saveReminder(
-            ReminderDataItem(
-                reminder.title,
-                reminder.description,
-                reminder.location,
-                reminder.latitude,
-                reminder.longitude,
-                reminder.id,
-            ),testUserID
-        )
+    fun saveNewReminder_checkReminderValue() =
+        runTest {
+            val reminder = ReminderDTO("title10", "description10", "location10", 0.0, 0.0, testUserID)
+            saveReminderViewModel.saveReminder(
+                ReminderDataItem(
+                    reminder.title,
+                    reminder.description,
+                    reminder.location,
+                    reminder.latitude,
+                    reminder.longitude,
+                    reminder.id,
+                ),
+                testUserID,
+            )
 
 //        advanceUntilIdle()
 
-        val value = saveReminderViewModel.createGeofenceStateFlow.value
-        assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
-        assertThat(value!!.title, `is`(reminder.title))
-    }
-
+            val value = saveReminderViewModel.createGeofenceStateFlow.value
+            assertThat(value, CoreMatchers.not(CoreMatchers.nullValue()))
+            assertThat(value!!.title, `is`(reminder.title))
+        }
 }

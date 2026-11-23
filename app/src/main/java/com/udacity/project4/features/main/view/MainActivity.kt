@@ -27,7 +27,6 @@ import timber.log.Timber
  * signed in users to the RemindersActivity.
  */
 class MainActivity : AppCompatActivity() {
-
     private val mMainViewModel: MainViewModel by viewModel()
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mNavController: NavController
@@ -35,22 +34,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)) {
-            val reminderDataItem = if (AppSharedMethods.isSupportsAndroid33()) {
-                intent.getParcelableExtra(
-                    ReminderDescriptionFragment.EXTRA_ReminderDataItem,
-                    ReminderDataItem::class.java
-                )
-            } else {
-                @Suppress("DEPRECATION")
-                intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_ReminderDataItem)
-            }
-            val bundle = Bundle().apply {
-                putParcelable(ReminderDescriptionFragment.EXTRA_ReminderDataItem, reminderDataItem)
-            }
+        if (intent.hasExtra(ReminderDescriptionFragment.EXTRA_REMINDER_DATA_ITEM)) {
+            val reminderDataItem =
+                if (AppSharedMethods.isSupportsAndroid33()) {
+                    intent.getParcelableExtra(
+                        ReminderDescriptionFragment.EXTRA_REMINDER_DATA_ITEM,
+                        ReminderDataItem::class.java,
+                    )
+                } else {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableExtra(ReminderDescriptionFragment.EXTRA_REMINDER_DATA_ITEM)
+                }
+            val bundle =
+                Bundle().apply {
+                    putParcelable(ReminderDescriptionFragment.EXTRA_REMINDER_DATA_ITEM, reminderDataItem)
+                }
             mNavController.navigate(R.id.reminderDescriptionFragment, bundle)
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +59,11 @@ class MainActivity : AppCompatActivity() {
         //  use sign in using email and sign in using Google
         // TODO - Completed: If the user was authenticated, send him to RemindersActivity
         // TODO - Completed: a bonus is to customize the sign in flow to look nice using :
-        //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
+        // https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
         enableEdgeToEdge()
         mBinding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+            DataBindingUtil
+                .setContentView<ActivityMainBinding>(this, R.layout.activity_main)
                 .apply {
                     viewModel = mMainViewModel
                     lifecycleOwner = this@MainActivity
@@ -86,11 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViewModelObservers() {
-
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(mNavController, mAppBarConfiguration)
-    }
-
+    override fun onSupportNavigateUp(): Boolean = NavigationUI.navigateUp(mNavController, mAppBarConfiguration)
 }

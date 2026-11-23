@@ -25,7 +25,10 @@ import timber.log.Timber
  */
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     //        // TODO - Completed: implement the onReceive method to receive the geofencing events at the background
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         // TODO: Step 11 - Completed implement the onReceive method
         Timber.d("onReceive: called")
         // Get GeofencingEvent from the Intent
@@ -38,22 +41,25 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
             val geofenceTransition = geofencingEvent.geofenceTransition
             geofencingEvent.triggeringGeofences?.firstOrNull()?.requestId?.let { fenceId ->
                 Timber.d("onReceive:Geofence Triggered: $fenceId")
-                val data = workDataOf(
-                    EXTRA_FENCE_ID to fenceId,
-                    EXTRA_ACTION_GEOFENCE_EVENT to geofenceTransition
-                )
-                val geofenceWorkRequest = OneTimeWorkRequestBuilder<GeofenceTransitionsWorker>()
-                    .setInputData(data)
-                    .build()
-                WorkManager.getInstance(context).beginUniqueWork(
-                    FetchAddressWorker::class.java.simpleName,
-                    ExistingWorkPolicy.REPLACE,
-                    geofenceWorkRequest
-                ).enqueue()
+                val data =
+                    workDataOf(
+                        EXTRA_FENCE_ID to fenceId,
+                        EXTRA_ACTION_GEOFENCE_EVENT to geofenceTransition,
+                    )
+                val geofenceWorkRequest =
+                    OneTimeWorkRequestBuilder<GeofenceTransitionsWorker>()
+                        .setInputData(data)
+                        .build()
+                WorkManager
+                    .getInstance(context)
+                    .beginUniqueWork(
+                        FetchAddressWorker::class.java.simpleName,
+                        ExistingWorkPolicy.REPLACE,
+                        geofenceWorkRequest,
+                    ).enqueue()
             } ?: run {
                 Timber.e("onReceive:No Geofence Trigger Found! Abort mission!")
             }
         }
     }
-
 }

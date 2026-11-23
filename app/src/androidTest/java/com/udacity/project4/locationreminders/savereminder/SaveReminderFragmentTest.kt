@@ -60,11 +60,10 @@ import org.robolectric.annotation.Config
 @TargetApi(29)
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-//UI Testing
+// UI Testing
 @LargeTest
 class SaveReminderFragmentTest : AutoCloseKoinTest() {
-
-//    TODO - Completed: test the navigation of the fragments.
+    //    TODO - Completed: test the navigation of the fragments.
 //    TODO - Completed: test the displayed data on the UI.
 //    TODO - Completed: add testing for the error messages.
 
@@ -75,7 +74,6 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-
 
     @Before
     fun registerIdlingResource() {
@@ -94,61 +92,64 @@ class SaveReminderFragmentTest : AutoCloseKoinTest() {
 
     @Before
     fun setupViewModel() {
-        //Get our real repository
+        // Get our real repository
     }
 
     @Before
     fun init() {
-        stopKoin()//stop the original app koin
+        stopKoin() // stop the original app koin
         appContext = ApplicationProvider.getApplicationContext()
-        val myModule = module {
-            viewModelOf(::RemindersListViewModel)
-            viewModelOf(::AuthenticationViewModel)
-            workerOf(::GeofenceTransitionsWorker)
-            workerOf(::FetchAddressWorker)
-            single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
-            viewModelOf( ::MainViewModel )
-            single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
-            single { LocalDB.createRemindersDao(appContext) }
-            single { FakeTestRepository() }
-            single<ReminderDataSource> { get<FakeTestRepository>() }
-            single { LocationServices.getFusedLocationProviderClient(appContext) }
-            single { LocationServices.getGeofencingClient(appContext) }
-            single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
-        }
-        //declare a new koin module
+        val myModule =
+            module {
+                viewModelOf(::RemindersListViewModel)
+                viewModelOf(::AuthenticationViewModel)
+                workerOf(::GeofenceTransitionsWorker)
+                workerOf(::FetchAddressWorker)
+                single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
+                viewModelOf(::MainViewModel)
+                single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
+                single { LocalDB.createRemindersDao(appContext) }
+                single { FakeTestRepository() }
+                single<ReminderDataSource> { get<FakeTestRepository>() }
+                single { LocationServices.getFusedLocationProviderClient(appContext) }
+                single { LocationServices.getGeofencingClient(appContext) }
+                single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
+            }
+        // declare a new koin module
         startKoin {
             modules(listOf(myModule))
             androidContext(appContext)
         }
-        //Get our real repository
+        // Get our real repository
         reminderFakeRepository = get()
-        //clear the data to start fresh
+        // clear the data to start fresh
         saveReminderViewModel = get()
     }
 
     @Test
-    fun saveReminder_checkAddLocationValidationToast() = runTest {
-        // GIVEN - On the home screen
-        val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
-        dataBindingIdlingResource.monitorFragment(scenario)
-        val navController = mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+    fun saveReminder_checkAddLocationValidationToast() =
+        runTest {
+            // GIVEN - On the home screen
+            val scenario = launchFragmentInContainer<SaveReminderFragment>(Bundle(), R.style.AppTheme)
+            dataBindingIdlingResource.monitorFragment(scenario)
+            val navController = mock(NavController::class.java)
+            scenario.onFragment {
+                Navigation.setViewNavController(it.view!!, navController)
+            }
+            saveReminderViewModel.onSaveReminderClick()
+            var activity: Activity? = null
+            activityRule.scenario.onActivity { it ->
+                activity = it
+                // Perform actions on the activity instance here
+            }
+            onView(withText(R.string.msg_enter_title))
+                .inRoot(
+                    withDecorView(
+                        not(
+                            activity?.window?.decorView,
+                        ),
+                    ),
+                ).check(ViewAssertions.matches(isDisplayed()))
+            scenario.close()
         }
-        saveReminderViewModel.onSaveReminderClick()
-        var activity : Activity? = null
-        activityRule.scenario.onActivity { it ->
-            activity = it
-            // Perform actions on the activity instance here
-        }
-        onView(withText(R.string.msg_enter_title)).inRoot(
-            withDecorView(
-                not(
-                    activity?.window?.decorView
-                )
-            )
-        ).check(ViewAssertions.matches(isDisplayed()))
-        scenario.close()
-    }
 }

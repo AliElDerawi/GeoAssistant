@@ -23,7 +23,6 @@ abstract class BaseViewModel(val app: Application) : AndroidViewModel(app) {
 
 
     fun getLocalizedContext(): Context {
-
         val config = Configuration(app.resources.configuration)
         config.setLocale(Locale.ENGLISH)
         config.setLayoutDirection(Locale.ENGLISH)

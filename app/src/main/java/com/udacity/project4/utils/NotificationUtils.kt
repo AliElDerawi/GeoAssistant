@@ -13,30 +13,29 @@ import com.google.android.gms.location.GeofenceStatusCodes
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.data.model.ReminderDataItem
-import com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.features.main.view.MainActivity
+import com.udacity.project4.features.reminderDescription.ReminderDescriptionFragment
 import com.udacity.project4.utils.AppSharedMethods.createIntent
 import com.udacity.project4.utils.AppSharedMethods.notificationManager
 
-
 object NotificationUtils {
-
     private const val NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID + ".channel"
 
     fun createChannel(context: Context) {
         AppSharedMethods.isSupportsOreo {
-            val notificationChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID,
-                context.getString(R.string.channel_name),
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setShowBadge(false)
-                enableLights(true)
-                lightColor = Color.RED
-                enableVibration(true)
-                description =
-                    context.getString(R.string.text_notification_channel_description)
-            }
+            val notificationChannel =
+                NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    context.getString(R.string.channel_name),
+                    NotificationManager.IMPORTANCE_HIGH,
+                ).apply {
+                    setShowBadge(false)
+                    enableLights(true)
+                    lightColor = Color.RED
+                    enableVibration(true)
+                    description =
+                        context.getString(R.string.text_notification_channel_description)
+                }
             context.getSystemService<NotificationManager>()?.apply {
                 createNotificationChannel(notificationChannel)
             }
@@ -45,56 +44,70 @@ object NotificationUtils {
 
     fun getUniqueId() = ((System.currentTimeMillis() % 10000).toInt())
 
-    fun errorMessage(context: Context, errorCode: Int): String {
+    fun errorMessage(
+        context: Context,
+        errorCode: Int,
+    ): String {
         val resources = context.resources
         return when (errorCode) {
-            GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> resources.getString(
-                R.string.msg_geofence_not_available
-            )
+            GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> {
+                resources.getString(
+                    R.string.msg_geofence_not_available,
+                )
+            }
 
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> resources.getString(
-                R.string.msg_geofence_too_many_geofences
-            )
+            GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> {
+                resources.getString(
+                    R.string.msg_geofence_too_many_geofences,
+                )
+            }
 
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> resources.getString(
-                R.string.msg_geofence_too_many_pending_intents
-            )
+            GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> {
+                resources.getString(
+                    R.string.msg_geofence_too_many_pending_intents,
+                )
+            }
 
-            else -> resources.getString(R.string.msg_unknown_geofence_error)
+            else -> {
+                resources.getString(R.string.msg_unknown_geofence_error)
+            }
         }
     }
 
-
     fun sendNotificationAboutEnteredGeofence(
         context: Context,
-        reminderDataItem: ReminderDataItem
+        reminderDataItem: ReminderDataItem,
     ) {
         val notificationManager = context.notificationManager
         val intent =
-            context.createIntent<MainActivity>(ReminderDescriptionFragment.EXTRA_ReminderDataItem to reminderDataItem)
+            context
+                .createIntent<MainActivity>(ReminderDescriptionFragment.EXTRA_REMINDER_DATA_ITEM to reminderDataItem)
                 .apply {
                     action = "actionstring" + System.currentTimeMillis()
                     addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 }
-        val notificationPendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_MUTABLE
-        )
-        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(
-                TextUtils.concat(
-                    context.getString(R.string.msg_entered_geofence),
-                    " ",
-                    reminderDataItem.title
-                )
+        val notificationPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_MUTABLE,
             )
-            .setContentText(reminderDataItem.location)
-            .setContentIntent(notificationPendingIntent)
-            .setAutoCancel(true)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(context, NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(
+                    TextUtils.concat(
+                        context.getString(R.string.msg_entered_geofence),
+                        " ",
+                        reminderDataItem.title,
+                    ),
+                ).setContentText(reminderDataItem.location)
+                .setContentIntent(notificationPendingIntent)
+                .setAutoCancel(true)
+                .build()
 
         notificationManager?.notify(getUniqueId(), notification)
     }
 }
-
-

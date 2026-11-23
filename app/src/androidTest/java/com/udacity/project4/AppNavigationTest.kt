@@ -74,46 +74,48 @@ import org.robolectric.annotation.Config
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class AppNavigationTest : AutoCloseKoinTest() {
-
     private lateinit var tasksRepository: RemindersRepository
+
     // An Idling Resource that waits for Data Binding to have no pending bindings
     private val dataBindingIdlingResource = DataBindingIdlingResource()
     private lateinit var appContext: Application
 
     @Before
     fun init() {
-        stopKoin()//stop the original app koin
+        stopKoin() // stop the original app koin
         appContext = getApplicationContext()
-        val myModule = module {
-            //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
-            viewModelOf(::RemindersListViewModel)
+        val myModule =
+            module {
+                // Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
+                viewModelOf(::RemindersListViewModel)
 
-            viewModelOf(::AuthenticationViewModel)
-            workerOf(::GeofenceTransitionsWorker)
-            workerOf(::FetchAddressWorker)
-            //Declare singleton definitions to be later injected using by inject()
-            single { SaveReminderViewModel(get(), get(),get()) }
-            single { RemindersRepository(get(),Dispatchers.Unconfined,get()) }
-            single { LocalDB.createRemindersDao(appContext) }
-            viewModelOf( ::MainViewModel )
-            single<ReminderDataSource> { get<RemindersRepository>() }
-            single { LocationServices.getFusedLocationProviderClient(appContext) }
-            single { LocationServices.getGeofencingClient(appContext) }
-            single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
-        }
-        //declare a new koin module
+                viewModelOf(::AuthenticationViewModel)
+                workerOf(::GeofenceTransitionsWorker)
+                workerOf(::FetchAddressWorker)
+                // Declare singleton definitions to be later injected using by inject()
+                single { SaveReminderViewModel(get(), get(), get()) }
+                single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
+                single { LocalDB.createRemindersDao(appContext) }
+                viewModelOf(::MainViewModel)
+                single<ReminderDataSource> { get<RemindersRepository>() }
+                single { LocationServices.getFusedLocationProviderClient(appContext) }
+                single { LocationServices.getGeofencingClient(appContext) }
+                single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
+            }
+        // declare a new koin module
         startKoin {
             androidContext(appContext)
             modules(listOf(myModule))
         }
-        //Get our real repository
+        // Get our real repository
         tasksRepository = get()
     }
 
     @After
-    fun reset() = runBlocking {
-        tasksRepository.deleteAllReminders()
-    }
+    fun reset() =
+        runBlocking {
+            tasksRepository.deleteAllReminders()
+        }
 
     /**
      * Idling resources tell Espresso that the app is idle or busy. This is needed when operations
@@ -134,8 +136,7 @@ class AppNavigationTest : AutoCloseKoinTest() {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    fun <T : Activity> ActivityScenario<T>.getToolbarNavigationContentDescription()
-            : String {
+    fun <T : Activity> ActivityScenario<T>.getToolbarNavigationContentDescription(): String {
         var description = ""
         onActivity {
             description =

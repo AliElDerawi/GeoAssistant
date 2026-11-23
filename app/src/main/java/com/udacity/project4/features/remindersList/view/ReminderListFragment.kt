@@ -20,7 +20,6 @@ import com.udacity.project4.databinding.FragmentRemindersBinding
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.features.remindersList.adapter.RemindersListAdapter
 import com.udacity.project4.features.remindersList.viewModel.RemindersListViewModel
-import com.udacity.project4.features.saveReminder.viewModel.SaveReminderViewModel
 import com.udacity.project4.utils.AppSharedMethods.setLoginStatus
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setup
@@ -28,7 +27,6 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
-
     override val mViewModel: RemindersListViewModel by viewModel()
     private val mSharedViewModel: MainViewModel by activityViewModel()
     private lateinit var mBinding: FragmentRemindersBinding
@@ -42,13 +40,15 @@ class ReminderListFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        mBinding = FragmentRemindersBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = mViewModel
-        }
+        mBinding =
+            FragmentRemindersBinding.inflate(inflater, container, false).apply {
+                lifecycleOwner = viewLifecycleOwner
+                viewModel = mViewModel
+            }
         mSharedViewModel.apply {
             setHideToolbar(false)
             setToolbarTitle(mActivity.getString(R.string.app_name))
@@ -58,7 +58,10 @@ class ReminderListFragment : BaseFragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         initMenu()
         setupRecyclerView()
@@ -74,13 +77,13 @@ class ReminderListFragment : BaseFragment() {
     }
 
     private fun initViewModelObservers() {
-
     }
 
     private fun setupRecyclerView() {
-        val adapter = RemindersListAdapter(ReminderDataItem.getReminderDataDiffCallback()) {
-            mViewModel.navigateToReminderDescription(it)
-        }
+        val adapter =
+            RemindersListAdapter(ReminderDataItem.getReminderDataDiffCallback()) {
+                mViewModel.navigateToReminderDescription(it)
+            }
         // Setup the recycler view using the extension function
         mBinding.remindersRecyclerView.setup(adapter)
     }
@@ -91,23 +94,31 @@ class ReminderListFragment : BaseFragment() {
         // Note how we can tie the MenuProvider to the viewLifecycleOwner
         // and an optional Lifecycle.State (here, RESUMED) to indicate when
         // the menu should be visible
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.main_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // TODO Comment : We can use NavigationUI.onNavDestinationSelected() to handle the navigation
-                if (menuItem.itemId == R.id.logout) {
-                    AuthUI.getInstance()
-                        .signOut(mActivity)
-                        .addOnCompleteListener {
-                            setLoginStatus(false)
-                            mViewModel.navigateToLoginScreen()
-                        }
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.main_menu, menu)
                 }
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    // TODO Comment : We can use NavigationUI.onNavDestinationSelected() to handle the navigation
+                    if (menuItem.itemId == R.id.logout) {
+                        AuthUI
+                            .getInstance()
+                            .signOut(mActivity)
+                            .addOnCompleteListener {
+                                setLoginStatus(false)
+                                mViewModel.navigateToLoginScreen()
+                            }
+                    }
+                    return true
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
     }
 }

@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
  * Base Fragment to observe on the common LiveData objects
  */
 abstract class BaseFragment : Fragment() {
-
     /**
      * Every fragment has to have an instance of a view model that extends from the BaseViewModel
      */
@@ -34,7 +33,10 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         initViewModelObservers()
     }
@@ -42,10 +44,7 @@ abstract class BaseFragment : Fragment() {
     private fun initViewModelObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
                 with(mViewModel) {
-
-
                     launch {
                         showErrorMessageChannel.receiveAsFlow().collect { message ->
                             showToast(message, Toast.LENGTH_LONG)
@@ -78,13 +77,20 @@ abstract class BaseFragment : Fragment() {
                     launch {
                         navigationCommandChannel.receiveAsFlow().collect { command ->
                             when (command) {
-                                is NavigationCommand.To -> findNavController().navigate(command.directions)
-                                is NavigationCommand.Back -> findNavController().popBackStack()
-                                is NavigationCommand.BackTo -> findNavController().popBackStack(
-                                    command.destinationId,
-                                    false
-                                )
+                                is NavigationCommand.To -> {
+                                    findNavController().navigate(command.directions)
+                                }
 
+                                is NavigationCommand.Back -> {
+                                    findNavController().popBackStack()
+                                }
+
+                                is NavigationCommand.BackTo -> {
+                                    findNavController().popBackStack(
+                                        command.destinationId,
+                                        false,
+                                    )
+                                }
                             }
                         }
                     }

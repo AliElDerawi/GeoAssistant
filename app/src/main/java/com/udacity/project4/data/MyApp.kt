@@ -23,19 +23,15 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-
 class MyApp : Application() {
-
     companion object {
         @Volatile
         private var mAppInstance: MyApp? = null
 
-        fun getInstance(): MyApp {
-            return mAppInstance ?: synchronized(this) {
+        fun getInstance(): MyApp =
+            mAppInstance ?: synchronized(this) {
                 mAppInstance ?: MyApp().also { mAppInstance = it }
             }
-        }
-
     }
 
     override fun onCreate() {
@@ -69,6 +65,5 @@ class MyApp : Application() {
             androidContext(this@MyApp)
             modules(listOf(myModule))
         }
-
     }
 }

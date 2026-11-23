@@ -3,17 +3,11 @@ package com.udacity.project4.utils
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.udacity.project4.data.base.BaseRecyclerViewAdapter
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.w3c.dom.Text
-import timber.log.Timber.Forest.tag
 
 object BindingAdapters {
-
     /**
      * Use binding adapter to set the recycler view data using livedata object
      */
@@ -91,5 +85,4 @@ object BindingAdapters {
     fun View.setHide(isHidden: Boolean) {
         visibility = if (isHidden) View.GONE else View.VISIBLE
     }
-
 }

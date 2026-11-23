@@ -20,6 +20,7 @@ import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.data.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
@@ -37,11 +38,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import com.udacity.project4.data.dto.Result
-import com.udacity.project4.data.dto.UserDataSource
-import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
-import com.udacity.project4.utils.AppSharedMethods.startFetchAddressWorker
-import kotlinx.coroutines.channels.Channel
 
 class SaveReminderViewModel(
     private val mApp: Application,

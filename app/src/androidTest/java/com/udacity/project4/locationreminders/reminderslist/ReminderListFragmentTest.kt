@@ -19,9 +19,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
-import com.udacity.project4.FakeTestRepository
+import com.udacity.project4.FakeReminderRepository
+import com.udacity.project4.FakeUserRepository
 import com.udacity.project4.R
 import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.repository.RemindersRepository
@@ -67,7 +69,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 //    TODO - Completed: add testing for the error messages.
 
     private lateinit var remindersListViewModel: RemindersListViewModel
-    private lateinit var reminderFakeRepository: FakeTestRepository
+    private lateinit var reminderFakeRepository: FakeReminderRepository
     private lateinit var appContext: Application
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
@@ -96,12 +98,21 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
                 viewModelOf(::AuthenticationViewModel)
                 workerOf(::GeofenceTransitionsWorker)
                 workerOf(::FetchAddressWorker)
-                single { SaveReminderViewModel(appContext, get() as FakeTestRepository, get()) }
+                single {
+                    SaveReminderViewModel(
+                        appContext,
+                        get() as FakeReminderRepository,
+                        get(),
+                        get()
+                    )
+                }
                 viewModelOf(::MainViewModel)
-                single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
+                single { RemindersRepository(get(), Dispatchers.Unconfined) }
                 single { LocalDB.createRemindersDao(appContext) }
-                single { FakeTestRepository() }
-                single<ReminderDataSource> { get<FakeTestRepository>() }
+                single { FakeReminderRepository() }
+                single<ReminderDataSource> { get<FakeReminderRepository>() }
+                single { FakeUserRepository() }
+                single<UserDataSource> { get<FakeUserRepository>() }
                 single { LocationServices.getFusedLocationProviderClient(appContext) }
                 single { LocationServices.getGeofencingClient(appContext) }
                 single { MyResultIntentReceiver(Handler(appContext.mainLooper)) }
@@ -146,7 +157,8 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
             reminderFakeRepository.setReturnError(true)
             remindersListViewModel.loadReminders()
             // GIVEN - On the home screen
-            val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+            val scenario =
+                launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(scenario)
             val navController = mock(NavController::class.java)
             scenario.onFragment {
@@ -162,7 +174,8 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         runTest {
             remindersListViewModel.loadReminders()
             // GIVEN - On the home screen
-            val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+            val scenario =
+                launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
             dataBindingIdlingResource.monitorFragment(scenario)
             val navController = mock(NavController::class.java)
             scenario.onFragment {

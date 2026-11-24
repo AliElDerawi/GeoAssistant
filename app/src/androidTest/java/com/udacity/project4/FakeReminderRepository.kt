@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
-class FakeTestRepository : ReminderDataSource {
+class FakeReminderRepository : ReminderDataSource {
     var reminders: LinkedHashMap<String, ReminderDTO> = LinkedHashMap()
     private var shouldReturnError = false
     private val observableTasks = MutableStateFlow<Result<Flow<List<ReminderDTO>>>>(Result.Success(flowOf(reminders.values.toList())))
@@ -47,8 +47,6 @@ class FakeTestRepository : ReminderDataSource {
     override suspend fun deleteAllReminders() {
         reminders.clear()
     }
-
-    override suspend fun getCurrentUserLocation(): Result<Location> = Result.Error(null)
 
     fun addReminders(vararg tasks: ReminderDTO) {
         for (task in tasks) {

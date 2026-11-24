@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Ignore missing classes from Java compiler API and ErrorProne annotations
+-dontwarn javax.lang.model.**
+-dontwarn com.google.errorprone.annotations.**
+-dontwarn javax.lang.model.element.Modifier
+
+-dontwarn javax.annotation.**

@@ -46,12 +46,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import timber.log.Timber
+import java.io.IOException
+import java.security.GeneralSecurityException
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Locale
 
 object AppSharedMethods {
     private var mToast: Toast? = null
+
+    private val PLAIN_PREF_NAME = "${AppSharedData.MY_ENCRYPTED_PREF}_plain"
 
     fun showToast(
         message: String,
@@ -90,18 +94,40 @@ object AppSharedMethods {
         Snackbar.make(findViewById(android.R.id.content), getString(message), duration).show()
     }
 
-    fun getSharedPreference(productionEnvironment: Boolean? = true): SharedPreferences {
-        return productionEnvironment?.let {
-            return getEncryptedSharedPrefs(MyApp.getInstance())
-        } ?: MyApp.getInstance().getSharedPreferences(
-            AppSharedData.MY_ENCRYPTED_PREF,
-            Context.MODE_PRIVATE,
-        )
+    private val plainPrefs: SharedPreferences
+        get() = MyApp.getInstance().getSharedPreferences(PLAIN_PREF_NAME, Context.MODE_PRIVATE)
+
+    private val encryptedPrefs: SharedPreferences by lazy {
+        createEncryptedPrefsSafely(MyApp.getInstance())
     }
 
-    private fun getEncryptedSharedPrefs(context: Context): SharedPreferences {
-        val masterKey =
-            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
+    fun getSharedPreference(productionEnvironment: Boolean? = true): SharedPreferences {
+        return productionEnvironment?.let {
+            return encryptedPrefs
+        } ?: plainPrefs
+    }
+
+
+    private fun createEncryptedPrefsSafely(context: Context): SharedPreferences =
+        try {
+            createEncryptedPrefs(context)
+        } catch (e: GeneralSecurityException) {
+            resetAndRecreate(context, e)
+        } catch (e: IOException) {
+            resetAndRecreate(context, e)
+            
+        }
+
+    private fun resetAndRecreate(context: Context, cause: Exception): SharedPreferences {
+        Timber.w(cause, "Encrypted prefs unreadable, resetting")
+        context.deleteSharedPreferences(AppSharedData.MY_ENCRYPTED_PREF)
+        return createEncryptedPrefs(context)
+    }
+
+    private fun createEncryptedPrefs(context: Context): SharedPreferences {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
 
         return EncryptedSharedPreferences.create(
             context,
@@ -112,7 +138,8 @@ object AppSharedMethods {
         )
     }
 
-    fun getCurrentUserId(): String = getSharedPreference().getString(AppSharedData.PREF_USER_ID, "")!!
+    fun getCurrentUserId(): String =
+        getSharedPreference().getString(AppSharedData.PREF_USER_ID, "")!!
 
     fun setLoginStatus(
         isLogin: Boolean,
@@ -147,26 +174,26 @@ object AppSharedMethods {
     @TargetApi(Build.VERSION_CODES.Q)
     fun isForegroundAndBackgroundPermissionGranted(mActivity: Application): Boolean =
         (
-            ContextCompat.checkSelfPermission(
-                mActivity.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            ) == PackageManager.PERMISSION_GRANTED
-        ) &&
-            (
                 ContextCompat.checkSelfPermission(
                     mActivity.applicationContext,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
                 ) == PackageManager.PERMISSION_GRANTED
-            )
+                ) &&
+                (
+                        ContextCompat.checkSelfPermission(
+                            mActivity.applicationContext,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                        ) == PackageManager.PERMISSION_GRANTED
+                        )
 
     @TargetApi(Build.VERSION_CODES.Q)
     fun isBackgroundPermissionGranted(mActivity: Activity): Boolean =
         (
-            ContextCompat.checkSelfPermission(
-                mActivity.applicationContext,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+                ContextCompat.checkSelfPermission(
+                    mActivity.applicationContext,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                ) == PackageManager.PERMISSION_GRANTED
+                )
 
     fun shouldShowForegroundLocationRequestPermission(mActivity: Activity): Boolean {
 //         Return True if user denied , and false if a user select never show again
@@ -187,9 +214,9 @@ object AppSharedMethods {
 
     fun Context.isLocationEnabled(): Boolean =
         locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true ||
-            locationManager?.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER,
-            ) == true
+                locationManager?.isProviderEnabled(
+                    LocationManager.NETWORK_PROVIDER,
+                ) == true
 
     fun startFetchAddressWorker(mLatLng: LatLng) {
         // Store the receiver in the singleton
@@ -230,11 +257,11 @@ object AppSharedMethods {
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
     fun isReceiveNotificationPermissionGranted(mActivity: Activity): Boolean =
         (
-            ContextCompat.checkSelfPermission(
-                mActivity.applicationContext,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+                ContextCompat.checkSelfPermission(
+                    mActivity.applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS,
+                ) == PackageManager.PERMISSION_GRANTED
+                )
 
     fun isSupportsOreo(f: () -> Unit): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

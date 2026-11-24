@@ -46,7 +46,6 @@ class FakeDataSource(
         reminders.clear()
     }
 
-    override suspend fun getCurrentUserLocation(): Result<Location> = Result.Error(null)
 
     fun addReminders(vararg tasks: ReminderDTO) {
         for (task in tasks) {

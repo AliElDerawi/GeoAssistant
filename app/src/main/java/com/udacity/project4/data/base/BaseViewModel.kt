@@ -9,19 +9,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 /**
- * Base class for View Models to declare the common LiveData objects in one place
+ * Base class for View Models to declare the common Channel and StateFlow objects in one place
  */
-abstract class BaseViewModel(
-    val app: Application,
-) : AndroidViewModel(app) {
-    val navigationCommandChannel: Channel<NavigationCommand> = Channel(Channel.BUFFERED)
-    val showErrorMessageChannel: Channel<String> = Channel(Channel.BUFFERED)
-    val showSnackBarChannel: Channel<String> = Channel(Channel.BUFFERED)
-    val showSnackBarIntChannel: Channel<Int> = Channel(Channel.BUFFERED)
-    val showToastChannel: Channel<String> = Channel(Channel.BUFFERED)
-    val showToastIntChannel: Channel<Int> = Channel(Channel.BUFFERED)
-    val _showLoadingStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val _showNoDataStateFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
+abstract class BaseViewModel(val app: Application) : AndroidViewModel(app) {
+    val navigationCommandChannel = Channel<NavigationCommand>(Channel.BUFFERED)
+    val showErrorMessageChannel = Channel<String>(Channel.BUFFERED)
+    val showSnackBarChannel = Channel<String>(Channel.BUFFERED)
+    val showSnackBarIntChannel = Channel<Int>(Channel.BUFFERED)
+    val showToastChannel = Channel<String>(Channel.BUFFERED)
+    val showToastIntChannel = Channel<Int>(Channel.BUFFERED)
+    val showLoadingMutableStateFlow = MutableStateFlow<Boolean>(false)
+    val showNoDataMutableStateFlow = MutableStateFlow<Boolean>(false)
+
 
     fun getLocalizedContext(): Context {
         val config = Configuration(app.resources.configuration)

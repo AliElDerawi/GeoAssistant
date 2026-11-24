@@ -20,6 +20,7 @@ import com.udacity.project4.data.base.NavigationCommand
 import com.udacity.project4.data.dto.ReminderDTO
 import com.udacity.project4.data.dto.ReminderDataSource
 import com.udacity.project4.data.dto.Result
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.data.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.data.model.ReminderDataItem
 import com.udacity.project4.features.saveReminder.view.SaveReminderFragmentDirections
@@ -41,7 +42,8 @@ import timber.log.Timber
 class SaveReminderViewModel(
     private val mApp: Application,
     private val mRemindersLocalRepository: ReminderDataSource,
-    private val mGeofencingClient: GeofencingClient,
+    private val mUserDataSource: UserDataSource,
+    private val mGeofencingClient: GeofencingClient
 ) : BaseViewModel(mApp) {
     private var _reminderTitleStateFlow = MutableStateFlow<String?>("")
     val reminderTitleStateFlow: StateFlow<String?>
@@ -218,7 +220,7 @@ class SaveReminderViewModel(
         userId: String? = AppSharedMethods.getCurrentUserId(),
     ) {
         viewModelScope.launch {
-            _showLoadingStateFlow.value = true
+            showLoadingMutableStateFlow.value = true
             mRemindersLocalRepository.saveReminder(
                 ReminderDTO(
                     reminderData.title,
@@ -230,7 +232,7 @@ class SaveReminderViewModel(
                     reminderData.id,
                 ),
             )
-            _showLoadingStateFlow.value = false
+            showLoadingMutableStateFlow.value = false
             showToastIntChannel.send(R.string.msg_reminder_saved)
             _createGeofenceStateFlow.value = reminderData
             continueSaveReminder(reminderData)
@@ -356,7 +358,7 @@ class SaveReminderViewModel(
         if (lastUserLocationStateFlow.value != null) return
         if (isForegroundPermissionGranted(mApp)) {
             viewModelScope.launch(Dispatchers.IO) {
-                mRemindersLocalRepository.getCurrentUserLocation().let {
+                mUserDataSource.getCurrentUserLocation().let {
                     if (it is Result.Success) {
                         _lastUserLocationStateFlow.value = it.data
                     } else {

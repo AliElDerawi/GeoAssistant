@@ -5,9 +5,11 @@ import android.os.Handler
 import android.os.Looper
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.repository.RemindersRepository
+import com.udacity.project4.data.repository.UserRepository
 import com.udacity.project4.features.authentication.viewModel.AuthenticationViewModel
 import com.udacity.project4.features.main.viewModel.MainViewModel
 import com.udacity.project4.features.remindersList.viewModel.RemindersListViewModel
@@ -39,23 +41,25 @@ class MyApp : Application() {
         /**
          * use Koin Library as a service locator
          */
-        val myModule =
-            module {
-                // Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
-                viewModelOf(::RemindersListViewModel)
-                viewModelOf(::AuthenticationViewModel)
-                viewModelOf(::SaveReminderViewModel)
-                viewModelOf(::MainViewModel)
-                workerOf(::GeofenceTransitionsWorker)
-                workerOf(::FetchAddressWorker)
-                // Declare singleton definitions to be later injected using by inject()
-                single { RemindersRepository(get(), Dispatchers.IO, get()) }
-                single { LocalDB.createRemindersDao(this@MyApp) }
-                single<ReminderDataSource> { get<RemindersRepository>() }
-                single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
-                single { LocationServices.getGeofencingClient(this@MyApp) }
-                single { MyResultIntentReceiver(Handler(Looper.getMainLooper())) }
-            }
+        val myModule = module {
+            //Declare a ViewModel - be later inject into Fragment with dedicated injector using by viewModel()
+            viewModelOf(::RemindersListViewModel)
+            viewModelOf(::AuthenticationViewModel)
+            viewModelOf(::SaveReminderViewModel)
+            viewModelOf(::MainViewModel)
+            workerOf(::GeofenceTransitionsWorker)
+            workerOf(::FetchAddressWorker)
+            //Declare singleton definitions to be later injected using by inject()
+            single { RemindersRepository(get(), Dispatchers.IO) }
+            single { UserRepository(Dispatchers.IO, get()) }
+
+            single { LocalDB.createRemindersDao(this@MyApp) }
+            single<ReminderDataSource> { get<RemindersRepository>() }
+            single<UserDataSource> { get<UserRepository>() }
+            single { LocationServices.getFusedLocationProviderClient(this@MyApp) }
+            single { LocationServices.getGeofencingClient(this@MyApp) }
+            single { MyResultIntentReceiver(Handler(Looper.getMainLooper())) }
+        }
 
         startKoin {
             androidContext(this@MyApp)

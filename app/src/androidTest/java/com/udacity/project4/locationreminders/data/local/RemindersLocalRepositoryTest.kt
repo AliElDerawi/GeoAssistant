@@ -62,8 +62,7 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
         localDataSource =
             RemindersRepository(
                 database.reminderDao(),
-                Dispatchers.Unconfined,
-                LocationServices.getFusedLocationProviderClient(appContext),
+                Dispatchers.Unconfined
             )
     }
 
@@ -74,7 +73,8 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
     fun insertReminderAndGetById_checkSuccess() =
         runTest {
             // GIVEN - insert a reminder
-            val reminderDataItem = ReminderDataItem("title", "description", "location", 0.0, 0.0, testUserID)
+            val reminderDataItem =
+                ReminderDataItem("title", "description", "location", 0.0, 0.0, testUserID)
             localDataSource.saveReminder(
                 ReminderDTO(
                     reminderDataItem.title,
@@ -87,7 +87,8 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
                 ),
             )
             // WHEN - Get the task by id from the database
-            val result = (localDataSource.getReminder(reminderDataItem.id) as Result.Success<ReminderDTO>).data
+            val result =
+                (localDataSource.getReminder(reminderDataItem.id) as Result.Success<ReminderDTO>).data
             // THEN - The loaded data contains the expected values
             assertThat<ReminderDTO>(result, CoreMatchers.notNullValue())
             assertThat(result.id, `is`(reminderDataItem.id))
@@ -103,7 +104,10 @@ class RemindersLocalRepositoryTest : AutoCloseKoinTest() {
             val result = localDataSource.getReminder("-1")
             result as Result.Error
             // THEN - The loaded data contains the expected values
-            assertThat(result.message, `is`(appContext.getString(R.string.text_error_reminder_not_found)))
+            assertThat(
+                result.message,
+                `is`(appContext.getString(R.string.text_error_reminder_not_found))
+            )
         }
 
     @Test

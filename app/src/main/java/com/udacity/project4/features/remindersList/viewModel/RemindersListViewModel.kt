@@ -33,11 +33,12 @@ class RemindersListViewModel(
      * or show error if any
      */
     fun loadReminders() {
-        _showLoadingStateFlow.value = true
-        viewModelScope.launch {
-            // interacting with the dataSource has to be through a coroutine
+
+        showLoadingMutableStateFlow.value = true
+        viewModelScope.launch() {
+            //interacting with the dataSource has to be through a coroutine
             val result = mReminderDataSource.getReminders()
-            _showLoadingStateFlow.value = false
+            showLoadingMutableStateFlow.value = false
             when (result) {
                 is Result.Success<*> -> {
                     result as Result.Success<Flow<List<ReminderDTO>>>
@@ -76,7 +77,7 @@ class RemindersListViewModel(
      * Inform the user that there's not any data if the remindersList is empty
      */
     private fun invalidateShowNoData() {
-        _showNoDataStateFlow.value = remindersListStateFlow.value.isEmpty()
+        showNoDataMutableStateFlow.value = remindersListStateFlow.value.isEmpty()
     }
 
     fun addReminderClick() {

@@ -1,6 +1,5 @@
 package com.udacity.project4.data.dto
 
-import android.location.Location
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -14,6 +13,4 @@ interface ReminderDataSource {
     suspend fun getReminder(id: String): Result<ReminderDTO>
 
     suspend fun deleteAllReminders()
-
-    suspend fun getCurrentUserLocation(): Result<Location>
 }

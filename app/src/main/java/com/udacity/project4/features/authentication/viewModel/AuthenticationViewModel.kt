@@ -34,11 +34,9 @@ class AuthenticationViewModel(
                 Timber.d("onSignInResult:userId: ${user.uid}" + " userToken: ${user.getIdToken(true)}")
                 setLoginStatus(true, user.uid)
                 viewModelScope.launch {
-                    navigationCommandChannel.send(
-                        NavigationCommand.To(
-                            AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment(),
-                        ),
-                    )
+                    navigationCommandChannel.send(NavigationCommand.To(
+                        AuthenticationFragmentDirections.actionAuthenticationFragmentToReminderListFragment()
+                    ))
                 }
             } ?: Timber.d("onSignInResult: User is null")
         } else {

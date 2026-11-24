@@ -1,9 +1,5 @@
 package com.udacity.project4.data.repository
 
-import android.location.Location
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.udacity.project4.R
 import com.udacity.project4.data.MyApp
 import com.udacity.project4.data.dto.ReminderDTO
@@ -16,9 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 /**
  * Concrete implementation of a data source as a db.
@@ -29,8 +23,7 @@ import timber.log.Timber
  */
 class RemindersRepository(
     private val remindersDao: RemindersDao,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val fusedLocationProviderClient: FusedLocationProviderClient,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ReminderDataSource {
     /**
      * Get the reminders list from the local db
@@ -87,31 +80,4 @@ class RemindersRepository(
             }
         }
     }
-
-    override suspend fun getCurrentUserLocation(): Result<Location> =
-        wrapEspressoIdlingResource {
-            withContext(ioDispatcher) {
-                try {
-                    val cancellationTokenSource = CancellationTokenSource()
-
-                    val location =
-                        fusedLocationProviderClient
-                            .getCurrentLocation(
-                                Priority.PRIORITY_HIGH_ACCURACY,
-                                cancellationTokenSource.token,
-                            ).await()
-
-                    location?.let {
-                        Result.Success(it)
-                    } ?: Result.Error("No Location detected")
-                } catch (e: SecurityException) {
-                    ensureActive()
-                    Timber.e(e)
-                    Result.Error(e.localizedMessage)
-                } catch (e: Exception) {
-                    ensureActive()
-                    Result.Error(e.localizedMessage)
-                }
-            }
-        }
 }

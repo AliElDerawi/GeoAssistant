@@ -33,6 +33,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.google.android.gms.location.LocationServices
 import com.udacity.project4.data.dto.ReminderDataSource
+import com.udacity.project4.data.dto.UserDataSource
 import com.udacity.project4.data.geofence.GeofenceTransitionsWorker
 import com.udacity.project4.data.local.LocalDB
 import com.udacity.project4.data.repository.RemindersRepository
@@ -93,10 +94,12 @@ class AppNavigationTest : AutoCloseKoinTest() {
                 workerOf(::GeofenceTransitionsWorker)
                 workerOf(::FetchAddressWorker)
                 // Declare singleton definitions to be later injected using by inject()
-                single { SaveReminderViewModel(get(), get(), get()) }
-                single { RemindersRepository(get(), Dispatchers.Unconfined, get()) }
+                single { SaveReminderViewModel(get(), get(), get(), get()) }
+                single { RemindersRepository(get(), Dispatchers.Unconfined) }
                 single { LocalDB.createRemindersDao(appContext) }
                 viewModelOf(::MainViewModel)
+                single { FakeUserRepository() }
+                single<UserDataSource> { get<FakeUserRepository>() }
                 single<ReminderDataSource> { get<RemindersRepository>() }
                 single { LocationServices.getFusedLocationProviderClient(appContext) }
                 single { LocationServices.getGeofencingClient(appContext) }
